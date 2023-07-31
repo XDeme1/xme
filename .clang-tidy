@@ -1,0 +1,15 @@
+Checks: 'modernize-avoid-*,
+modernize-make-*,
+modernize-use-equals-*,
+modernize-use-nullptr,
+modernize-use-override,
+modernize-use-using,
+modernize-unary-static-assert,
+modernize-type-traits,
+modernize-use-transparent-functors,
+readability-identifier-naming'
+CheckOptions:
+  readability-identifier-naming.ClassCase: 'CamelCase'
+  readability-identifier-naming.EnumCase: 'CamelCase'
+  readability-identifier-naming.FunctionCase: 'camelBack'
+  

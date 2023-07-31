@@ -1,0 +1,8 @@
+#Possible CMake build directories
+build/
+out/
+cmake-*/
+
+#clangd
+.cache/
+compile_commands.json

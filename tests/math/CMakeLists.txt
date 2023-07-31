@@ -1,0 +1,3 @@
+CreateTest(vector_constructor)
+CreateTest(vector_operator)
+CreateTest(vector_self_operator)

@@ -1,0 +1,20 @@
+ColumnLimit: 90
+UseTab: Never
+
+RequiresClausePosition: OwnLine
+
+BraceWrapping:
+  AfterClass: false
+  AfterEnum: false
+  AfterFunction: false
+IndentWidth: 4
+IndentAccessModifiers: false
+IndentCaseBlocks: false
+IndentCaseLabels: false
+IndentRequiresClause: true
+
+AlwaysBreakTemplateDeclarations: Yes
+AllowShortFunctionsOnASingleLine: All
+
+PointerAlignment: Left
+ReferenceAlignment: Pointer
