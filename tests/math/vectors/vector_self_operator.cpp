@@ -8,11 +8,11 @@ template<std::size_t Size>
 constexpr int testSelfOperator() {
     int errors = 0;
     {
-        xme::Vector<double, Size> v{8};
-        v += 3;
+        xme::Vector<double, Size> v1{8};
+        v1 += 3;
         std::array<bool, Size> results{};
         for (std::int32_t i = 0; i < Size; ++i) {
-            results[i] = v[i] == 11;
+            results[i] = v1[i] == 11;
         }
         auto error = std::ranges::any_of(results, isError);
         if(error) {

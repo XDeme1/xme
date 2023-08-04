@@ -1,3 +1,4 @@
-CreateTest(vector_constructor)
-CreateTest(vector_operator)
-CreateTest(vector_self_operator)
+CreateTest(matrix_constructor)
+CreateTest(matrix_multiplication)
+
+add_subdirectory(vectors)

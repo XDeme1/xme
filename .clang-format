@@ -7,11 +7,15 @@ BraceWrapping:
   AfterClass: false
   AfterEnum: false
   AfterFunction: false
+  
 IndentWidth: 4
+AccessModifierOffset: -4
 IndentAccessModifiers: false
 IndentCaseBlocks: false
 IndentCaseLabels: false
 IndentRequiresClause: true
+
+SpaceAfterTemplateKeyword: false
 
 AlwaysBreakTemplateDeclarations: Yes
 AllowShortFunctionsOnASingleLine: All

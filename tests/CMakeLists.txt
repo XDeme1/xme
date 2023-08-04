@@ -4,4 +4,5 @@ function(CreateTest NAME)
     
     add_test(NAME test_${NAME} COMMAND test_${NAME})
 endfunction()
+
 add_subdirectory(math)

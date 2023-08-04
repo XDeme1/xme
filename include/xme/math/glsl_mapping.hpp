@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../../private/math/forward.hpp"
+#include "forward.hpp"
 
 namespace xme {
 using bvec2 = Vector<bool, 2>;

@@ -33,8 +33,29 @@ int testOperators() {
     return errors;
 }
 
+int testEquality() {
+    int errors = 0;
+    {
+        xme::vec4 v1{5};
+        xme::vec4 v2{7};
+        if(v1 == v2) {
+            std::cerr << "Vector Equality Error\n";
+            ++errors;
+        }
+
+        xme::vec4 v3{2, 2, 2, 2};
+        xme::vec4 v4{2, 2, 2, 2};
+        if(v3 != v4) {
+            std::cerr << "Vector Equality Error\n";
+            ++errors;
+        }
+    }
+    return errors;
+}
+
 int main() {
     int errors = 0;
     errors += testOperators();
+    errors += testEquality();
     return errors;
 }

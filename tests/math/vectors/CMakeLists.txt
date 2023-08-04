@@ -1,0 +1,5 @@
+CreateTest(vector_constructor)
+CreateTest(vector_conversion_constructor)
+CreateTest(vector_operator)
+CreateTest(vector_self_operator)
+CreateTest(vector_methods)
