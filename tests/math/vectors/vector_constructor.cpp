@@ -1,8 +1,4 @@
-#include <xme/math/math.hpp>
-#include <algorithm>
-#include <iostream>
-
-bool isError(bool b) { return b == false; }
+#include "common.hpp"
 
 template<std::size_t Size, std::size_t...Ints>
 int testConstructors(std::index_sequence<Ints...>) {

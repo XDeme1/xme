@@ -1,8 +1,4 @@
-#include <xme/math/math.hpp>
-#include <algorithm>
-#include <iostream>
-
-bool isError(bool b) { return b == false; }
+#include "common.hpp"
 
 int testOperators() {
     int errors = 0;

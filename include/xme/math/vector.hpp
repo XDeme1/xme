@@ -19,18 +19,6 @@ public:
 
     constexpr Vector(auto s) noexcept { m_Data.fill(s); }
 
-    template<typename U>
-        requires(Size == 2)
-    constexpr Vector(U s) noexcept : Vector(s, s) {}
-
-    template<typename U>
-        requires(Size == 3)
-    constexpr Vector(U s) noexcept : Vector(s, s, s) {}
-
-    template<typename U>
-        requires(Size == 4)
-    constexpr Vector(U s) noexcept : Vector(s, s, s, s) {}
-
     template<typename... Args>
         requires(sizeof...(Args) == Size)
     constexpr Vector(Args... args) noexcept : m_Data({static_cast<T>(args)...}) {}

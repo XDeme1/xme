@@ -1,8 +1,4 @@
-#include <algorithm>
-#include <iostream>
-#include <xme/math/math.hpp>
-
-bool isError(bool b) { return b == false; }
+#include "common.hpp"
 
 int testVector3() {
     int errors = 0;
