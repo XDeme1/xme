@@ -6,3 +6,6 @@ cmake-*/
 #clangd
 .cache/
 compile_commands.json
+
+#CLion
+.idea/

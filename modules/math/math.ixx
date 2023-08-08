@@ -3,10 +3,6 @@ module;
 export module xme.math;
 
 export namespace xme {
-    using xme::pi;
-    using xme::e;
-    using xme::phi;
-    
     using xme::Vector;
     using xme::Matrix;
     using xme::Quaternion;

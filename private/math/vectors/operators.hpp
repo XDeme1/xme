@@ -1,5 +1,5 @@
 #pragma once
-#include <xme/math/forward.hpp>
+#include <xme/math/vector.hpp>
 
 #define VECTOR_OP(op)                                                                    \
     template<typename T, typename U, std::size_t Size>                                   \

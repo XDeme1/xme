@@ -10,6 +10,8 @@ struct Vector {
 public:
     static_assert(std::is_arithmetic_v<T>, "T must be an arithmetic type");
 
+    static constexpr std::size_t size = Size;
+
     constexpr Vector() noexcept = default;
     constexpr Vector(const Vector&) noexcept = default;
     constexpr Vector(Vector&&) noexcept = default;
@@ -146,6 +148,11 @@ public:
 private:
     std::array<T, Size> m_Data{};
 };
+
+template<typename T, typename...Args>
+Vector(T, Args...) -> Vector<std::common_type_t<T, Args...>, sizeof...(Args)+1>;
 } // namespace xme
 
-#include "../../../private/math/vectors/vector_operators.hpp"
+#include "../../../private/math/vectors/io.hpp"
+#include "../../../private/math/vectors/operators.hpp"
+#include "../../../private/math/vectors/piecewise.hpp"

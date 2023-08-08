@@ -1,4 +1,2 @@
-CreateTest(matrix_constructor)
-CreateTest(matrix_multiplication)
-
 add_subdirectory(vectors)
+add_subdirectory(matrices)

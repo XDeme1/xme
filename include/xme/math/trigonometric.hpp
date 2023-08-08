@@ -1,7 +1,7 @@
 #pragma once
-#include "../../../private/math/vectors/vector_piecewise.hpp"
-#include "constants.hpp"
 #include <cmath>
+#include "constants.hpp"
+#include "vector.hpp"
 
 // For more information see: https://en.wikipedia.org/wiki/Inverse_trigonometric_functions
 namespace xme {
