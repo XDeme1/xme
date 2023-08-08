@@ -81,6 +81,13 @@ public:
     constexpr auto& operator[](std::size_t i) noexcept { return m_Data[i]; }
     constexpr auto& operator[](std::size_t i) const noexcept { return m_Data[i]; }
 
+    //Useful for ranges algorithms
+    constexpr auto* begin() noexcept { return &m_Data[0]; }
+    constexpr auto* end() noexcept { return &m_Data[Size]; }
+    
+    constexpr auto* begin() const noexcept { return &m_Data[0]; }
+    constexpr auto* end() const noexcept { return &m_Data[Size]; }
+
     template<typename U>
     constexpr auto dot(const Vector<U, Size>& v) const noexcept {
         decltype(m_Data[0] + v[0]) result = 0;

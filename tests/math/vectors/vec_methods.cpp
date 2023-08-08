@@ -5,13 +5,13 @@ int testLenght() {
     {
         xme::vec3 v1{3, 0, 0};
         if(v1.lenght() != 3) {
-            std::cerr << "Vector::lenght() Error\n";
+            std::cerr << "Vector::lenght() error\n";
             ++errors;
         }
 
         xme::vec3 v2{4, 3, 0};
         if(v2.lenght() != 5) {
-            std::cerr << "Vector::lenght() Error\n";
+            std::cerr << "Vector::lenght() error\n";
             ++errors;
         }
     }

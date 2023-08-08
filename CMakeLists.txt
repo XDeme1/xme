@@ -3,7 +3,7 @@ project(xme)
 
 option(XME_BUILD_BENCHMARK "Enables Benchmark" OFF)
 option(XME_BUILD_TESTS "Enables Tests" OFF)
-option(XME_BUILD_MODULES "Enable modules" ON)
+option(XME_BUILD_MODULES "Enable modules" OFF)
 
 add_subdirectory(include/xme)
 
