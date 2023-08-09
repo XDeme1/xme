@@ -5,19 +5,29 @@ constexpr int testSelfOperator() {
     int errors = 0;
     xme::Vector<double, Size> v{8};
     {
+        std::vector<short> errorList;
         v += 2;
         v += xme::Vector<double, Size>{1};
-        bool error1 = std::ranges::any_of(v, [](double n){ return n != 11; });
-        if(error1) {
+
+        for(std::size_t i = 0; i < Size; ++i)
+            errorList.emplace_back(v[i] == 11);
+
+        bool error = std::ranges::any_of(errorList, isError);
+        if(error) {
             std::cerr << "Vector<T, Size>::operator+= operator error\n";
             ++errors;
         }
     }
 
     {
+        std::vector<short> errorList;
         v -= 4;
         v -= xme::Vector<double, Size>{2};
-        bool error = std::ranges::any_of(v, [](double n){ return n != 5; });
+
+        for(std::size_t i = 0; i < Size; ++i)
+            errorList.emplace_back(v[i] == 5);
+
+        bool error = std::ranges::any_of(errorList, isError);
         if(error) {
             std::cerr << "Vector<T, Size>::operator-= operator error\n";
             ++errors;
@@ -25,9 +35,14 @@ constexpr int testSelfOperator() {
     }
 
     {
+        std::vector<short> errorList;
         v *= 2;
         v *= xme::Vector<double, Size>{2};
-        bool error = std::ranges::any_of(v, [](double n){ return n != 20; });
+
+        for(std::size_t i = 0; i < Size; ++i)
+            errorList.emplace_back(v[i] == 20);
+
+        bool error = std::ranges::any_of(errorList, isError);
         if(error) {
             std::cerr << "Vector<T, Size>::operator*= operator error\n";
             ++errors;
@@ -35,10 +50,13 @@ constexpr int testSelfOperator() {
     }
 
     {
+        std::vector<short> errorList;
         v /= 2;
         v /= xme::Vector<double, Size>{2};
+        for(std::size_t i = 0; i < Size; ++i)
+            errorList.emplace_back(v[i] == 5);
 
-        bool error = std::ranges::any_of(v, [](double n){ return n != 5; });
+        bool error = std::ranges::any_of(errorList, isError);
         if(error) {
             std::cerr << "Vector<T, Size>::operator/= operator error\n";
             ++errors;

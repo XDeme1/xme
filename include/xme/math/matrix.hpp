@@ -1,7 +1,7 @@
 #pragma once
-#include <array>
 #include "concepts.hpp"
 #include "vector.hpp"
+#include <array>
 
 namespace xme {
 template<typename T, std::size_t Cols, std::size_t Rows>
@@ -17,7 +17,7 @@ public:
 
     constexpr Matrix(const Matrix&) noexcept = default;
     constexpr Matrix(Matrix&&) noexcept = default;
-    
+
     constexpr auto operator=(const Matrix&) noexcept -> Matrix& = default;
     constexpr auto operator=(Matrix&&) noexcept -> Matrix& = default;
 
@@ -34,6 +34,50 @@ public:
         requires(sizeof...(Args) == Cols)
     constexpr Matrix(const Vector<Args, Size>&... args) noexcept : m_Data({args...}) {}
 
+    constexpr auto operator+() const noexcept;
+    constexpr auto operator-() const noexcept;
+
+    template<typename U>
+    constexpr auto operator+(const Matrix<U, Cols, Rows>& m) const noexcept;
+    template<CArithmetic U>
+    constexpr auto operator+(U s) const noexcept;
+
+    template<typename U>
+    constexpr auto operator-(const Matrix<U, Cols, Rows>& m) const noexcept;
+    template<CArithmetic U>
+    constexpr auto operator-(U s) const noexcept;
+
+    template<CArithmetic U>
+    constexpr auto operator*(U s) const noexcept;
+    template<typename U, std::size_t Rows2>
+    constexpr auto operator*(const Matrix<U, Rows2, Cols>& m) const noexcept;
+    template<typename U>
+    constexpr auto operator*(const Vector<U, Cols>& m) const noexcept;
+
+    template<CArithmetic U>
+    constexpr auto operator/(U s) const noexcept;
+
+    template<typename U>
+    constexpr auto& operator=(const Matrix<U, Cols, Rows>& m) noexcept;
+
+    template<typename U>
+    constexpr auto& operator+=(const Matrix<U, Cols, Rows>& m) noexcept;
+    template<CArithmetic U>
+    constexpr auto& operator+=(U s) noexcept;
+
+    template<typename U>
+    constexpr auto& operator-=(const Matrix<U, Cols, Rows>& m) noexcept;
+    template<CArithmetic U>
+    constexpr auto& operator-=(U s) noexcept;
+
+    template<typename U>
+    constexpr auto& operator*=(const Matrix<U, Rows, Cols>& m) noexcept;
+    template<CArithmetic U>
+    constexpr auto& operator*=(U s) noexcept;
+
+    template<CArithmetic U>
+    constexpr auto& operator/=(U s) noexcept;
+
     constexpr auto& operator[](std::size_t i) noexcept { return m_Data[i]; }
     constexpr auto& operator[](std::size_t i) const noexcept { return m_Data[i]; }
 
@@ -44,55 +88,27 @@ public:
         return m_Data[i][j];
     }
 
-    constexpr auto row(std::size_t row) const noexcept {
-        row_type result;
-        for (auto i = 0u; i < row_type::size; ++i)
-            result[i] = m_Data[i][row];
-        return result;
-    }
+    constexpr auto row(std::size_t row) const noexcept;
 
-    constexpr auto column(std::size_t column) const noexcept { return m_Data[column]; }
+    constexpr auto column(std::size_t column) const noexcept;
 
-    constexpr auto transpose() const noexcept {
-        Matrix<T, Rows, Cols> result;
-        for (auto i = 0; i < Cols; ++i) {
-            for (auto j = 0; j < Rows; ++j) {
-                result[j][i] = m_Data[i][j];
-            }
-        }
-        return result;
-    }
+    constexpr auto transpose() const noexcept;
 
     template<typename U>
-    constexpr auto translate(const xme::Vector<U, 3>& v) const noexcept {
-        return Matrix{
-            m_Data[0],
-            m_Data[1],
-            m_Data[2],
-            m_Data[0] * v[0] + m_Data[1] * v[1] + m_Data[2] * v[2] + m_Data[3],
-        };
-    }
-    
+    constexpr auto translate(const xme::Vector<U, 3>& v) const noexcept;
+
     template<typename U>
-    constexpr auto scale(const xme::Vector<U, 3>& v) const noexcept {
-        return Matrix{
-            m_Data[0] * v[0],
-            m_Data[1] * v[1],
-            m_Data[2] * v[2],
-            m_Data[3],
-        };
-    }
+    constexpr auto scale(const xme::Vector<U, 3>& v) const noexcept;
 
 private:
     std::array<column_type, Cols> m_Data{};
 };
 
-template<typename T, typename... Args, std::size_t Rows,
-         typename Tmp = std::common_type_t<T, Args...>>
+template<typename T, typename... Args, std::size_t Rows>
 Matrix(Vector<T, Rows>, Vector<Args, Rows>...)
-    -> Matrix<std::conditional_t<std::is_integral_v<Tmp>, float, Tmp>,
-              sizeof...(Args) + 1, Rows>;
+    -> Matrix<std::common_type_t<T, Args...>, sizeof...(Args) + 1, Rows>;
 } // namespace xme
 
 #include "../../../private/math/matrices/io.hpp"
-#include "../../../private/math/matrices/matrix_operators.hpp"
+#include "../../../private/math/matrices/operators.hpp"
+#include "../../../private/math/matrices/methods.hpp"

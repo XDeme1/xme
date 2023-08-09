@@ -1,4 +1,4 @@
-option(XME_TESTS_USE_LIBCXX "Use libc++ to build tests" ON)
+option(XME_TESTS_USE_LIBCXX "Use libc++ to build tests" OFF)
 
 function(CreateTest NAME)
     add_executable(test_${NAME} ${NAME}.cpp)

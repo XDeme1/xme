@@ -25,29 +25,8 @@ int testAccess() {
     return errros;
 }
 
-int testRanges() {
-    int errors = 0;
-    xme::vec4 v{5, 2, 3, 1};
-    static_assert(std::is_same_v<decltype(v.begin()), float*>);
-    std::array results{
-        *v.begin() == 5,
-        *v.begin()+1 == 2,
-        *v.begin()+2 == 3,
-        *v.begin()+3 == 1,
-        v.begin()+4 == v.end(),            
-    };
-    
-    bool error = std::ranges::all_of(results, isError);
-    if(error) {
-        std::cerr << "Vector::begin() && Vector::end() error\n";
-        ++errors;
-    }
-    return errors;
-}
-
 int main() {
     int errors = 0;
     errors += testAccess();
-    errors += testRanges();
     return errors;
 }

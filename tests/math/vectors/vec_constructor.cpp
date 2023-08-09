@@ -10,12 +10,12 @@ int testConstructors() {
         xme::Vector<double, Size> v3{v1};
 
         std::vector<short> errorList;
-        for(auto t : std::views::zip(numbers, v1, v3))
-            errorList.emplace_back(std::get<0>(t) == std::get<1>(t) && std::get<0>(t) == std::get<2>(t));
+        for(std::size_t i = 0; i < Size; ++i) {
+            errorList.emplace_back(numbers[i] == v1[i] && numbers[i] == v3[i]);
+            errorList.emplace_back(v2[i] == 5);
+        }
         
-        errorList.emplace_back(std::ranges::any_of(v2, [](double n){ return n != 5; }));
-        
-        bool error = std::ranges::all_of(errorList, isError);
+        bool error = std::ranges::any_of(errorList, isError);
         if(error) {
             std::cerr << "vec" << Size << " constructor error\n"; 
             ++errors;
