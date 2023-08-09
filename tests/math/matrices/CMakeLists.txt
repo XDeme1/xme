@@ -1,4 +1,7 @@
-CreateTest(mat_constructor)
 CreateTest(mat_access)
+
+CreateTest(mat_square_constructor)
+CreateTest(mat_vec_constructor)
+CreateTest(mat_constructor)
 CreateTest(mat_multiplication)
 CreateTest(mat_vec_multiplication)

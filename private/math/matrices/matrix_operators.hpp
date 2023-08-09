@@ -2,15 +2,15 @@
 #include <xme/math/matrix.hpp>
 
 #define MATRIX_OP(op)                                                                    \
-    template<typename T, std::size_t Cols, std::size_t Rows>                             \
-    constexpr auto operator op(const Matrix<T, Cols, Rows>& m, auto s) noexcept {        \
+    template<typename T, CArithmetic U, std::size_t Cols, std::size_t Rows>              \
+    constexpr auto operator op(const Matrix<T, Cols, Rows>& m, U s) noexcept {           \
         Matrix<decltype(m[0][0] op s), Cols, Rows> result{0};                            \
         for (auto i = 0u; i < Cols; ++i)                                                 \
             result[i] = m[i] op s;                                                       \
         return result;                                                                   \
     }                                                                                    \
-    template<typename T, std::size_t Cols, std::size_t Rows>                             \
-    constexpr auto operator op(auto s, const Matrix<T, Cols, Rows>& m) noexcept {        \
+    template<typename T, CArithmetic U, std::size_t Cols, std::size_t Rows>              \
+    constexpr auto operator op(U s, const Matrix<T, Cols, Rows>& m) noexcept {           \
         Matrix<decltype(s op m[0][0]), Cols, Rows> result{0};                            \
         for (auto i = 0u; i < Cols; ++i)                                                 \
             result[i] = s op m[i];                                                       \

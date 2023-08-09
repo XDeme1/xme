@@ -1,47 +1,36 @@
 #pragma once
 #include <array>
-
+#include "concepts.hpp"
 #include "vector.hpp"
 
 namespace xme {
-template<std::size_t Cols, std::size_t Rows>
-concept CSquareMatrix = Cols == Rows;
-
 template<typename T, std::size_t Cols, std::size_t Rows>
 class Matrix {
 public:
+    static_assert(std::is_arithmetic_v<T>, "T must be an arithmetic type");
+
     using row_type = Vector<T, Cols>;
     using column_type = Vector<T, Rows>;
 
     static constexpr std::size_t rows = Rows;
     static constexpr std::size_t columns = Cols;
 
+    constexpr Matrix(const Matrix&) noexcept = default;
+    constexpr Matrix(Matrix&&) noexcept = default;
+    
+    constexpr auto operator=(const Matrix&) noexcept -> Matrix& = default;
+    constexpr auto operator=(Matrix&&) noexcept -> Matrix& = default;
+
     constexpr Matrix() noexcept : Matrix(1) {}
 
-    template<typename U>
+    template<CArithmetic U>
     constexpr Matrix(U s) noexcept {
         constexpr std::size_t count = std::min(Cols, Rows);
         for (auto i = 0; i < count; ++i)
             m_Data[i][i] = static_cast<T>(s);
     }
 
-    constexpr Matrix(auto x0, auto y0, auto x1, auto y1) noexcept
-        requires CSquareMatrix<Cols, Rows> && (Cols == 2)
-        : m_Data({{x0, y0}, {x1, y1}}) {}
-
-    constexpr Matrix(auto x0, auto y0, auto z0, auto x1, auto y1, auto z1, auto x2,
-                     auto y2, auto z2) noexcept
-        requires CSquareMatrix<Cols, Rows> && (Cols == 3)
-        : m_Data({{x0, y0, z0}, {x1, y1, z1}, {x2, y2, z2}}) {}
-
-    constexpr Matrix(auto x0, auto y0, auto z0, auto w0, auto x1, auto y1, auto z1,
-                     auto w1, auto x2, auto y2, auto z2, auto w2, auto x3, auto y3,
-                     auto z3, auto w3) noexcept
-        requires CSquareMatrix<Cols, Rows> && (Cols == 4)
-        : m_Data(
-              {{x0, y0, z0, w0}, {x1, y1, z1, w1}, {x2, y2, z2, w2}, {x3, y3, z3, w3}}) {}
-
-    template<typename... Args, std::size_t Size>
+    template<CArithmetic... Args, std::size_t Size>
         requires(sizeof...(Args) == Cols)
     constexpr Matrix(const Vector<Args, Size>&... args) noexcept : m_Data({args...}) {}
 
@@ -83,6 +72,7 @@ public:
             m_Data[0] * v[0] + m_Data[1] * v[1] + m_Data[2] * v[2] + m_Data[3],
         };
     }
+    
     template<typename U>
     constexpr auto scale(const xme::Vector<U, 3>& v) const noexcept {
         return Matrix{

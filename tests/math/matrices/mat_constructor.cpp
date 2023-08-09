@@ -4,51 +4,6 @@
 
 bool isError(bool b) { return b == false; }
 
-template<std::size_t Size>
-int testSquareMatrix() {
-    int errors = 0;
-    {
-        xme::Matrix<float, Size, Size> m;
-
-        std::array<bool, Size*Size> results{};
-        for (auto i = 0; i < Size; ++i) {
-            for (auto j = 0; j < Size; ++j) {
-                if(i == j)
-                    results[i*Size+j] = m[j][i] == 1;
-                else
-                    results[i*Size+j] = m[j][i] == 0;
-            }
-        }
-
-        auto error = std::ranges::any_of(results, isError);
-        if(error) {
-            std::cerr << "matrix error\n";
-            ++errors;
-        }
-    }
-
-    {
-        xme::Matrix<float, Size, Size> m{5};
-
-        std::array<bool, Size*Size> results{};
-        for (auto i = 0; i < Size; ++i) {
-            for (auto j = 0; j < Size; ++j) {
-                if(i == j)
-                    results[i*Size+j] = m[j][i] == 5;
-                else
-                    results[i*Size+j] = m[j][i] == 0;
-            }
-        }
-
-        auto error = std::ranges::any_of(results, isError);
-        if(error) {
-            std::cerr << "matrix error\n";
-            ++errors;
-        }
-    }
-    return errors;
-}
-
 int testMatrix2x3() {
     int errors = 0;
     {
@@ -255,10 +210,6 @@ int testMatrix4x3() {
 
 int main() {
     int errors = 0;
-    errors += testSquareMatrix<2>(); 
-    errors += testSquareMatrix<3>(); 
-    errors += testSquareMatrix<4>(); 
-    errors += testSquareMatrix<5>(); 
     errors += testMatrix2x3();
     errors += testMatrix2x4();
     errors += testMatrix3x2();

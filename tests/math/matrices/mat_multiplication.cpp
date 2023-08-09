@@ -6,7 +6,7 @@ bool isError(bool b) { return b == false; }
 
 int testMatrix2() {
     int errors = 0;
-    xme::mat2 m{1, 3, 7, 4};
+    xme::mat2 m{xme::vec2{1, 3}, xme::vec2{7, 4}};
     auto r = m * m;
     std::array results = std::to_array({
         r[0] == xme::vec2(22, 15),
@@ -23,7 +23,7 @@ int testMatrix2() {
 
 int testMatrix3() {
     int errors = 0;
-    xme::mat3 m{1, 3, 6, 7, 4, 2, -5, 2, 8};
+    xme::mat3 m{xme::vec3{1, 3, 6}, xme::vec3{7, 4, 2}, xme::vec3{-5, 2, 8}};
     auto r = m * m;
     auto results = std::to_array({
         r[0] == xme::vec3(-8, 27, 60),
@@ -51,10 +51,8 @@ int testMatrix() {
         static_assert(std::is_same_v<decltype(m4), xme::Matrix<float, 3, 3>>);
 
         auto results = std::to_array({
-            m3[0][0] == 3,
-            m3[0][1] == 6,
-            m3[1][0] == 6,
-            m3[1][1] == 12,
+            m3[0] == xme::vec2{3, 6},
+            m3[1] == xme::vec2{6, 12},
 
             m4[0] == xme::vec3{5},
             m4[1] == xme::vec3{5},

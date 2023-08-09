@@ -2,6 +2,7 @@
 #include <array>
 #include <cmath>
 #include <type_traits>
+#include "concepts.hpp"
 
 namespace xme {
 
@@ -19,9 +20,10 @@ public:
     constexpr auto operator=(const Vector&) noexcept -> Vector& = default;
     constexpr auto operator=(Vector&&) noexcept -> Vector& = default;
 
-    constexpr Vector(auto s) noexcept { m_Data.fill(s); }
+    template<CArithmetic U>
+    constexpr Vector(U s) noexcept { m_Data.fill(s); }
 
-    template<typename... Args>
+    template<CArithmetic... Args>
         requires(sizeof...(Args) == Size)
     constexpr Vector(Args... args) noexcept : m_Data({static_cast<T>(args)...}) {}
 
