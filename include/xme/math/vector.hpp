@@ -128,7 +128,7 @@ public:
     constexpr auto dot(const Vector<U, Size>& v) const noexcept;
 
     template<typename U>
-        requires (Size == 3)
+        requires(Size == 3)
     constexpr auto cross(const Vector<U, 3>& v) const noexcept;
 
     constexpr auto lenght() const noexcept;
@@ -162,6 +162,6 @@ Vector(T, Args...) -> Vector<std::common_type_t<T, Args...>, sizeof...(Args) + 1
 } // namespace xme
 
 #include "../../../private/math/vectors/io.hpp"
-#include "../../../private/math/vectors/operators.hpp"
 #include "../../../private/math/vectors/methods.hpp"
+#include "../../../private/math/vectors/operators.hpp"
 #include "../../../private/math/vectors/piecewise.hpp"

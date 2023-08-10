@@ -20,7 +20,7 @@ private:
 };
 
 template<typename T, typename...Args, typename Temp = std::common_type_t<T, Args...>>
-Quaternion(T, Args...) -> Quaternion<std::conditional_t<std::is_integral_v<Temp>, double, Temp>>;
+Quaternion(T, Args...) -> Quaternion<std::conditional_t<std::is_integral_v<Temp>, float, Temp>>;
 
 template<typename T, typename U>
 constexpr auto operator+(const Quaternion<T>& q1, const Quaternion<U>& q2) noexcept {
