@@ -37,15 +37,15 @@ public:
     constexpr auto operator+() const noexcept;
     constexpr auto operator-() const noexcept;
 
-    template<typename U>
-    constexpr auto operator+(const Matrix<U, Cols, Rows>& m) const noexcept;
     template<CArithmetic U>
     constexpr auto operator+(U s) const noexcept;
-
     template<typename U>
-    constexpr auto operator-(const Matrix<U, Cols, Rows>& m) const noexcept;
+    constexpr auto operator+(const Matrix<U, Cols, Rows>& m) const noexcept;
+
     template<CArithmetic U>
     constexpr auto operator-(U s) const noexcept;
+    template<typename U>
+    constexpr auto operator-(const Matrix<U, Cols, Rows>& m) const noexcept;
 
     template<CArithmetic U>
     constexpr auto operator*(U s) const noexcept;
@@ -60,18 +60,16 @@ public:
     template<typename U>
     constexpr auto& operator=(const Matrix<U, Cols, Rows>& m) noexcept;
 
-    template<typename U>
-    constexpr auto& operator+=(const Matrix<U, Cols, Rows>& m) noexcept;
     template<CArithmetic U>
     constexpr auto& operator+=(U s) noexcept;
-
     template<typename U>
-    constexpr auto& operator-=(const Matrix<U, Cols, Rows>& m) noexcept;
+    constexpr auto& operator+=(const Matrix<U, Cols, Rows>& m) noexcept;
+
     template<CArithmetic U>
     constexpr auto& operator-=(U s) noexcept;
-
     template<typename U>
-    constexpr auto& operator*=(const Matrix<U, Rows, Cols>& m) noexcept;
+    constexpr auto& operator-=(const Matrix<U, Cols, Rows>& m) noexcept;
+
     template<CArithmetic U>
     constexpr auto& operator*=(U s) noexcept;
 

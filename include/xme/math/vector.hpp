@@ -5,7 +5,6 @@
 #include <type_traits>
 
 namespace xme {
-
 template<typename T, std::size_t Size>
 struct Vector {
 public:
@@ -78,25 +77,25 @@ public:
     constexpr auto operator+() const noexcept;
     constexpr auto operator-() const noexcept;
 
-    template<typename U>
-    constexpr auto operator+(const Vector<U, Size>& v) const noexcept;
     template<CArithmetic U>
     constexpr auto operator+(U s) const noexcept;
-
     template<typename U>
-    constexpr auto operator-(const Vector<U, Size>& v) const noexcept;
+    constexpr auto operator+(const Vector<U, Size>& v) const noexcept;
+
     template<CArithmetic U>
     constexpr auto operator-(U s) const noexcept;
-
     template<typename U>
-    constexpr auto operator*(const Vector<U, Size>& v) const noexcept;
+    constexpr auto operator-(const Vector<U, Size>& v) const noexcept;
+
     template<CArithmetic U>
     constexpr auto operator*(U s) const noexcept;
-
     template<typename U>
-    constexpr auto operator/(const Vector<U, Size>& v) const noexcept;
+    constexpr auto operator*(const Vector<U, Size>& v) const noexcept;
+    
     template<CArithmetic U>
     constexpr auto operator/(U s) const noexcept;
+    template<typename U>
+    constexpr auto operator/(const Vector<U, Size>& v) const noexcept;
 
     template<typename U>
     constexpr auto& operator=(const Vector<U, Size>& v) noexcept;
@@ -160,6 +159,9 @@ private:
 template<typename T, typename... Args>
 Vector(T, Args...) -> Vector<std::common_type_t<T, Args...>, sizeof...(Args) + 1>;
 } // namespace xme
+
+#undef VEC_OP
+#undef VEC_SELF_OP
 
 #include "../../../private/math/vectors/io.hpp"
 #include "../../../private/math/vectors/methods.hpp"

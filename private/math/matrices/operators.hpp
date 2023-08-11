@@ -1,5 +1,6 @@
 #pragma once
 #include <xme/math/matrix.hpp>
+#include <xme/math/type_traits.hpp>
 
 #define MATRIX_OP(op)                                                                    \
     template<typename T, std::size_t Cols, std::size_t Rows>                             \
@@ -44,16 +45,6 @@
     }
 
 namespace xme {
-MATRIX_OP2(+)
-MATRIX_OP2(-)
-MATRIX_OP(*)
-MATRIX_OP(/)
-
-MATRIX_SELF_OP2(+=)
-MATRIX_SELF_OP2(-=)
-MATRIX_SELF_OP(*=)
-MATRIX_SELF_OP(/=)
-
 template<typename T, std::size_t Cols, std::size_t Rows>
 constexpr auto Matrix<T, Cols, Rows>::operator+() const noexcept {
     return *this;
@@ -66,6 +57,11 @@ constexpr auto Matrix<T, Cols, Rows>::operator-() const noexcept {
         result[i] = -m_Data[i];
     return result;
 }
+
+MATRIX_OP2(+)
+MATRIX_OP2(-)
+MATRIX_OP(*)
+MATRIX_OP(/)
 
 template<typename T, std::size_t Cols, std::size_t Rows>
 template<typename U, std::size_t Rows2>
@@ -97,6 +93,11 @@ Matrix<T, Cols, Rows>::operator=(const Matrix<U, Cols, Rows>& m) noexcept {
         m_Data[i] = m[i];
     return *this;
 }
+
+MATRIX_SELF_OP2(+=)
+MATRIX_SELF_OP2(-=)
+MATRIX_SELF_OP(*=)
+MATRIX_SELF_OP(/=)
 
 template<typename T, typename U, std::size_t Cols, std::size_t Rows>
 constexpr bool operator==(const Matrix<T, Cols, Rows>& m1,

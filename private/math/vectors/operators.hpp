@@ -1,5 +1,4 @@
 #pragma once
-#include <xme/math/concepts.hpp>
 #include <xme/math/vector.hpp>
 
 #define VECTOR_OP(op)                                                                    \
@@ -38,16 +37,6 @@
     }
 
 namespace xme {
-VECTOR_OP(+)
-VECTOR_OP(-)
-VECTOR_OP(*)
-VECTOR_OP(/)
-
-VECTOR_SELF_OP(+=)
-VECTOR_SELF_OP(-=)
-VECTOR_SELF_OP(*=)
-VECTOR_SELF_OP(/=)
-
 template<typename T, std::size_t Size>
 constexpr auto Vector<T, Size>::operator+() const noexcept {
     return *this;
@@ -61,6 +50,11 @@ constexpr auto Vector<T, Size>::operator-() const noexcept {
     return result;
 }
 
+VECTOR_OP(+)
+VECTOR_OP(-)
+VECTOR_OP(*)
+VECTOR_OP(/)
+
 template<typename T, std::size_t Size>
 template<typename U>
 constexpr auto& Vector<T, Size>::operator=(const Vector<U, Size>& v) noexcept {
@@ -68,6 +62,11 @@ constexpr auto& Vector<T, Size>::operator=(const Vector<U, Size>& v) noexcept {
         m_Data[i] = static_cast<T>(v[i]);
     return *this;
 }
+
+VECTOR_SELF_OP(+=)
+VECTOR_SELF_OP(-=)
+VECTOR_SELF_OP(*=)
+VECTOR_SELF_OP(/=)
 
 template<typename T, typename U, std::size_t Size>
 constexpr bool operator==(const Vector<T, Size>& v1, const Vector<U, Size>& v2) noexcept {
