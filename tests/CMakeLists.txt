@@ -5,7 +5,7 @@ function(CreateTest NAME)
     target_link_libraries(test_${NAME} PRIVATE xme)
     
     if(XME_TESTS_USE_LIBCXX)
-        target_compile_options(test_${NAME} PRIVATE -stdlib=libc++)
+        target_compile_options(test_${NAME} PRIVATE -stdlib=libc++ -msse2)
         target_link_options(test_${NAME} PRIVATE -lc++)
     endif()
     
@@ -13,3 +13,4 @@ function(CreateTest NAME)
 endfunction()
 
 add_subdirectory(math)
+add_subdirectory(platform)
