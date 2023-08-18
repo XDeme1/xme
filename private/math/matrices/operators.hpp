@@ -6,9 +6,9 @@
     template<typename T, std::size_t Cols, std::size_t Rows>                             \
     template<CArithmetic U>                                                              \
     constexpr auto Matrix<T, Cols, Rows>::operator op(U s) const noexcept {              \
-        Matrix<decltype(m_Data[0][0] op s), Cols, Rows> result{0};                       \
+        Matrix<decltype(m_data[0][0] op s), Cols, Rows> result{0};                       \
         for (auto i = 0u; i < Cols; ++i)                                                 \
-            result[i] = m_Data[i] op s;                                                  \
+            result[i] = m_data[i] op s;                                                  \
         return result;                                                                   \
     }
 
@@ -18,9 +18,9 @@
     template<typename U>                                                                 \
     constexpr auto Matrix<T, Cols, Rows>::operator op(const Matrix<U, Cols, Rows>& m)    \
         const noexcept {                                                                 \
-        Matrix<decltype(m_Data[0][0] op m[0][0]), Cols, Rows> result{0};                 \
+        Matrix<decltype(m_data[0][0] op m[0][0]), Cols, Rows> result{0};                 \
         for (auto i = 0u; i < Cols; ++i)                                                 \
-            result[i] = m_Data[i] op m[i];                                               \
+            result[i] = m_data[i] op m[i];                                               \
         return result;                                                                   \
     }
 
@@ -29,7 +29,7 @@
     template<CArithmetic U>                                                              \
     constexpr auto& Matrix<T, Cols, Rows>::operator op(U s) noexcept {                   \
         for (auto i = 0u; i < Cols; ++i)                                                 \
-            m_Data[i] op s;                                                              \
+            m_data[i] op s;                                                              \
         return *this;                                                                    \
     }
 
@@ -40,7 +40,7 @@
     constexpr auto& Matrix<T, Cols, Rows>::operator op(                                  \
         const Matrix<U, Cols, Rows>& m) noexcept {                                       \
         for (auto i = 0u; i < Cols; ++i)                                                 \
-            m_Data[i] op m[i];                                                           \
+            m_data[i] op m[i];                                                           \
         return *this;                                                                    \
     }
 
@@ -54,7 +54,7 @@ template<typename T, std::size_t Cols, std::size_t Rows>
 constexpr auto Matrix<T, Cols, Rows>::operator-() const noexcept {
     Matrix result;
     for (std::size_t i = 0; i < Cols; ++i)
-        result[i] = -m_Data[i];
+        result[i] = -m_data[i];
     return result;
 }
 
@@ -67,7 +67,7 @@ template<typename T, std::size_t Cols, std::size_t Rows>
 template<typename U, std::size_t Rows2>
 constexpr auto
 Matrix<T, Cols, Rows>::operator*(const Matrix<U, Rows2, Cols>& m) const noexcept {
-    Matrix<decltype(m_Data[0][0] * m[0][0]), Rows2, Rows> result{0};
+    Matrix<decltype(m_data[0][0] * m[0][0]), Rows2, Rows> result{0};
     for (auto rowIndex = 0; rowIndex < Rows; ++rowIndex) {
         const auto row = this->row(rowIndex);
         for (auto columnIndex = 0; columnIndex < Rows2; ++columnIndex)
@@ -79,7 +79,7 @@ Matrix<T, Cols, Rows>::operator*(const Matrix<U, Rows2, Cols>& m) const noexcept
 template<typename T, std::size_t Cols, std::size_t Rows>
 template<typename U>
 constexpr auto Matrix<T, Cols, Rows>::operator*(const Vector<U, Cols>& v) const noexcept {
-    Vector<decltype(m_Data[0][0] * v[0]), Rows> result;
+    Vector<decltype(m_data[0][0] * v[0]), Rows> result;
     for (auto i = 0u; i < Rows; ++i)
         result[i] = this->row(i).dot(v);
     return result;
@@ -90,7 +90,7 @@ template<typename U>
 constexpr auto&
 Matrix<T, Cols, Rows>::operator=(const Matrix<U, Cols, Rows>& m) noexcept {
     for (std::size_t i = 0; i < Cols; ++i)
-        m_Data[i] = m[i];
+        m_data[i] = m[i];
     return *this;
 }
 

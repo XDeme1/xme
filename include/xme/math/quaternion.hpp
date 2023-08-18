@@ -10,7 +10,7 @@ public:
 
     constexpr Quaternion() noexcept = default;
     constexpr Quaternion(auto w, auto x, auto y, auto z) noexcept
-        : m_Data({static_cast<T>(w), static_cast<T>(x), static_cast<T>(y),
+        : m_data({static_cast<T>(w), static_cast<T>(x), static_cast<T>(y),
                   static_cast<T>(z)}) {}
 
     constexpr operator Matrix<T, 3>() const noexcept;
@@ -23,11 +23,11 @@ public:
     template<typename U>
     constexpr auto operator*(const Quaternion<U>& q) const noexcept;
 
-    constexpr auto& operator[](std::size_t i) noexcept { return m_Data[i]; }
-    constexpr auto& operator[](std::size_t i) const noexcept { return m_Data[i]; }
+    constexpr auto& operator[](std::size_t i) noexcept { return m_data[i]; }
+    constexpr auto& operator[](std::size_t i) const noexcept { return m_data[i]; }
 
 private:
-    std::array<T, 4> m_Data{1, 0, 0, 0}; // w, x, y, z
+    std::array<T, 4> m_data{1, 0, 0, 0}; // w, x, y, z
 };
 
 template<typename T, typename... Args, typename Temp = std::common_type_t<T, Args...>>
@@ -50,10 +50,10 @@ template<typename T>
 template<typename U>
 constexpr auto Quaternion<T>::operator+(const Quaternion<U>& q) const noexcept {
     return Quaternion{
-        m_Data[0] + q[0],
-        m_Data[1] + q[1],
-        m_Data[2] + q[2],
-        m_Data[3] + q[3],
+        this[0] + q[0],
+        this[1] + q[1],
+        this[2] + q[2],
+        this[3] + q[3],
     };
 }
 
@@ -61,10 +61,10 @@ template<typename T>
 template<typename U>
 constexpr auto Quaternion<T>::operator-(const Quaternion<U>& q) const noexcept {
     return Quaternion{
-        m_Data[0] - q[0],
-        m_Data[1] - q[1],
-        m_Data[2] - q[2],
-        m_Data[3] - q[3],
+        this[0] - q[0],
+        this[1] - q[1],
+        this[2] - q[2],
+        this[3] - q[3],
     };
 }
 } // namespace xme

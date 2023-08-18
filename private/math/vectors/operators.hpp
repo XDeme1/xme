@@ -6,17 +6,17 @@
     template<typename U>                                                                 \
     constexpr auto Vector<T, Size>::operator op(const Vector<U, Size>& v)                \
         const noexcept {                                                                 \
-        Vector<decltype(m_Data[0] op v[0]), Size> result;                                \
+        Vector<decltype(m_data[0] op v[0]), Size> result;                                \
         for (std::size_t i = 0; i < Size; ++i)                                           \
-            result[i] = m_Data[i] op v[i];                                               \
+            result[i] = m_data[i] op v[i];                                               \
         return result;                                                                   \
     }                                                                                    \
     template<typename T, std::size_t Size>                                               \
     template<CArithmetic U>                                                              \
     constexpr auto Vector<T, Size>::operator op(U s) const noexcept {                    \
-        Vector<decltype(m_Data[0] op s), Size> result;                                   \
+        Vector<decltype(m_data[0] op s), Size> result;                                   \
         for (std::size_t i = 0; i < Size; ++i)                                           \
-            result[i] = m_Data[i] op s;                                                  \
+            result[i] = m_data[i] op s;                                                  \
         return result;                                                                   \
     }
 
@@ -25,14 +25,14 @@
     template<typename U>                                                                 \
     constexpr auto& Vector<T, Size>::operator op(const Vector<U, Size>& v) noexcept {    \
         for (std::size_t i = 0; i < Size; ++i)                                           \
-            m_Data[i] op v[i];                                                           \
+            m_data[i] op v[i];                                                           \
         return *this;                                                                    \
     }                                                                                    \
     template<typename T, std::size_t Size>                                               \
     template<CArithmetic U>                                                              \
     constexpr auto& Vector<T, Size>::operator op(U s) noexcept {                         \
         for (std::size_t i = 0; i < Size; ++i)                                           \
-            m_Data[i] op s;                                                              \
+            m_data[i] op s;                                                              \
         return *this;                                                                    \
     }
 
@@ -46,7 +46,7 @@ template<typename T, std::size_t Size>
 constexpr auto Vector<T, Size>::operator-() const noexcept {
     Vector result;
     for (std::size_t i = 0; i < Size; ++i)
-        result[i] = -m_Data[i];
+        result[i] = -m_data[i];
     return result;
 }
 
@@ -59,7 +59,7 @@ template<typename T, std::size_t Size>
 template<typename U>
 constexpr auto& Vector<T, Size>::operator=(const Vector<U, Size>& v) noexcept {
     for (std::size_t i = 0; i < Size; ++i)
-        m_Data[i] = static_cast<T>(v[i]);
+        this[i] = static_cast<T>(v[i]);
     return *this;
 }
 

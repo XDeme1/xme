@@ -21,12 +21,12 @@ public:
 
     template<CArithmetic U>
     constexpr Vector(U s) noexcept {
-        m_Data.fill(s);
+        m_data.fill(s);
     }
 
     template<CArithmetic... Args>
         requires(sizeof...(Args) == Size)
-    constexpr Vector(Args... args) noexcept : m_Data({static_cast<T>(args)...}) {}
+    constexpr Vector(Args... args) noexcept : m_data({static_cast<T>(args)...}) {}
 
     // Vector3 Conversion constructors
     template<typename U>
@@ -71,7 +71,7 @@ public:
     template<typename U>
     constexpr Vector(const Vector<U, Size>& v) noexcept {
         for (std::size_t i = 0; i < Size; ++i)
-            m_Data[i] = static_cast<T>(v[i]);
+            m_data[i] = static_cast<T>(v[i]);
     }
 
     constexpr auto operator+() const noexcept;
@@ -120,8 +120,8 @@ public:
     template<typename U>
     constexpr auto& operator/=(const Vector<U, Size>& v) noexcept;
 
-    constexpr auto& operator[](std::size_t i) noexcept { return m_Data[i]; }
-    constexpr auto& operator[](std::size_t i) const noexcept { return m_Data[i]; }
+    constexpr auto& operator[](std::size_t i) noexcept { return m_data[i]; }
+    constexpr auto& operator[](std::size_t i) const noexcept { return m_data[i]; }
 
     template<typename U>
     constexpr auto dot(const Vector<U, Size>& v) const noexcept;
@@ -153,7 +153,7 @@ public:
     constexpr auto rotateZ(U angle) const noexcept;
 
 private:
-    std::array<T, Size> m_Data{};
+    std::array<T, Size> m_data{};
 };
 
 template<typename T, typename... Args>

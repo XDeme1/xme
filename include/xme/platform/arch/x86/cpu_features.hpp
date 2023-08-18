@@ -1,5 +1,4 @@
 #pragma once
-#include <bit>
 #include <cstdint>
 
 #ifdef _WIN32
@@ -30,7 +29,7 @@ struct X86CpuFeatures {
         std::uint32_t mca : 1 = false;
         std::uint32_t cmov : 1 = false;
         std::uint32_t pat : 1 = false;
-        std::uint32_t pse36 : 1 = false;
+        std::uint32_t pse_36 : 1 = false;
         std::uint32_t psn : 1 = false;
         std::uint32_t clfsh : 1 = false;
         std::uint32_t nx : 1 = false;
@@ -52,13 +51,13 @@ struct X86CpuFeatures {
         std::uint32_t pclmulqdq : 1 = false;
         std::uint32_t dtes64 : 1 = false;
         std::uint32_t monitor : 1 = false;
-        std::uint32_t dsCpl : 1 = false;
+        std::uint32_t ds_cpl : 1 = false;
         std::uint32_t vmx : 1 = false;
         std::uint32_t smx : 1 = false;
         std::uint32_t est : 1 = false;
         std::uint32_t tm2 : 1 = false;
         std::uint32_t ssse3 : 1 = false;
-        std::uint32_t cnxtId : 1 = false;
+        std::uint32_t cnxt_id : 1 = false;
         std::uint32_t sdbg : 1 = false;
         std::uint32_t fma : 1 = false;
         std::uint32_t cx16 : 1 = false;
@@ -72,8 +71,8 @@ struct X86CpuFeatures {
         std::uint32_t x2apic : 1 = false;
         std::uint32_t movbe : 1 = false;
         std::uint32_t popcnt : 1 = false;
-        std::uint32_t tscDeadline : 1 = false;
-        std::uint32_t aesNi : 1 = false;
+        std::uint32_t tsc_deadline : 1 = false;
+        std::uint32_t aes_ni : 1 = false;
         std::uint32_t xsave : 1 = false;
         std::uint32_t osxsave : 1 = false;
         std::uint32_t avx : 1 = false;
@@ -112,16 +111,16 @@ inline void cpuidex(int leaf, int count, std::uint32_t& eax, std::uint32_t& ebx,
 }
 
 inline auto x86CpuFeatures() {
-    std::uint32_t maxBasic;
+    std::uint32_t max_leaf;
     std::uint32_t eax, ebx, ecx, edx;
 
     // cpuid should be called with leaf = 0 first, as this will store
     // in the eax parameter the highest leaf calling parameter
     // the cpu implements
-    cpuid(0, maxBasic, ebx, ecx, edx);
+    cpuid(0, max_leaf, ebx, ecx, edx);
     cpuid(1, eax, ebx, ecx, edx);
 
-    X86CpuFeatures cpuFeatures{
+    X86CpuFeatures cpu_features{
         .info1{
             .fpu = static_cast<bool>(edx & 0x1),
             .vme = static_cast<bool>(edx & 0x2),
@@ -142,7 +141,7 @@ inline auto x86CpuFeatures() {
             .cmov = static_cast<bool>(edx & 0x80'00),
 
             .pat = static_cast<bool>(edx & 0x1'00'00),
-            .pse36 = static_cast<bool>(edx & 0x2'00'00),
+            .pse_36 = static_cast<bool>(edx & 0x2'00'00),
             .psn = static_cast<bool>(edx & 0x4'00'00),
             .clfsh = static_cast<bool>(edx & 0x8'00'00),
             .nx = static_cast<bool>(edx & 0x10'00'00),
@@ -165,14 +164,14 @@ inline auto x86CpuFeatures() {
             .pclmulqdq = static_cast<bool>(ecx & 0x2),
             .dtes64 = static_cast<bool>(ecx & 0x4),
             .monitor = static_cast<bool>(ecx & 0x8),
-            .dsCpl = static_cast<bool>(ecx & 0x10),
+            .ds_cpl = static_cast<bool>(ecx & 0x10),
             .vmx = static_cast<bool>(ecx & 0x20),
             .smx = static_cast<bool>(ecx & 0x40),
             .est = static_cast<bool>(ecx & 0x80),
 
             .tm2 = static_cast<bool>(ecx & 0x1'00),
             .ssse3 = static_cast<bool>(ecx & 0x2'00),
-            .cnxtId = static_cast<bool>(ecx & 0x4'00),
+            .cnxt_id = static_cast<bool>(ecx & 0x4'00),
             .sdbg = static_cast<bool>(ecx & 0x8'00),
             .fma = static_cast<bool>(ecx & 0x10'00),
             .cx16 = static_cast<bool>(ecx & 0x20'00),
@@ -188,8 +187,8 @@ inline auto x86CpuFeatures() {
             .movbe = static_cast<bool>(ecx & 0x40'00'00),
             .popcnt = static_cast<bool>(ecx & 0x80'00'00),
 
-            .tscDeadline = static_cast<bool>(ecx & 0x1'00'00'00),
-            .aesNi = static_cast<bool>(ecx & 0x2'00'00'00),
+            .tsc_deadline = static_cast<bool>(ecx & 0x1'00'00'00),
+            .aes_ni = static_cast<bool>(ecx & 0x2'00'00'00),
             .xsave = static_cast<bool>(ecx & 0x4'00'00'00),
             .osxsave = static_cast<bool>(ecx & 0x8'00'00'00),
             .avx = static_cast<bool>(ecx & 0x10'00'00'00),
@@ -199,9 +198,9 @@ inline auto x86CpuFeatures() {
         },
     };
 
-    if(maxBasic >= 7) {
+    if(max_leaf >= 7) {
         //cpuidex(7, 0, eax, ebx, ecx, edx);
     }
-    return cpuFeatures;
+    return cpu_features;
 }
 } // namespace xme

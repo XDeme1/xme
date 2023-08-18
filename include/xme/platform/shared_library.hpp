@@ -14,54 +14,51 @@ class SharedLibrary {
 public:
     constexpr SharedLibrary() noexcept = default;
     constexpr SharedLibrary(const SharedLibrary&) = delete;
-    constexpr SharedLibrary(SharedLibrary&& rhs) noexcept : m_Library(rhs.m_Library) {
-        rhs.m_Library = nullptr;
+    constexpr SharedLibrary(SharedLibrary&& rhs) noexcept : m_library(rhs.m_library) {
+        rhs.m_library = nullptr;
     }
 
     constexpr auto operator=(const SharedLibrary&) -> SharedLibrary& = delete;
     constexpr auto operator=(SharedLibrary&& rhs) noexcept -> SharedLibrary& {
-        std::ranges::swap(m_Library, rhs.m_Library);
+        std::ranges::swap(m_library, rhs.m_library);
         return *this;
     }
 
-    constexpr SharedLibrary(std::string_view libName) noexcept { open(libName); }
+    constexpr SharedLibrary(std::string_view lib_name) noexcept { open(lib_name); }
 
     constexpr ~SharedLibrary() {
-        if (m_Library)
+        if (m_library)
             close();
     }
 
-    constexpr bool isOpen() const noexcept { return m_Library != nullptr; }
+    constexpr bool isOpen() const noexcept { return m_library != nullptr; }
 
-    constexpr void open(std::string_view libName) {
+    constexpr void open(std::string_view lib_name) {
 #if XME_PLATFORM_WINDOWS
 #elif XME_PLATFORM_LINUX || XME_PLATFORM_MAC
-        m_Library = dlopen(libName.data(), RTLD_NOW | RTLD_LOCAL);
+        m_library = dlopen(lib_name.data(), RTLD_NOW | RTLD_LOCAL);
 #endif
     }
 
     constexpr void close() {
 #if XME_PLATFORM_WINDOWS
-        ::FreeLibrary(m_Library);
 #elif XME_PLATFORM_LINUX || XME_PLATFORM_MAC
-        dlclose(m_Library);
+        dlclose(m_library);
 #endif
     }
 
     template<typename T>
-    constexpr auto getProcAddress(std::string_view function) const noexcept -> T {
+    constexpr auto getProcAddress(std::string_view function) const noexcept {
 #if XME_PLATFORM_WINDOWS
-        return (T)::GetProcAddress(m_Library, function.data());
 #elif XME_PLATFORM_LINUX || XME_PLATFORM_MAC
-        return (T)dlsym(m_Library, function.data());
+        return (T)dlsym(m_library, function.data());
 #endif
     }
 
 private:
 #if XME_PLATFORM_WINDOWS
-    HINSTANCE m_Library = nullptr;
 #elif XME_PLATFORM_LINUX || XME_PLATFORM_MAC
-    void* m_Library = nullptr;
+    void* m_library = nullptr;
 #endif
 };
 } // namespace xme

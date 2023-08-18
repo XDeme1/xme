@@ -27,12 +27,12 @@ public:
     constexpr Matrix(U s) noexcept {
         constexpr std::size_t count = std::min(Cols, Rows);
         for (auto i = 0; i < count; ++i)
-            m_Data[i][i] = static_cast<T>(s);
+            m_data[i][i] = static_cast<T>(s);
     }
 
     template<CArithmetic... Args, std::size_t Size>
         requires(sizeof...(Args) == Cols)
-    constexpr Matrix(const Vector<Args, Size>&... args) noexcept : m_Data({args...}) {}
+    constexpr Matrix(const Vector<Args, Size>&... args) noexcept : m_data({args...}) {}
 
     constexpr auto operator+() const noexcept;
     constexpr auto operator-() const noexcept;
@@ -76,14 +76,14 @@ public:
     template<CArithmetic U>
     constexpr auto& operator/=(U s) noexcept;
 
-    constexpr auto& operator[](std::size_t i) noexcept { return m_Data[i]; }
-    constexpr auto& operator[](std::size_t i) const noexcept { return m_Data[i]; }
+    constexpr auto& operator[](std::size_t i) noexcept { return m_data[i]; }
+    constexpr auto& operator[](std::size_t i) const noexcept { return m_data[i]; }
 
     constexpr auto& operator[](std::size_t i, std::size_t j) noexcept {
-        return m_Data[i][j];
+        return m_data[i][j];
     }
     constexpr auto& operator[](std::size_t i, std::size_t j) const noexcept {
-        return m_Data[i][j];
+        return m_data[i][j];
     }
 
     constexpr auto row(std::size_t row) const noexcept;
@@ -99,7 +99,7 @@ public:
     constexpr auto scale(const xme::Vector<U, 3>& v) const noexcept;
 
 private:
-    std::array<column_type, Cols> m_Data{};
+    std::array<column_type, Cols> m_data{};
 };
 
 template<typename T, typename... Args, std::size_t Rows>

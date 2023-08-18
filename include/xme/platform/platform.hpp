@@ -2,7 +2,6 @@
 #include <string>
 #include <string_view>
 
-#include "architecture.hpp"
 #include "os_detect.hpp"
 
 #if XME_PLATFORM_LINUX
@@ -11,26 +10,25 @@
 
 class Platform {
 public:
-    static constexpr auto getEnvironmentVariable(std::string_view variableName) {
+    static constexpr auto getEnvironmentVariable(std::string_view variable_name) {
 #if XME_PLATFORM_LINUX
-        const char* result = ::secure_getenv(variableName.data());
-        return (result == nullptr) ? std::string() : result;
+        return ::secure_getenv(variable_name.data());
 #endif
     }
 
-    static constexpr void setEnvironmentVariable(std::string_view variableName,
+    static constexpr void setEnvironmentVariable(std::string_view variable_name,
                                                  std::string_view value) {
 #if XME_PLATFORM_LINUX
         if (value.empty())
-            ::unsetenv(variableName.data());
+            ::unsetenv(variable_name.data());
         else
-            ::setenv(variableName.data(), value.data(), true);
+            ::setenv(variable_name.data(), value.data(), true);
 #endif
     }
 
 #if defined(NDEBUG)
-    static constexpr bool debugEnabled = false;
+    static constexpr bool debug_enabled = false;
 #else
-    static constexpr bool debugEnabled = true;
+    static constexpr bool debug_enabled = true;
 #endif
 };

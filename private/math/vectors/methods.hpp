@@ -5,9 +5,9 @@ namespace xme {
 template<typename T, std::size_t Size>
 template<typename U>
 constexpr auto Vector<T, Size>::dot(const Vector<U, Size>& v) const noexcept {
-    decltype(m_Data[0] + v[0]) result = 0;
+    decltype(m_data[0] + v[0]) result = 0;
     for (std::size_t i = 0; i < Size; ++i)
-        result += (m_Data[i] * v[i]);
+        result += (m_data[i] * v[i]);
     return result;
 }
 
@@ -15,10 +15,10 @@ template<typename T, std::size_t Size>
 template<typename U>
     requires(Size == 3)
 constexpr auto Vector<T, Size>::cross(const Vector<U, 3>& v) const noexcept {
-    return xme::Vector<decltype(m_Data[0] + v[0]), 3>{
-        m_Data[1] * v[2] - m_Data[2] * v[1],
-        m_Data[2] * v[0] - m_Data[0] * v[2],
-        m_Data[0] * v[1] - m_Data[1] * v[0],
+    return xme::Vector<decltype(m_data[0] + v[0]), 3>{
+        m_data[1] * v[2] - m_data[2] * v[1],
+        m_data[2] * v[0] - m_data[0] * v[2],
+        m_data[0] * v[1] - m_data[1] * v[0],
     };
 }
 
@@ -51,8 +51,8 @@ constexpr auto Vector<T, Size>::rotateX(U angle) const noexcept {
     Vector<T, Size> result{*this};
     const auto sin{std::sin(angle)};
     const auto cos(std::cos(angle));
-    result[1] = m_Data[1] * cos - m_Data[2] * sin;
-    result[2] = m_Data[1] * sin + m_Data[2] * cos;
+    result[1] = m_data[1] * cos - m_data[2] * sin;
+    result[2] = m_data[1] * sin + m_data[2] * cos;
     return result;
 }
 
@@ -63,8 +63,8 @@ constexpr auto Vector<T, Size>::rotateY(U angle) const noexcept {
     Vector<T, Size> result{*this};
     const auto sin{std::sin(angle)};
     const auto cos(std::cos(angle));
-    result[0] = m_Data[0] * cos + m_Data[2] * sin;
-    result[2] = -m_Data[0] * sin + m_Data[2] * cos;
+    result[0] = m_data[0] * cos + m_data[2] * sin;
+    result[2] = -m_data[0] * sin + m_data[2] * cos;
     return result;
 }
 
@@ -75,8 +75,8 @@ constexpr auto Vector<T, Size>::rotateZ(U angle) const noexcept {
     Vector<T, Size> result{*this};
     const auto sin{std::sin(angle)};
     const auto cos(std::cos(angle));
-    result[0] = m_Data[0] * cos - m_Data[1] * sin;
-    result[1] = m_Data[0] * sin + m_Data[1] * cos;
+    result[0] = m_data[0] * cos - m_data[1] * sin;
+    result[1] = m_data[0] * sin + m_data[1] * cos;
     return result;
 }
 } // namespace xme
