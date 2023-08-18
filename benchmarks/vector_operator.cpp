@@ -1,4 +1,5 @@
 #include <xme/math/math.hpp>
+#include <xme/math/simd/vector.hpp>
 #include <benchmark/benchmark.h>
 #include <functional>
 #include <memory>
@@ -39,12 +40,24 @@ private:
 
 void benchAddOperator(benchmark::State& state)
 {
-    Delegate<void(int)> d{[](int a){ (void)a; }};
+    xme::dvec4 a{5};
+    xme::dvec4 b{2};
     for(auto _ : state) {
-        d(2);
-        benchmark::DoNotOptimize(d);
+        xme::dvec4 c = a / b;
+        benchmark::DoNotOptimize(c);
     }
 }
 BENCHMARK(benchAddOperator);
+
+void benchAddOperator2(benchmark::State& state)
+{
+    xme::dvec4_simd a{5, 5, 5, 5};
+    xme::dvec4_simd b{2, 2, 2, 2};
+    for(auto _ : state) {
+        xme::dvec4_simd c = xme::vec4Div(a, b);
+        benchmark::DoNotOptimize(c);
+    }
+}
+BENCHMARK(benchAddOperator2);
 
 BENCHMARK_MAIN();

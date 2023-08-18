@@ -1,7 +1,6 @@
 #pragma once
 #include <cmath>
 #include "constants.hpp"
-#include "vector.hpp"
 
 // For more information see: https://en.wikipedia.org/wiki/Inverse_trigonometric_functions
 namespace xme {
