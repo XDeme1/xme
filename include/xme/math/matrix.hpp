@@ -98,6 +98,9 @@ public:
     template<typename U>
     constexpr auto scale(const xme::Vector<U, 3>& v) const noexcept;
 
+    template<typename U>
+    constexpr auto rotate(auto angle, const xme::Vector<U, 3>& normal) const noexcept;
+
 private:
     std::array<column_type, Cols> m_data{};
 };

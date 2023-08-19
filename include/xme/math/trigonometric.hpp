@@ -4,6 +4,9 @@
 
 // For more information see: https://en.wikipedia.org/wiki/Inverse_trigonometric_functions
 namespace xme {
+constexpr auto radians(auto degree) noexcept { return degree * (xme::pi / 180); }
+constexpr auto degrees(auto radian) noexcept { return radian * (180 / xme::pi); }
+
 constexpr auto sin(auto s) noexcept { return std::sin(s); }
 constexpr auto cos(auto s) noexcept { return std::cos(s); }
 constexpr auto tan(auto s) noexcept { return std::tan(s); }

@@ -40,24 +40,12 @@ private:
 
 void benchAddOperator(benchmark::State& state)
 {
-    xme::dvec4 a{5};
-    xme::dvec4 b{2};
+    xme::mat4 m{3};
     for(auto _ : state) {
-        xme::dvec4 c = a / b;
+        auto c = m.rotate(xme::radians(90), xme::vec3{1});
         benchmark::DoNotOptimize(c);
     }
 }
 BENCHMARK(benchAddOperator);
-
-void benchAddOperator2(benchmark::State& state)
-{
-    xme::dvec4_simd a{5, 5, 5, 5};
-    xme::dvec4_simd b{2, 2, 2, 2};
-    for(auto _ : state) {
-        xme::dvec4_simd c = xme::vec4Div(a, b);
-        benchmark::DoNotOptimize(c);
-    }
-}
-BENCHMARK(benchAddOperator2);
 
 BENCHMARK_MAIN();
