@@ -72,7 +72,7 @@ constexpr auto Matrix<T, Cols, Rows>::rotate(auto angle, const xme::Vector<U, 3>
 	Matrix<T, 4> result;
     for(std::size_t i = 0; i < 3; ++i) {
         rotation[i][i] = c + temp[i] * normal[i];
-        result[i] = m_data[i] * rotation[i][0] + m_data[1] * rotation[i][1] + m_data[2] * rotation[1][2];
+        result[i] = m_data[0] * rotation[i][0] + m_data[1] * rotation[i][1] + m_data[2] * rotation[i][2];
     }
     result[3] = m_data[3];
     return result;
