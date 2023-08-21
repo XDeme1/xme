@@ -42,7 +42,7 @@ void benchAddOperator(benchmark::State& state)
 {
     xme::mat4 m{3};
     for(auto _ : state) {
-        auto c = m.rotate(xme::radians(90), xme::vec3{1});
+        auto c = m.rotate(xme::radians(90.f), xme::vec3{1});
         benchmark::DoNotOptimize(c);
     }
 }

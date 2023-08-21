@@ -40,8 +40,6 @@ int testDot() {
 int testCross() {
     int errors = 0;
     {
-        xme::vec3 v1{1, 0, 0};
-        xme::vec3 v2{0, 5, 0};
         std::array results{
             xme::vec3{1, 0, 0}.cross(xme::vec3{0, 5, 0}) == xme::vec3{0, 0, 5},
             xme::vec3{-3, 7, 0}.cross(xme::vec3{2, 5, 0}) == xme::vec3{0, 0, -29},
@@ -59,10 +57,6 @@ int testCross() {
 int testDistance() {
     int errors = 0;
     {
-        xme::vec3 v1{};
-        xme::vec3 v2{4, 3, 0};
-        auto v3 = v1.distance(v2);
-        auto v4 = v2.distance(v1); 
         std::array results{
             xme::vec3{}.distance(xme::vec3{4, 3, 0}) == 5,
             xme::vec3{4, 3, 0}.distance(xme::vec3{}) == 5,

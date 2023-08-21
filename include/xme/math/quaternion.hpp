@@ -1,10 +1,10 @@
 #pragma once
-#include <array>
 #include "matrix.hpp"
+#include <array>
 
 namespace xme {
 template<typename T>
-struct Quaternion {
+class Quaternion {
 public:
     static_assert(std::is_floating_point_v<T>, "T must be a floating point");
 
@@ -34,11 +34,9 @@ template<typename T, typename... Args, typename Temp = std::common_type_t<T, Arg
 Quaternion(T, Args...)
     -> Quaternion<std::conditional_t<std::is_integral_v<Temp>, float, Temp>>;
 
-
 template<typename T>
 constexpr Quaternion<T>::operator Matrix<T, 3>() const noexcept {
-    return Matrix<T, 3>{
-    };
+    return Matrix<T, 3>{};
 }
 
 template<typename T>

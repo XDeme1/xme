@@ -10,12 +10,13 @@ int testPlus() {
     std::array results{
         r1[0] == xme::vec3{7},
         r1[1] == xme::vec3{-1},
-        r2[0] == xme::vec3{7, 0, 0},
+        r2[0] == xme::vec3{7, 5, 5},
         r2[1] == xme::vec3{-3, -1, -3},
     };
 
     bool error = std::ranges::any_of(results, isError);
     if(error) {
+        ++errors;
         std::cerr << "mat + operator error\n";
     }
     return errors;
@@ -25,18 +26,19 @@ int testMinus() {
     int errors = 0;
 
     xme::Matrix<float, 2, 3> m{xme::vec3{5}, xme::vec3{-3}};
-    auto r1 = m + 2;
-    auto r2 = m + xme::Matrix<float, 2, 3>{2};
+    auto r1 = m - 2;
+    auto r2 = m - xme::Matrix<float, 2, 3>{2};
     
     std::array results{
-        r1[0] == xme::vec3{7},
-        r1[1] == xme::vec3{-1},
-        r2[0] == xme::vec3{7, 0, 0},
-        r2[1] == xme::vec3{-3, -1, -3},
+        r1[0] == xme::vec3{3},
+        r1[1] == xme::vec3{-5},
+        r2[0] == xme::vec3{3, 5, 5},
+        r2[1] == xme::vec3{-3, -5, -3},
     };
 
     bool error = std::ranges::any_of(results, isError);
     if(error) {
+        ++errors;
         std::cerr << "mat - operator error\n";
     }
     return errors;
@@ -55,6 +57,7 @@ int testMult() {
 
     bool error = std::ranges::any_of(results, isError);
     if(error) {
+        ++errors;
         std::cerr << "mat * operator error\n";
     }
     return errors;
@@ -73,6 +76,7 @@ int testDiv() {
 
     bool error = std::ranges::any_of(results, isError);
     if(error) {
+        ++errors;
         std::cerr << "mat / operator error\n";
     }
     return errors;

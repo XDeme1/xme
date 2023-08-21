@@ -26,7 +26,7 @@ public:
     template<CArithmetic U>
     constexpr Matrix(U s) noexcept {
         constexpr std::size_t count = std::min(Cols, Rows);
-        for (auto i = 0; i < count; ++i)
+        for (std::size_t i = 0; i < count; ++i)
             m_data[i][i] = static_cast<T>(s);
     }
 

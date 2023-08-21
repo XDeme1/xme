@@ -8,7 +8,7 @@ function(CreateTest NAME)
         target_compile_options(test_${NAME} PRIVATE -stdlib=libc++ -msse2)
         target_link_options(test_${NAME} PRIVATE -lc++)
     endif()
-    
+    target_compile_options(test_${NAME} PRIVATE -Wall -Wextra -Wpedantic -Wshadow)
     add_test(NAME test_${NAME} COMMAND test_${NAME})
 endfunction()
 
