@@ -13,7 +13,7 @@
         else if constexpr (is_vector<t>)                                                 \
             result[i] = m_data[i] op n[i];                                               \
         else                                                                             \
-            static_assert(false, "Argument must be either arithmetic or xme::Vector "    \
+            static_assert(false, "Argument must be either arithmetic or Vector "         \
                                  "the with same same");                                  \
     }                                                                                    \
     return result;
@@ -26,7 +26,7 @@
         else if constexpr (is_vector<t>)                                                 \
             m_data[i] op n[i];                                                           \
         else                                                                             \
-            static_assert(false, "Argument must be either arithmetic or xme::Vector "    \
+            static_assert(false, "Argument must be either arithmetic or Vector "         \
                                  "the with same same");                                  \
     }                                                                                    \
     return *this;
