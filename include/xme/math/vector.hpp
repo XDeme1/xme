@@ -4,33 +4,6 @@
 #include <cmath>
 #include <type_traits>
 
-#define VECTOR_OP(op)                                                                    \
-    using t = std::remove_cvref_t<decltype(n)>;                                          \
-    Vector result;                                                                       \
-    for (std::size_t i = 0; i < Size; ++i) {                                             \
-        if constexpr (std::is_arithmetic_v<t>)                                           \
-            result[i] = m_data[i] op n;                                                  \
-        else if constexpr (is_vector<t>)                                                 \
-            result[i] = m_data[i] op n[i];                                               \
-        else                                                                             \
-            static_assert(false, "Argument must be either arithmetic or Vector "         \
-                                 "the with same same");                                  \
-    }                                                                                    \
-    return result;
-
-#define VECTOR_SELF(op)                                                                  \
-    using t = std::remove_cvref_t<decltype(n)>;                                          \
-    for (std::size_t i = 0; i < Size; ++i) {                                             \
-        if constexpr (std::is_arithmetic_v<t>)                                           \
-            m_data[i] op n;                                                              \
-        else if constexpr (is_vector<t>)                                                 \
-            m_data[i] op n[i];                                                           \
-        else                                                                             \
-            static_assert(false, "Argument must be either arithmetic or Vector "         \
-                                 "the with same same");                                  \
-    }                                                                                    \
-    return *this;
-
 namespace xme {
 template<typename T, std::size_t Size>
 struct Vector {
@@ -109,13 +82,65 @@ public:
         return result;
     }
 
-    constexpr auto operator+(auto&& n) const noexcept -> Vector { VECTOR_OP(+) }
+    template<CArithmetic U>
+    constexpr auto operator+(U s) const noexcept -> Vector {
+        Vector result;
+        for (std::size_t i = 0; i < Size; ++i)
+            result[i] = m_data[i] + s;
+        return result;
+    }
+    template<typename U>
+    constexpr auto operator+(const Vector<U, Size>& v) const noexcept -> Vector {
+        Vector result;
+        for (std::size_t i = 0; i < Size; ++i)
+            result[i] = m_data[i] + v[i];
+        return result;
+    }
 
-    constexpr auto operator-(auto&& n) const noexcept -> Vector { VECTOR_OP(-); }
+    template<CArithmetic U>
+    constexpr auto operator-(U s) const noexcept -> Vector {
+        Vector result;
+        for (std::size_t i = 0; i < Size; ++i)
+            result[i] = m_data[i] - s;
+        return result;
+    }
+    template<typename U>
+    constexpr auto operator-(const Vector<U, Size>& v) const noexcept -> Vector {
+        Vector result;
+        for (std::size_t i = 0; i < Size; ++i)
+            result[i] = m_data[i] - v[i];
+        return result;
+    }
 
-    constexpr auto operator*(auto&& n) const noexcept -> Vector { VECTOR_OP(*); }
+    template<CArithmetic U>
+    constexpr auto operator*(U s) const noexcept -> Vector {
+        Vector result;
+        for (std::size_t i = 0; i < Size; ++i)
+            result[i] = m_data[i] * s;
+        return result;
+    }
+    template<typename U>
+    constexpr auto operator*(const Vector<U, Size>& v) const noexcept -> Vector {
+        Vector result;
+        for (std::size_t i = 0; i < Size; ++i)
+            result[i] = m_data[i] * v[i];
+        return result;
+    }
 
-    constexpr auto operator/(auto&& n) const noexcept -> Vector { VECTOR_OP(/); }
+    template<CArithmetic U>
+    constexpr auto operator/(U s) const noexcept -> Vector {
+        Vector result;
+        for (std::size_t i = 0; i < Size; ++i)
+            result[i] = m_data[i] / s;
+        return result;
+    }
+    template<typename U>
+    constexpr auto operator/(const Vector<U, Size>& v) const noexcept -> Vector {
+        Vector result;
+        for (std::size_t i = 0; i < Size; ++i)
+            result[i] = m_data[i] / v[i];
+        return result;
+    }
 
     template<typename U>
     constexpr auto operator=(const Vector<U, Size>& v) noexcept -> Vector& {
@@ -124,13 +149,61 @@ public:
         return *this;
     }
 
-    constexpr auto operator+=(auto&& n) noexcept -> Vector& { VECTOR_SELF(+=) }
+    template<CArithmetic U>
+    constexpr auto operator+=(U s) noexcept -> Vector& {
+        for (std::size_t i = 0; i < Size; ++i)
+            m_data[i] += s;
+        return *this;
+    }
 
-    constexpr auto operator-=(auto&& n) noexcept -> Vector& { VECTOR_SELF(-=); }
+    template<typename U>
+    constexpr auto operator+=(const Vector<U, Size>& v) noexcept -> Vector& {
+        for (std::size_t i = 0; i < Size; ++i)
+            m_data[i] += v[i];
+        return *this;
+    }
 
-    constexpr auto operator*=(auto&& n) noexcept -> Vector& { VECTOR_SELF(*=); }
+    template<CArithmetic U>
+    constexpr auto operator-=(U s) noexcept -> Vector& {
+        for (std::size_t i = 0; i < Size; ++i)
+            m_data[i] -= s;
+        return *this;
+    }
 
-    constexpr auto operator/=(auto&& n) noexcept -> Vector& { VECTOR_SELF(/=); }
+    template<typename U>
+    constexpr auto operator-=(const Vector<U, Size>& v) noexcept -> Vector& {
+        for (std::size_t i = 0; i < Size; ++i)
+            m_data[i] -= v[i];
+        return *this;
+    }
+
+    template<CArithmetic U>
+    constexpr auto operator*=(U s) noexcept -> Vector& {
+        for (std::size_t i = 0; i < Size; ++i)
+            m_data[i] *= s;
+        return *this;
+    }
+
+    template<typename U>
+    constexpr auto operator*=(const Vector<U, Size>& v) noexcept -> Vector& {
+        for (std::size_t i = 0; i < Size; ++i)
+            m_data[i] *= v[i];
+        return *this;
+    }
+
+    template<CArithmetic U>
+    constexpr auto operator/=(U s) noexcept -> Vector& {
+        for (std::size_t i = 0; i < Size; ++i)
+            m_data[i] /= s;
+        return *this;
+    }
+
+    template<typename U>
+    constexpr auto operator/=(const Vector<U, Size>& v) noexcept -> Vector& {
+        for (std::size_t i = 0; i < Size; ++i)
+            m_data[i] /= v[i];
+        return *this;
+    }
 
     constexpr auto& operator[](std::size_t i) noexcept { return m_data[i]; }
     constexpr auto& operator[](std::size_t i) const noexcept { return m_data[i]; }
@@ -142,9 +215,8 @@ public:
         return result;
     }
 
-    constexpr auto cross(const Vector& v) const noexcept -> Vector
-        requires(Size == 3)
-    {
+    constexpr auto cross(const Vector& v) const noexcept -> Vector {
+        static_assert(Size == 3, "Vector size must be 3");
         return {
             m_data[1] * v[2] - m_data[2] * v[1],
             m_data[2] * v[0] - m_data[0] * v[2],
@@ -152,7 +224,7 @@ public:
         };
     }
 
-    constexpr auto lenght() const noexcept -> T { return std::sqrt(dot(*this)); }
+    constexpr auto lenght() const noexcept { return std::sqrt(dot(*this)); }
 
     constexpr auto normalized() const noexcept -> Vector {
         return *this * (1 / lenght());
@@ -162,43 +234,51 @@ public:
         return *this - n * dot(n) * 2;
     }
 
-    constexpr auto distance(const Vector& v) const noexcept -> T {
+    constexpr auto distance(const Vector& v) const noexcept {
         return (v - *this).lenght();
     }
 
-    template<std::floating_point U>
-        requires(Size >= 3)
+    template<CArithmetic U>
+        requires(std::floating_point<T>)
     constexpr auto rotateX(U angle) const noexcept -> Vector {
-        Vector result{*this};
+        static_assert(Size >= 3, "Vector size must be 3 or higher");
+
         const auto sin{std::sin(angle)};
         const auto cos(std::cos(angle));
+
+        Vector result{*this};
         result[1] = m_data[1] * cos - m_data[2] * sin;
         result[2] = m_data[1] * sin + m_data[2] * cos;
         return result;
     }
 
-    template<std::floating_point U>
-        requires(Size >= 3)
+    template<CArithmetic U>
+        requires(std::floating_point<T>)
     constexpr auto rotateY(U angle) const noexcept -> Vector {
-        Vector result{*this};
+        static_assert(Size >= 3, "Vector size must be 3 or higher");
+
         const auto sin{std::sin(angle)};
         const auto cos(std::cos(angle));
+
+        Vector result{*this};
         result[0] = m_data[0] * cos + m_data[2] * sin;
         result[2] = -m_data[0] * sin + m_data[2] * cos;
         return result;
     }
 
-    template<std::floating_point U>
-        requires(Size >= 3)
+    template<CArithmetic U>
+        requires(std::floating_point<T>)
     constexpr auto rotateZ(U angle) const noexcept -> Vector {
-        Vector result{*this};
+        static_assert(Size >= 3, "Vector size must be 3 or higher");
+
         const auto sin{std::sin(angle)};
         const auto cos(std::cos(angle));
+
+        Vector result{*this};
         result[0] = m_data[0] * cos - m_data[1] * sin;
         result[1] = m_data[0] * sin + m_data[1] * cos;
         return result;
     }
-
 private:
     std::array<T, Size> m_data{};
 };
@@ -220,8 +300,5 @@ constexpr bool operator!=(const Vector<T, Size>& v1, const Vector<T, Size>& v2) 
 template<typename T, typename... Args>
 Vector(T, Args...) -> Vector<std::common_type_t<T, Args...>, sizeof...(Args) + 1>;
 } // namespace xme
-
-#undef VECTOR_OP
-#undef VECTOR_SELF
 
 #include "../../../private/math/vectors/io.hpp"
