@@ -3,7 +3,8 @@
 #include <benchmark/benchmark.h>
 #include <functional>
 #include <memory>
-
+#include <xme/container/linked_list.hpp>
+#include <forward_list>
 template<typename>
 class Delegate;
 
@@ -40,10 +41,10 @@ private:
 
 void benchAddOperator(benchmark::State& state)
 {
-    xme::mat4 m{3};
+    std::forward_list<double> a;
     for(auto _ : state) {
-        auto c = m.rotate(xme::radians(90.f), xme::vec3{1});
-        benchmark::DoNotOptimize(c);
+        a.emplace_front(5);
+        benchmark::DoNotOptimize(a);
     }
 }
 BENCHMARK(benchAddOperator);
