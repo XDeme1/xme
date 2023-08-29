@@ -15,10 +15,10 @@ template<typename T>
 struct LinkedListIterator {
 private:
     using node_base = detail::LinkedListNodeBase;
+    using node = detail::LinkedListNode<T>;
     using self = LinkedListIterator<T>;
 
 public:
-    using node = detail::LinkedListNode<T>;
 
     using value_type = T;
     using pointer = T*;
@@ -60,10 +60,10 @@ template<typename T>
 struct LinkedListConstIterator {
 private:
     using node_base = detail::LinkedListNodeBase;
+    using node = detail::LinkedListNode<T>;
     using self = LinkedListConstIterator<T>;
     using iterator = LinkedListIterator<T>;
 public:
-    using node = detail::LinkedListNode<T>;
 
     using value_type = T;
     using pointer = const T*;

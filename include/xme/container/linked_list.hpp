@@ -33,56 +33,81 @@ public:
 
     constexpr LinkedList() noexcept = default;
 
+    explicit constexpr LinkedList(std::size_t n) {
+        node_base* curr = &m_head;
+        for (; n > 0; --n) {
+            curr->next = createNode();
+            curr = curr->next;
+        }
+    }
+
+    constexpr LinkedList(std::size_t n, const T& value) {
+        node_base* curr = &m_head;
+        for (; n > 0; --n) {
+            curr->next = createNode(value);
+            curr = curr->next;
+        }
+    }
+
     template<std::input_iterator Iter, std::sentinel_for<Iter> Sent>
     constexpr LinkedList(Iter first, Sent last) {
         rangeInitialize(first, last);
     }
 
-    constexpr LinkedList(std::initializer_list<T> list) {
+    explicit constexpr LinkedList(std::initializer_list<T> list) {
         rangeInitialize(list.begin(), list.end());
     }
 
-    template<std::ranges::range R>
-    constexpr LinkedList(R&& range) {
+    explicit constexpr LinkedList(const LinkedList& other) {
+        rangeInitialize(other.begin(), other.end());
+    }
+
+    template<std::ranges::input_range R>
+        requires(std::convertible_to<std::ranges::range_reference_t<R>, T>)
+    explicit constexpr LinkedList(R&& range) {
         rangeInitialize(std::ranges::begin(range), std::ranges::end(range));
     }
 
-    constexpr LinkedList(LinkedList&& other) noexcept {
+    explicit constexpr LinkedList(LinkedList&& other) noexcept {
         m_head.next = other.m_head.next;
         other.m_head.next = nullptr;
     }
 
     constexpr ~LinkedList() noexcept { clear(); }
 
-    constexpr auto beforeBegin() noexcept -> iterator { return iterator(&m_head); }
-
-    constexpr auto beforeBegin() const noexcept -> const_iterator {
-        return const_iterator(&m_head);
+    constexpr auto operator=(const LinkedList& other) -> LinkedList& {
+        assignRange(other);
+        return *this;
     }
 
-    constexpr auto begin() noexcept -> iterator { return iterator(m_head.next); }
-
-    constexpr auto begin() const noexcept -> const_iterator {
-        return const_iterator(m_head.next);
+    constexpr auto operator=(LinkedList&& other) noexcept -> LinkedList& {
+        clear();
+        std::ranges::swap(m_head.next, other.m_head.next);
+        return *this;
     }
 
-    constexpr auto end() noexcept -> iterator { return iterator(nullptr); }
-
-    constexpr auto end() const noexcept -> const_iterator {
-        return const_iterator(nullptr);
+    constexpr auto operator=(std::initializer_list<T> list) -> LinkedList& {
+        assignRange(list);
+        return *this;
     }
 
-    constexpr auto cbeforeBegin() const noexcept -> const_iterator {
-        return const_iterator(&m_head);
-    }
+    constexpr auto beforeBegin() noexcept -> iterator { return &m_head; }
 
-    constexpr auto cbegin() const noexcept -> const_iterator {
-        return const_iterator(m_head.next);
-    }
+    constexpr auto beforeBegin() const noexcept -> const_iterator { return &m_head; }
 
-    constexpr auto cend() const noexcept -> const_iterator {
-        return const_iterator(nullptr);
-    }
+    constexpr auto begin() noexcept -> iterator { return m_head.next; }
+
+    constexpr auto begin() const noexcept -> const_iterator { return m_head.next; }
+
+    constexpr auto end() noexcept -> iterator { return nullptr; }
+
+    constexpr auto end() const noexcept -> const_iterator { return nullptr; }
+
+    constexpr auto cbeforeBegin() const noexcept -> const_iterator { return &m_head; }
+
+    constexpr auto cbegin() const noexcept -> const_iterator { return m_head.next; }
+
+    constexpr auto cend() const noexcept -> const_iterator { return nullptr; }
 
     constexpr auto front() noexcept -> reference { return *begin(); }
 
@@ -91,6 +116,34 @@ public:
     constexpr bool isEmpty() const noexcept { return m_head.next == nullptr; }
 
     constexpr void clear() noexcept { eraseAfter(beforeBegin(), nullptr); }
+
+    template<std::input_iterator Iter, std::sentinel_for<Iter> Sent>
+    constexpr void assign(Iter first, Sent last) {
+        auto prev = beforeBegin();
+        auto curr = begin();
+        auto _end = end();
+        while (curr != _end && first != last) {
+            *curr = *first;
+            ++prev;
+            ++curr;
+            ++first;
+        }
+
+        if (first != last)
+            insertAfter(prev, first, last);
+        else if (curr != _end)
+            eraseAfter(prev, _end);
+    }
+
+    constexpr void assign(std::initializer_list<T> list) {
+        assign(list.begin(), list.end());
+    }
+
+    template<std::ranges::input_range R>
+        requires(std::convertible_to<std::ranges::range_reference_t<R>, T>)
+    constexpr void assign(R&& range) {
+        assign(std::ranges::begin(range), std::ranges::end(range));
+    }
 
     constexpr void pushFront(const T& value) { emplaceAfter(&m_head, value); }
 
@@ -103,12 +156,9 @@ public:
         return *emplaceAfter(&m_head, std::forward<Args>(args)...);
     }
 
-    constexpr auto insertAfter(const_iterator pos, const T& value) noexcept -> iterator {
-        return emplaceAfter(pos, value);
-    }
-
-    constexpr auto insertAfter(const_iterator pos, T&& value) noexcept -> iterator {
-        return emplaceAfter(pos, std::move(value));
+    template<std::convertible_to<T> U>
+    constexpr auto insertAfter(const_iterator pos, U&& value) -> iterator {
+        return emplaceAfter(pos, std::forward<U>(value));
     }
 
     template<std::input_iterator Iter, std::sentinel_for<Iter> Sent>
@@ -118,13 +168,10 @@ public:
         return iterator(const_cast<node_base*>(pos.current_node));
     }
 
-    template<std::ranges::range R>
+    template<std::ranges::input_range R>
+        requires(std::is_convertible_v<std::ranges::range_reference_t<R>, T>)
     constexpr auto insertAfter(const_iterator pos, R&& range) -> iterator {
-        auto first = std::ranges::begin(range);
-        auto end = std::ranges::end(range);
-        for (; first != end; ++first)
-            pos = emplaceAfter(pos, *first);
-        return iterator(const_cast<node_base*>(pos.current_node));
+        return insertAfter(pos, std::ranges::begin(range), std::ranges::end(range));
     }
 
     template<typename... Args>
@@ -191,3 +238,36 @@ private:
     node_base m_head;
 };
 } // namespace xme
+
+namespace std {
+template<typename T>
+class front_insert_iterator<xme::LinkedList<T>> {
+    using self = front_insert_iterator<xme::LinkedList<T>>;
+
+public:
+    using container_type = xme::LinkedList<T>;
+    using iterator_category = output_iterator_tag;
+
+    explicit constexpr front_insert_iterator(container_type& c) noexcept
+        : m_container(std::addressof(c)) {}
+    constexpr auto operator=(const container_type::value_type& value) -> self& {
+        m_container->pushFront(value);
+        return *this;
+    }
+
+    constexpr auto operator=(container_type::value_type&& value) -> self& {
+        m_container->pushFront(std::move(value));
+        return *this;
+    }
+
+    // no-op
+    constexpr auto operator*() noexcept -> self& { return *this; }
+    // no-op
+    constexpr auto operator++() noexcept -> self& { return *this; }
+    // no-op
+    constexpr auto operator++(int) noexcept -> self { return *this; }
+
+protected:
+    xme::LinkedList<T>* m_container;
+};
+} // namespace std
