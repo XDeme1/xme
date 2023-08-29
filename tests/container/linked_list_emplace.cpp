@@ -31,7 +31,6 @@ int main() {
 
     {
         xme::LinkedList<float> a;
-        int i = 5;
         a.emplaceAfter(a.cbeforeBegin(), 2);
         a.emplaceAfter(a.cbegin(), 9);
         a.emplaceAfter(a.cbeforeBegin(), -3);

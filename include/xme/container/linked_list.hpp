@@ -203,6 +203,19 @@ public:
             const_cast<node_base*>(last.current_node);
     }
 
+    constexpr void reverse() noexcept {
+        if (m_head.next == nullptr)
+            return;
+
+        node_base* tail = m_head.next;
+        while (node_base* tmp = tail->next) {
+            node_base* keep = m_head.next;
+            m_head.next = tmp;
+            tail->next = tmp->next;
+            m_head.next->next = keep;
+        }
+    }
+
 private:
     constexpr auto allocate() noexcept -> node* {
         return static_cast<allocator*>(this)->allocate(1);
