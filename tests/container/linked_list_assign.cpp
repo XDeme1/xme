@@ -43,5 +43,65 @@ int main() {
         }
         std::forward_list<float> c;
     }
+
+    {
+        const xme::LinkedList<float> a{v};
+        xme::LinkedList<float> b{2, 1, 3, 5, 4};
+        b = a;
+
+        auto begin1 = b.begin();
+        std::vector<short> results;
+        results.emplace_back(b.begin() != a.begin());
+        results.emplace_back(*(begin1++) == 1);
+        results.emplace_back(*(begin1++) == 2);
+        results.emplace_back(*(begin1++) == 3);
+        results.emplace_back(begin1 == nullptr);
+
+        bool error = std::ranges::any_of(results, isError);
+        if(error) {
+            ++errors;
+            std::cerr << "xme::LinkedList::operator=(const xme::LinkedList&) error\n";
+        }
+    }
+
+    {
+        xme::LinkedList<float> a{v};
+        xme::LinkedList<float> b{2, 1, 3, 5, 4};
+        b = std::move(a);
+
+        auto begin1 = b.begin();
+        std::vector<short> results;
+        results.emplace_back(b.begin() != a.begin());
+        results.emplace_back(*(begin1++) == 1);
+        results.emplace_back(*(begin1++) == 2);
+        results.emplace_back(*(begin1++) == 3);
+        results.emplace_back(begin1 == nullptr);
+        results.emplace_back(a.begin() == nullptr);
+
+        bool error = std::ranges::any_of(results, isError);
+        if(error) {
+            ++errors;
+            std::cerr << "xme::LinkedList::operator=(xme::LinkedList&&) error\n";
+        }
+    }
+
+    {
+        xme::LinkedList<float> a{v};
+        a = {1, 5, 3, 2};
+
+        auto begin1 = a.begin();
+        std::vector<short> results;
+        results.emplace_back(*(begin1++) == 1);
+        results.emplace_back(*(begin1++) == 5);
+        results.emplace_back(*(begin1++) == 3);
+        results.emplace_back(*(begin1++) == 2);
+        results.emplace_back(begin1 == nullptr);
+
+        bool error = std::ranges::any_of(results, isError);
+        if(error) {
+            ++errors;
+            std::cerr << "xme::LinkedList::operator=(std::initializer_list<T>) error\n";
+        }
+    }
     return errors;
 }

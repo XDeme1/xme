@@ -76,7 +76,7 @@ public:
     constexpr ~LinkedList() noexcept { clear(); }
 
     constexpr auto operator=(const LinkedList& other) -> LinkedList& {
-        assignRange(other);
+        assign(other);
         return *this;
     }
 
@@ -87,7 +87,7 @@ public:
     }
 
     constexpr auto operator=(std::initializer_list<T> list) -> LinkedList& {
-        assignRange(list);
+        assign(list);
         return *this;
     }
 

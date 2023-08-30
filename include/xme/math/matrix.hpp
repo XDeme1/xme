@@ -163,13 +163,6 @@ public:
     constexpr auto& operator[](std::size_t i) noexcept { return m_data[i]; }
     constexpr auto& operator[](std::size_t i) const noexcept { return m_data[i]; }
 
-    constexpr auto& operator[](std::size_t i, std::size_t j) noexcept {
-        return m_data[i][j];
-    }
-    constexpr auto& operator[](std::size_t i, std::size_t j) const noexcept {
-        return m_data[i][j];
-    }
-
     constexpr auto row(std::size_t row) const noexcept -> row_type {
         row_type result;
         for (auto i = 0u; i < row_type::size; ++i)
