@@ -1,6 +1,7 @@
 #pragma once
 
 #include <xme/container/linked_list.hpp>
+#include <xme/container/spsc_queue.hpp>
 #include <algorithm>
 #include <ranges>
 #include <iostream>

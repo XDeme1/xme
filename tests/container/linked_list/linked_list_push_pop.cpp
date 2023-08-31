@@ -1,6 +1,4 @@
-#include "common.hpp"
-#include <forward_list>
-#include <iostream>
+#include "../common.hpp"
 
 int main() {
     int errors = 0;

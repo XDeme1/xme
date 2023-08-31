@@ -1,8 +1,4 @@
 CreateTest(aligned_data)
-CreateTest(linked_list_constructor)
-CreateTest(linked_list_push_pop)
-CreateTest(linked_list_emplace)
-CreateTest(linked_list_insert)
-CreateTest(linked_list_assign)
-CreateTest(linked_list_erase)
-CreateTest(linked_list_operations)
+
+add_subdirectory(linked_list)
+add_subdirectory(spsc_queue)

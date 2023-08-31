@@ -1,0 +1,1 @@
+CreateTest(spsc_constructor)

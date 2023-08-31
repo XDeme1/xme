@@ -1,5 +1,4 @@
-#include "common.hpp"
-#include <forward_list>
+#include "../common.hpp"
 
 int main() {
     int errors = 0;
@@ -41,7 +40,6 @@ int main() {
             ++errors;
             std::cerr << "xme::LinkedList::assign 2 Error\n";
         }
-        std::forward_list<float> c;
     }
 
     {
