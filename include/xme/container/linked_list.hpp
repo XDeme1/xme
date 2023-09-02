@@ -1,15 +1,13 @@
 #pragma once
-#include "aligned_data.hpp"
 #include <memory>
 #include <ranges>
 #include <type_traits>
-
+#include "concepts.hpp"
 #include "../../../private/container/linked_list_base.hpp"
 
 namespace xme {
-template<typename T, typename Alloc = std::allocator<T>>
-class LinkedList
-    : std::allocator_traits<Alloc>::template rebind_alloc<detail::LinkedListNode<T>> {
+template<typename T, CStatelessAllocator Alloc = std::allocator<T>>
+class LinkedList {
 private:
     using node_base = detail::LinkedListNodeBase;
     using node = detail::LinkedListNode<T>;
@@ -187,7 +185,7 @@ public:
         node_base* tmp = const_cast<node_base*>(pos.current_node->next);
         const_cast<node_base*>(pos.current_node)->next = tmp->next;
         std::ranges::destroy_at(static_cast<node*>(tmp)->storage.data());
-        deallocate(static_cast<node*>(tmp));
+        m_allocator.deallocate(static_cast<node*>(tmp), 1);
     }
 
     constexpr void eraseAfter(const_iterator pos, const_iterator last) noexcept {
@@ -196,7 +194,7 @@ public:
         while (curr != last.current_node) {
             node* const tmp{static_cast<node*>(curr->next)};
             std::ranges::destroy_at(curr->storage.data());
-            deallocate(curr);
+            m_allocator.deallocate(curr, 1);
             curr = tmp;
         }
         const_cast<node_base*>(pos.current_node)->next =
@@ -217,23 +215,16 @@ public:
     }
 
 private:
-    constexpr auto allocate() noexcept -> node* {
-        return static_cast<allocator*>(this)->allocate(1);
-    }
-
-    constexpr auto deallocate(node* ptr) noexcept {
-        static_cast<allocator*>(this)->deallocate(ptr, 1);
-    }
 
     template<typename... Args>
     constexpr auto createNode(Args&&... args) -> node* {
-        node* new_node = allocate();
+        node* new_node = m_allocator.allocate(1);
         try {
             std::ranges::construct_at(new_node);
             std::ranges::construct_at(new_node->storage.data(),
                                       std::forward<Args>(args)...);
         } catch (...) {
-            deallocate(new_node);
+            m_allocator.deallocate(new_node, 1);
             throw;
         }
         return new_node;
@@ -249,6 +240,7 @@ private:
     }
 
     node_base m_head;
+    [[no_unique_address]] allocator m_allocator;
 };
 } // namespace xme
 
