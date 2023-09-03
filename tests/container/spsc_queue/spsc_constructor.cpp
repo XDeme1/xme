@@ -1,49 +1,44 @@
 #include "../common.hpp"
+#include <chrono>
 #include <thread>
 
 struct TestQueue {
-    TestQueue() {
-        worker = std::jthread(&TestQueue::job, this);
-    }
+    TestQueue() { worker = std::jthread(&TestQueue::job, this); }
 
     ~TestQueue() {
         running = false;
         worker.join();
-
-        const std::size_t avaialble = queue.readAvailable();
-        for(std::size_t i = 0; i < avaialble; ++i)
-            queue.consume([](int&& a){ std::cerr << a << ' '; });
     }
 
-    constexpr void job() {
+    void job() {
+        auto start = std::chrono::steady_clock::now();
+        int frames = 0;
         while (running) {
-            const std::size_t available = queue.readAvailable();
-            if (available == 0) {
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
-                continue;
+            ++frames;
+            const auto now = std::chrono::steady_clock::now();
+            auto diff = now - start;
+            auto end = now + std::chrono::microseconds(16666);
+            if (diff >= std::chrono::seconds(1)) {
+                start = now;
+                std::cerr << '\n' << "FPS: " << frames << '\n';
+                frames = 0;
             }
 
+            const std::size_t available = queue.readAvailable();
             for (std::size_t i = 0; i < available; ++i)
                 queue.consume([](int&& a) { std::cerr << a << ' '; });
 
-            std::this_thread::yield();
+            std::this_thread::sleep_until(end);
         }
     }
-    
+
     std::jthread worker;
     xme::SPSCQueue<int, 512, xme::StaticAllocation> queue;
     bool running = true;
 };
 
 int main() {
-    int errors = 0;
-    TestQueue t;
-    for (std::size_t i = 0; i < 1e3; ++i) {
-        bool emplaced = t.queue.emplace(i);
-        while (!emplaced) {
-            emplaced = t.queue.emplace(i);
-        }
-    }
-
-    return errors;
+    xme::SPSCQueue<int, 8, xme::StaticAllocation> static_queue;
+    xme::SPSCQueue<int, 8, xme::DynamicAllocation<std::allocator<int>>> dynamic_queue;
+    return 0;
 }

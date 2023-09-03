@@ -1,9 +1,9 @@
 #pragma once
+#include "../../../private/container/linked_list_base.hpp"
+#include "concepts.hpp"
 #include <memory>
 #include <ranges>
 #include <type_traits>
-#include "concepts.hpp"
-#include "../../../private/container/linked_list_base.hpp"
 
 namespace xme {
 template<typename T, CStatelessAllocator Alloc = std::allocator<T>>
@@ -18,7 +18,7 @@ public:
     static_assert(std::is_same_v<T, typename Alloc::value_type>,
                   "xme::LinkedList must have the same T as its allocator");
 
-    using allocator =
+    using allocator_type =
         std::allocator_traits<Alloc>::template rebind_alloc<detail::LinkedListNode<T>>;
 
     using value_type = T;
@@ -215,7 +215,6 @@ public:
     }
 
 private:
-
     template<typename... Args>
     constexpr auto createNode(Args&&... args) -> node* {
         node* new_node = m_allocator.allocate(1);
@@ -240,7 +239,7 @@ private:
     }
 
     node_base m_head;
-    [[no_unique_address]] allocator m_allocator;
+    [[no_unique_address]] allocator_type m_allocator;
 };
 } // namespace xme
 

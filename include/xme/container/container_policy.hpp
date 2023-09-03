@@ -1,10 +1,11 @@
 #pragma once
+#include "concepts.hpp"
 
 namespace xme {
 struct StaticAllocation {};
 
-template<typename Alloc>
+template<CAllocator T>
 struct DynamicAllocation {
-    using allocator = Alloc;
+    using allocator_type = T;
 };
 }; // namespace xme

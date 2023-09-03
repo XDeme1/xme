@@ -15,5 +15,3 @@ namespace xme {
     using quat = Quaternion<float>;
     using dquat = Quaternion<double>;
 }
-
-#include "glsl_mapping.hpp"

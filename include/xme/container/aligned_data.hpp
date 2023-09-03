@@ -1,6 +1,5 @@
 #pragma once
 #include <array>
-#include <cstddef>
 #include <xme/math/type_traits.hpp>
 
 namespace xme {
