@@ -2,8 +2,8 @@
 
 #include <xme/container/linked_list.hpp>
 #include <xme/container/spsc_queue.hpp>
+#include <xme/container/array.hpp>
 #include <algorithm>
-#include <ranges>
 #include <iostream>
 #include <vector>
 
