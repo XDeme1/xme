@@ -132,7 +132,27 @@ public:
                 std::ranges::destroy_at(&m_data[m_data]);
                 m_read_index = nextIndex(m_read_index);
             }
+        } else {
+            m_write_index.store(0, std::memory_order_relaxed);
+            m_read_index.store(0, std::memory_order_release);
         }
+    }
+
+    template<std::convertible_to<T> U>
+    constexpr bool push(U&& value) {
+        return emplace(std::forward<U>(value));
+    }
+
+    constexpr bool pop(T& out_value) {
+        const std::size_t write_index = m_write_index.load(std::memory_order_acquire);
+        const std::size_t read_index = m_read_index.load(std::memory_order_relaxed);
+        if (this->isEmpty(write_index, read_index))
+            return false;
+
+        out_value = std::move(m_data[read_index]);
+        std::ranges::destroy_at(&m_data[read_index]);
+        m_read_index.store(this->nextIndex(read_index), std::memory_order_release);
+        return true;
     }
 
     template<typename... Args>
