@@ -1,8 +1,6 @@
 #pragma once
 
-#include <xme/container/linked_list.hpp>
-#include <xme/container/spsc_queue.hpp>
-#include <xme/container/array.hpp>
+#include <xme/container/container.hpp>
 #include <algorithm>
 #include <iostream>
 #include <vector>
