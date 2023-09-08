@@ -32,11 +32,11 @@ int main() {
         xme::Tuple<std::string, std::string> t1{"Hello", "World"};
         const xme::Tuple t2{t1};
 
-        auto str = xme::apply([](std::string& s1, std::string& s2) { return s1 + s2; }, t1);
+        auto str1 = xme::apply([](std::string& s1, std::string& s2) { return s1 + s2; }, t1);
         auto str2 = xme::apply([](const std::string& s1, const std::string& s2){ return s1 + s2; }, t2);
-        auto str3 = xme::apply([](std::string&& s1, std::string&& s2) { return s1 + s2; }, std::move(t1));
+        auto&& str3 = xme::apply([](std::string&& s1, std::string&& s2) { return s1 + s2; }, std::move(t1));
 
-        results.emplace_back(str == "HelloWorld");
+        results.emplace_back(str1 == "HelloWorld");
         results.emplace_back(str2 == "HelloWorld");
         results.emplace_back(str3 == "HelloWorld");
 

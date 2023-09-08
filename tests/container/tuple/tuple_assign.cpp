@@ -42,29 +42,7 @@ int main() {
 
     {
         xme::Tuple<int, int> t1{5, 1};
-        t1.assign(1, 2);
-        using assign1_t = void (xme::Tuple<int, int>::*)(int&, int&);
-        using assign2_t = void (xme::Tuple<int, int>::*)(int&&, int&&);
-
-        static_assert(std::invocable<decltype(static_cast<assign1_t>(
-                                         &decltype(t1)::assign<int&, int&>)),
-                                     decltype(t1), int&, int&>);
-
-        static_assert(!std::invocable<decltype(static_cast<assign1_t>(
-                                          &decltype(t1)::assign<int&, int&>)),
-                                      decltype(t1), int&>);
-
-        static_assert(!std::invocable<decltype(static_cast<assign1_t>(
-                                          &decltype(t1)::assign<int&, int&>)),
-                                      decltype(t1), int&, int&, int&>);
-
-        static_assert(std::invocable<decltype(static_cast<assign2_t>(
-                                         &decltype(t1)::assign<int&&, int&&>)),
-                                     decltype(t1), int, int>);
-
-        static_assert(std::invocable<decltype(static_cast<assign2_t>(
-                                         &decltype(t1)::assign<int&&, int&&>)),
-                                     decltype(t1), int&&, int&&>);
+        t1 = {1, 2};
 
         std::vector<short> results;
         results.emplace_back(get<0>(t1) == 1);
@@ -73,7 +51,7 @@ int main() {
         bool error = std::ranges::any_of(results, isError);
         if (error) {
             ++errors;
-            std::cerr << "xme::Tuple::assign(U&&) error\n";
+            std::cerr << "xme::Tuple::operator=() default error\n";
         }
     }
 

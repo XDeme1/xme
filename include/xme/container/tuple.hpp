@@ -28,72 +28,19 @@ public:
     constexpr auto operator<=>(const self&) const = default;
     constexpr bool operator==(const self&) const = default;
 
-    template<typename... U>
-    constexpr void assign(U&&... values) {
-        static_assert(sizeof...(U) == size,
-                      "The amount of arguments must be equal to the tuple's size");
-        assign(base_list{}, std::forward<U>(values)...);
-    }
-
-    constexpr void swap(Tuple& other) noexcept(is_nothrow_swappable) {
+    constexpr void swap(const Tuple& other) noexcept(is_nothrow_swappable) {
         swap(other, base_list{});
     }
-
-    template<typename F>
-    constexpr auto
-    apply(F&& fun) & noexcept(noexcept(apply(std::forward<F>(fun), base_list{})))
-        -> decltype(auto) {
-        return apply(std::forward<F>(fun), base_list{});
-    }
-
-    template<typename F>
-    constexpr auto
-    apply(F&& fun) const& noexcept(noexcept(apply(std::forward<F>(fun), base_list{})))
-        -> decltype(auto) {
-        return apply(std::forward<F>(fun), base_list{});
-    }
-
-    template<typename F>
-    constexpr auto
-    apply(F&& fun) && noexcept(noexcept(static_cast<Tuple&&>(*this).apply(std::forward<F>(fun), base_list{})))
-        -> decltype(auto) {
-        return static_cast<Tuple&&>(*this).apply(std::forward<F>(fun), base_list{});
-    }
-
 private:
-    template<typename... U, typename... Args>
-    constexpr void assign(detail::TypeList<U...>, Args&&... args) {
-        (void(U::value = std::forward<Args>(args)), ...);
-    }
-
     template<typename Tup, std::size_t... I>
     constexpr void assignTupleIndex(Tup&& tup, std::index_sequence<I...>) {
         (void(detail::TupleElement<I, T>::value = get<I>(std::forward<Tup>(tup))), ...);
     }
 
-    template<typename Tup, typename... U>
-    constexpr void swap(Tup&& tup,
-                        detail::TypeList<U...>) noexcept(is_nothrow_swappable) {
-        (void(std::ranges::swap(U::value, tup.U::value)), ...);
-    }
-
-    template<typename F, typename... U>
-    constexpr auto
-    apply(F&& fun, detail::TypeList<U...>) & noexcept(noexcept(fun(this->U::value...)))
-        -> decltype(auto) {
-        return fun(this->U::value...);
-    }
-
-    template<typename F, typename... U>
-    constexpr auto apply(F&& fun, detail::TypeList<U...>) const& noexcept(
-        noexcept(fun(this->U::value...))) -> decltype(auto) {
-        return fun(this->U::value...);
-    }
-
-    template<typename F, typename... U>
-    constexpr auto apply(F&& fun, detail::TypeList<U...>) && noexcept(
-        noexcept(fun(static_cast<Tuple&&>(*this).U::value...))) -> decltype(auto) {
-        return fun((static_cast<Tuple&&>(*this).U::value)...);
+    template<std::size_t...I>
+    constexpr void swap(const Tuple& tup,
+                        std::index_sequence<I...>) noexcept(is_nothrow_swappable) {
+        (void(std::ranges::swap(get<I>(*this), get<I>(tup))...));
     }
 };
 
@@ -115,14 +62,7 @@ public:
         return *this;
     }
 
-    constexpr void assign() noexcept {}
-
     constexpr void swap() noexcept {}
-
-    template<typename F>
-    constexpr auto apply(F&& fun) noexcept(noexcept(fun())) -> decltype(auto) {
-        return fun();
-    }
 };
 
 template<typename... T>
@@ -144,29 +84,25 @@ constexpr auto get(Tuple<T...>&& tup) noexcept -> decltype(auto) {
 }
 
 template<typename... T>
-constexpr void swap(Tuple<T...>& lhs,
-                    Tuple<T...>& rhs) noexcept(Tuple<T...>::is_nothrow_swappable) {
+constexpr void swap(const Tuple<T...>& lhs,
+                    const Tuple<T...>& rhs) noexcept(Tuple<T...>::is_nothrow_swappable) {
     lhs.swap(rhs);
 }
 
-template<typename F, typename... T>
-constexpr auto apply(F&& fun,
-                     Tuple<T...>& tup) noexcept(noexcept(tup.apply(std::forward<F>(fun))))
-    -> decltype(auto) {
-    return tup.apply(std::forward<F>(fun));
+namespace detail {
+template<typename F, CTupleLike T, std::size_t... I>
+constexpr auto apply(F&& fun, T&& tup, std::index_sequence<I...>) noexcept(noexcept(
+    std::forward<F>(fun)(get<I>(std::forward<T>(tup))...))) -> decltype(auto) {
+    return std::forward<F>(fun)(get<I>(std::forward<T>(tup))...);
 }
+} // namespace detail
 
-template<typename F, typename... T>
-constexpr auto apply(F&& fun,
-                     const Tuple<T...>& tup) noexcept(noexcept(tup.apply(std::forward<F>(fun))))
-    -> decltype(auto) {
-    return tup.apply(std::forward<F>(fun));
-}
-
-template<typename F, typename... T>
-constexpr auto apply(F&& fun, Tuple<T...>&& tup) noexcept(
-    noexcept(std::move(tup).apply(std::forward<F>(fun)))) -> decltype(auto) {
-    return std::move(tup).apply(std::forward<F>(fun));
+template<typename F, CTupleLike T>
+constexpr auto apply(F&& fun, T&& tup) noexcept(noexcept(detail::apply(
+    std::forward<F>(fun), std::forward<T>(tup),
+    std::make_index_sequence<std::tuple_size_v<std::decay_t<T>>>{}))) -> decltype(auto) {
+    return detail::apply(std::forward<F>(fun), std::forward<T>(tup),
+                         std::make_index_sequence<std::tuple_size_v<std::decay_t<T>>>{});
 }
 
 template<typename... T>
@@ -185,7 +121,7 @@ constexpr auto forwardAsTuple(T&&... values) -> Tuple<T&&...> {
     return Tuple<T&&...>{std::forward<T>(values)...};
 }
 
-//Find a better way to do tupleCat
+// Find a better way to do tupleCat
 namespace detail {
 template<typename T, typename OuterIdx, typename InnerIdx, std::size_t Next, typename...>
 struct TupleCat;
