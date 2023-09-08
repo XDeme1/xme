@@ -8,11 +8,11 @@ private:
     using self = Pair<T, U>;
 
 public:
-    static constexpr bool is_nothrow_swappable = false;
     template<CPairLike P>
-    constexpr auto operator=(P&& p) noexcept(is_nothrow_swappable) -> self& {
-        first = get<0>(std::forward<P>(p));
-        second = get<1>(std::forward<P>(p));
+    constexpr auto operator=(P&& p) noexcept(std::is_nothrow_swappable_v<T> &&
+                                             std::is_nothrow_swappable_v<U>) -> self& {
+        first = std::forward<P>(p).first;
+        second = std::forward<P>(p).second;
         return *this;
     }
 
@@ -26,7 +26,7 @@ public:
     }
 
     constexpr auto operator[](std::integral_constant<std::size_t, 0>) && noexcept -> T&& {
-        return first;
+        return static_cast<Pair&&>(*this).first;
     }
 
     constexpr auto operator[](std::integral_constant<std::size_t, 1>) & noexcept -> U& {
@@ -39,28 +39,21 @@ public:
     }
 
     constexpr auto operator[](std::integral_constant<std::size_t, 1>) && noexcept -> U&& {
-        return second;
+        return static_cast<Pair&&>(*this).second;
     }
 
     constexpr auto operator<=>(const self&) const = default;
+
     constexpr bool operator==(const self&) const = default;
 
-    static constexpr T declval(std::integral_constant<std::size_t, 0>) {
-        static_assert(false, "This should only be used to get the type of the element");
-    }
-
-    static constexpr U declval(std::integral_constant<std::size_t, 1>) {
-        static_assert(false, "This should only be used to get the type of the element");
-    }
-
-    constexpr void swap(const Pair& p) noexcept(std::is_nothrow_swappable_v<T> &&
+    constexpr void swap(Pair& p) noexcept(std::is_nothrow_swappable_v<T> &&
                                           std::is_nothrow_swappable_v<U>) {
         std::ranges::swap(first, p.first);
         std::ranges::swap(second, p.second);
     }
 
-    T first;
-    U second;
+    [[no_unique_address]] T first;
+    [[no_unique_address]] U second;
 };
 
 template<typename T, typename U>
@@ -82,7 +75,9 @@ constexpr auto get(Pair<T, U>&& p) noexcept -> decltype(auto) {
 }
 
 template<typename T, typename U>
-constexpr void swap(const Pair<T, U>& lhs, const Pair<T, U>& rhs) noexcept(noexcept(lhs.swap(rhs))) {
+constexpr void swap(Pair<T, U>& lhs,
+                    Pair<T, U>& rhs) noexcept(std::is_nothrow_swappable_v<T> &&
+                                              std::is_nothrow_swappable_v<U>) {
     lhs.swap(rhs);
 }
 
@@ -100,9 +95,13 @@ namespace std {
 template<typename T, typename U>
 struct tuple_size<xme::Pair<T, U>> : std::integral_constant<std::size_t, 2> {};
 
-template<std::size_t I, typename T, typename U>
-struct tuple_element<I, xme::Pair<T, U>> {
-    using type =
-        decltype(xme::Pair<T, U>::declval(std::integral_constant<std::size_t, I>{}));
+template<typename T, typename U>
+struct tuple_element<0, xme::Pair<T, U>> {
+    using type = T;
+};
+
+template<typename T, typename U>
+struct tuple_element<1, xme::Pair<T, U>> {
+    using type = U;
 };
 } // namespace std

@@ -11,19 +11,19 @@ int main() {
         xme::Tuple<std::string, std::string> t1{"Hello", "World"};
         xme::Tuple<std::string, std::string> t2{"C++", "23"};
 
-        swap(t1, t2);
-
+        xme::swap(t1, t2);
         results.emplace_back(get<0>(t1) == "C++");
         results.emplace_back(get<1>(t1) == "23");
 
         results.emplace_back(get<0>(t2) == "Hello");
         results.emplace_back(get<1>(t2) == "World");
 
+        swap(t1, t2);
 
         bool error = std::ranges::any_of(results, isError);
         if(error) {
             ++errors;
-            std::cerr << "xme::Tuple::swap error\n";
+            std::cerr << "xme::swap error\n";
         }
     }
 
@@ -43,7 +43,7 @@ int main() {
         bool error = std::ranges::any_of(results, isError);
         if(error) {
             ++errors;
-            std::cerr << "xme::Tuple::apply error\n";
+            std::cerr << "xme::apply error\n";
         }
     }
 

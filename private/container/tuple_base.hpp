@@ -27,6 +27,7 @@ struct TupleElement {
     }
 
     constexpr auto operator<=>(const TupleElement&) const = default;
+    
     constexpr bool operator==(const TupleElement&) const = default;
 
     static constexpr T declval(std::integral_constant<std::size_t, I>) {

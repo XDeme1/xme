@@ -1,0 +1,3 @@
+CreateTest(pair_assign)
+CreateTest(pair_construction)
+CreateTest(pair_operations)

@@ -17,7 +17,6 @@ public:
     using element_list = detail::TypeList<T...>;
 
     static constexpr std::size_t size = sizeof...(T);
-    static constexpr bool is_nothrow_swappable = (std::is_nothrow_swappable_v<T> && ...);
 
     template<CTupleLike U>
     constexpr auto operator=(U&& tup) -> self& {
@@ -28,19 +27,21 @@ public:
     constexpr auto operator<=>(const self&) const = default;
     constexpr bool operator==(const self&) const = default;
 
-    constexpr void swap(const Tuple& other) noexcept(is_nothrow_swappable) {
-        swap(other, base_list{});
+    constexpr void swap(Tuple& other) noexcept((std::is_nothrow_swappable_v<T> && ...)) {
+        swap(other, std::make_index_sequence<size>{});
     }
+
 private:
     template<typename Tup, std::size_t... I>
     constexpr void assignTupleIndex(Tup&& tup, std::index_sequence<I...>) {
         (void(detail::TupleElement<I, T>::value = get<I>(std::forward<Tup>(tup))), ...);
     }
 
-    template<std::size_t...I>
-    constexpr void swap(const Tuple& tup,
-                        std::index_sequence<I...>) noexcept(is_nothrow_swappable) {
-        (void(std::ranges::swap(get<I>(*this), get<I>(tup))...));
+    template<std::size_t... I>
+    constexpr void
+    swap(Tuple& tup,
+         std::index_sequence<I...>) noexcept((std::is_nothrow_swappable_v<T> && ...)) {
+        (std::ranges::swap(get<I>(*this), get<I>(tup)), ...);
     }
 };
 
@@ -84,15 +85,15 @@ constexpr auto get(Tuple<T...>&& tup) noexcept -> decltype(auto) {
 }
 
 template<typename... T>
-constexpr void swap(const Tuple<T...>& lhs,
-                    const Tuple<T...>& rhs) noexcept(Tuple<T...>::is_nothrow_swappable) {
+constexpr void swap(Tuple<T...>& lhs,
+                    Tuple<T...>& rhs) noexcept((std::is_nothrow_swappable_v<T> && ...)) {
     lhs.swap(rhs);
 }
 
 namespace detail {
 template<typename F, CTupleLike T, std::size_t... I>
-constexpr auto apply(F&& fun, T&& tup, std::index_sequence<I...>) noexcept(noexcept(
-    std::forward<F>(fun)(get<I>(std::forward<T>(tup))...))) -> decltype(auto) {
+constexpr auto apply(F&& fun, T&& tup, std::index_sequence<I...>) noexcept(
+    noexcept(std::forward<F>(fun)(get<I>(std::forward<T>(tup))...))) -> decltype(auto) {
     return std::forward<F>(fun)(get<I>(std::forward<T>(tup))...);
 }
 } // namespace detail
