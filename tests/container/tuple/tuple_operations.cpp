@@ -1,5 +1,4 @@
 #include "../common.hpp"
-#include <tuple>
 
 int main() {
     int errors = 0;
@@ -23,6 +22,7 @@ int main() {
 
         bool error = std::ranges::any_of(results, isError);
         if(error) {
+            ++errors;
             std::cerr << "xme::Tuple::swap error\n";
         }
     }
@@ -30,13 +30,19 @@ int main() {
     {
         std::vector<short> results;
         xme::Tuple<std::string, std::string> t1{"Hello", "World"};
+        const xme::Tuple t2{t1};
 
         auto str = xme::apply([](std::string& s1, std::string& s2) { return s1 + s2; }, t1);
+        auto str2 = xme::apply([](const std::string& s1, const std::string& s2){ return s1 + s2; }, t2);
+        auto str3 = xme::apply([](std::string&& s1, std::string&& s2) { return s1 + s2; }, std::move(t1));
 
         results.emplace_back(str == "HelloWorld");
+        results.emplace_back(str2 == "HelloWorld");
+        results.emplace_back(str3 == "HelloWorld");
 
         bool error = std::ranges::any_of(results, isError);
         if(error) {
+            ++errors;
             std::cerr << "xme::Tuple::apply error\n";
         }
     }
@@ -56,7 +62,8 @@ int main() {
 
         bool error = std::ranges::any_of(results, isError);
         if(error) {
-            std::cerr << "xme::Tuple::tie error\n";
+            ++errors;
+            std::cerr << "xme::tie error\n";
         }
     }
 
@@ -74,9 +81,49 @@ int main() {
 
         bool error = std::ranges::any_of(results, isError);
         if(error) {
-            std::cerr << "xme::Tuple::makeTuple error\n";
+            ++errors;
+            std::cerr << "xme::makeTuple error\n";
         }
     }
     
+    {
+        std::vector<short> results;
+        int a1 = 2;
+        const int a2 = 3;
+        auto t1 = xme::forwardAsTuple(5, a1, a2);
+        static_assert(std::is_same_v<decltype(t1), xme::Tuple<int&&, int&, const int&>>);
+
+        results.emplace_back(get<0>(t1) == 0); //literals doesn't get stored
+        results.emplace_back(get<1>(t1) == 2);
+        results.emplace_back(get<2>(t1) == 3);
+
+        bool error = std::ranges::any_of(results, isError);
+        if(error) {
+            ++errors;
+            std::cerr << "xme::forwardAsTuple\n";
+        }
+    }
+
+    {
+        std::vector<short> results;
+        xme::Tuple<int, const int, const int&> t1{1, 5, 3};
+        xme::Tuple<> t2;
+        xme::Tuple<float> t3{0.5};
+        auto t4 = xme::tupleCat(t1, t2, t3);
+
+        static_assert(std::is_same_v<decltype(t4), xme::Tuple<int, int, const int&, float>>);
+
+        results.emplace_back(get<0>(t4) == 1);
+        results.emplace_back(get<1>(t4) == 5);
+        results.emplace_back(get<2>(t4) == 3);
+        results.emplace_back(get<3>(t4) == 0.5f);
+
+        bool error = std::ranges::any_of(results, isError);
+        if(error) {
+            ++errors;
+            std::cerr << "xme::tupleCat\n";
+        }
+    }
+
     return errors;
 }

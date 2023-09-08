@@ -2,11 +2,6 @@
 #include <type_traits>
 #include <utility>
 
-namespace xme {
-template<typename...T>
-struct Tuple;
-}
-
 namespace xme::detail {
 template<typename... T>
 struct TypeList {};
@@ -24,15 +19,16 @@ struct TupleElement {
 
     [[no_unique_address]] T value;
 
-    constexpr auto operator[](std::integral_constant<std::size_t, I>) & -> T& {
+    constexpr auto operator[](std::integral_constant<std::size_t, I>) & noexcept -> T& {
         return value;
     }
 
-    constexpr auto operator[](std::integral_constant<std::size_t, I>) const& -> const T& {
+    constexpr auto operator[](std::integral_constant<std::size_t, I>) const& noexcept
+        -> const T& {
         return value;
     }
 
-    constexpr auto operator[](std::integral_constant<std::size_t, I>) && -> T&& {
+    constexpr auto operator[](std::integral_constant<std::size_t, I>) && noexcept -> T&& {
         return static_cast<TupleElement&&>(*this).value;
     }
 
@@ -44,7 +40,7 @@ template<typename... TupElem>
 struct TypeMap : TupElem... {
     using TupElem::operator[]...;
     using TupElem::declval...;
-    using type_list = TypeList<TupElem...>;
+    using base_list = TypeList<TupElem...>;
 
     constexpr auto operator<=>(const TypeMap&) const = default;
     constexpr bool operator==(const TypeMap&) const = default;
@@ -60,22 +56,4 @@ struct GetTupleBase<std::index_sequence<I...>, T...> {
 
 template<typename... T>
 using tuple_base = GetTupleBase<std::make_index_sequence<sizeof...(T)>, T...>::type;
-
-template<typename T>
-struct IsTupleHelper {
-    static constexpr bool value = false;
-};
-
-template<typename...T>
-struct IsTupleHelper<xme::Tuple<T...>> {
-    static constexpr bool value = true;
-};
-
-template<typename T>
-struct IsTuple {
-    static constexpr bool value = IsTupleHelper<std::remove_cv_t<T>>::value;
-};
-
-template<typename T>
-constexpr bool is_tuple_v = IsTuple<T>::value;
 } // namespace xme::detail
