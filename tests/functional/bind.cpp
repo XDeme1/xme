@@ -1,4 +1,3 @@
-#pragma once
 #include <xme/functional/bind.hpp>
 #include "common.hpp"
 
