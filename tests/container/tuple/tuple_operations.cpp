@@ -93,7 +93,7 @@ int main() {
         auto t1 = xme::forwardAsTuple(5, a1, a2);
         static_assert(std::is_same_v<decltype(t1), xme::Tuple<int&&, int&, const int&>>);
 
-        results.emplace_back(get<0>(t1) == 0); //literals doesn't get stored
+        results.emplace_back(get<0>(t1) == 5); 
         results.emplace_back(get<1>(t1) == 2);
         results.emplace_back(get<2>(t1) == 3);
 
