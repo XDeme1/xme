@@ -1,8 +1,14 @@
+find_package(benchmark)
+
+if(${benchmark_FOUND})
+endif()
+
 function(CreateBench NAME)
     add_executable(bench_${NAME} ${NAME}.cpp)
-    target_compile_features(bench_${NAME} PRIVATE cxx_std_23)
-    target_compile_options(bench_${NAME} PRIVATE -mavx -march=native)
+    target_compile_features(bench_${NAME} PRIVATE cxx_std_20)
     target_link_libraries(bench_${NAME} PRIVATE benchmark::benchmark xme)
 endfunction()
 
 CreateBench(vector_operator)
+
+add_subdirectory(container)

@@ -1,14 +1,11 @@
-option(XME_TESTS_USE_LIBCXX "Use libc++ to build tests" OFF)
+include(CTest)
 
 function(CreateTest NAME)
     add_executable(test_${NAME} ${NAME}.cpp)
     target_link_libraries(test_${NAME} PRIVATE xme)
-    
-    if(XME_TESTS_USE_LIBCXX)
-        target_compile_options(test_${NAME} PRIVATE -stdlib=libc++ -msse2)
-        target_link_options(test_${NAME} PRIVATE -lc++)
-    endif()
-    target_compile_options(test_${NAME} PRIVATE -Wall -Wextra -Wpedantic -Wshadow)
+
+    target_compile_options(test_${NAME} PRIVATE -Wall -Wextra -Wpedantic -Wshadow -Wno-missing-braces)
+    target_compile_features(test_${NAME} PRIVATE cxx_std_20)
     add_test(NAME test_${NAME} COMMAND test_${NAME})
 endfunction()
 

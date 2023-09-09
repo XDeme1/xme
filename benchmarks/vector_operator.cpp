@@ -3,8 +3,9 @@
 #include <benchmark/benchmark.h>
 #include <functional>
 #include <memory>
-#include <xme/container/linked_list.hpp>
+#include <xme/functional/delegate.hpp>
 #include <forward_list>
+/*
 template<typename>
 class Delegate;
 
@@ -38,15 +39,31 @@ private:
 
     std::unique_ptr<ICallable> m_Callable = nullptr;
 };
+*/
+
+constexpr void test(int a) {}
 
 void benchAddOperator(benchmark::State& state)
 {
-    std::forward_list<double> a;
+    std::size_t a = 0;
+    std::function<void(int)> fn{&test};
     for(auto _ : state) {
-        a.emplace_front(5);
-        benchmark::DoNotOptimize(a);
+        fn(10);
+        benchmark::DoNotOptimize(fn);
     }
 }
 BENCHMARK(benchAddOperator);
+
+void benchAddOperator2(benchmark::State& state)
+{
+    std::size_t a = 0;
+    xme::Delegate<void(int)> fn;
+    fn.bind(&test);
+    for(auto _ : state) {
+        fn.execute(10);
+        benchmark::DoNotOptimize(fn);
+    }
+}
+BENCHMARK(benchAddOperator2);
 
 BENCHMARK_MAIN();
