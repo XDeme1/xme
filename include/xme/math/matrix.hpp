@@ -1,7 +1,5 @@
 #pragma once
-#include "concepts.hpp"
 #include "vector.hpp"
-#include <array>
 
 namespace xme {
 template<typename T, std::size_t Cols, std::size_t Rows>

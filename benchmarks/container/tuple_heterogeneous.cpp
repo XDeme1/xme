@@ -1,6 +1,7 @@
 #include <vector>
 #include <xme/container/container.hpp>
 #include <benchmark/benchmark.h>
+#include <cstdint>
 
 using std_hetero = std::tuple<std::int8_t, std::int8_t, std::int16_t, std::int32_t>;
 

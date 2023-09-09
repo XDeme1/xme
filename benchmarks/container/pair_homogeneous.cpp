@@ -2,6 +2,7 @@
 #include <xme/container/container.hpp>
 #include <benchmark/benchmark.h>
 #include <utility>
+#include <cstdint>
 
 using std_homo = std::pair<std::int32_t, std::int32_t>;
 

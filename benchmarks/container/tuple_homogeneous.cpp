@@ -1,6 +1,7 @@
 #include <vector>
 #include <xme/container/container.hpp>
 #include <benchmark/benchmark.h>
+#include <cstdint>
 
 using std_homo = std::tuple<std::int16_t, std::int16_t, std::int16_t, std::int16_t>;
 

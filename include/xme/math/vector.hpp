@@ -8,7 +8,7 @@ namespace xme {
 template<typename T, std::size_t Size>
 struct Vector {
 public:
-    static_assert(std::is_arithmetic_v<T>, "T must be an arithmetic type");
+    static_assert(CArithmetic<T>, "T must be an arithmetic type");
 
     static constexpr std::size_t size = Size;
 
@@ -75,6 +75,7 @@ public:
     }
 
     constexpr auto operator+() const noexcept -> Vector { return *this; }
+
     constexpr auto operator-() const noexcept -> Vector {
         Vector result;
         for (std::size_t i = 0; i < Size; ++i)
@@ -89,6 +90,7 @@ public:
             result[i] = m_data[i] + s;
         return result;
     }
+
     template<typename U>
     constexpr auto operator+(const Vector<U, Size>& v) const noexcept -> Vector {
         Vector result;
@@ -104,6 +106,7 @@ public:
             result[i] = m_data[i] - s;
         return result;
     }
+
     template<typename U>
     constexpr auto operator-(const Vector<U, Size>& v) const noexcept -> Vector {
         Vector result;
@@ -119,6 +122,7 @@ public:
             result[i] = m_data[i] * s;
         return result;
     }
+
     template<typename U>
     constexpr auto operator*(const Vector<U, Size>& v) const noexcept -> Vector {
         Vector result;
@@ -134,6 +138,7 @@ public:
             result[i] = m_data[i] / s;
         return result;
     }
+
     template<typename U>
     constexpr auto operator/(const Vector<U, Size>& v) const noexcept -> Vector {
         Vector result;
@@ -205,8 +210,11 @@ public:
         return *this;
     }
 
-    constexpr auto& operator[](std::size_t i) noexcept { return m_data[i]; }
-    constexpr auto& operator[](std::size_t i) const noexcept { return m_data[i]; }
+    constexpr auto operator[](std::size_t i) noexcept -> T& { return m_data[i]; }
+
+    constexpr auto operator[](std::size_t i) const noexcept -> const T& {
+        return m_data[i];
+    }
 
     constexpr auto dot(const Vector& v) const noexcept -> T {
         T result = 0;
@@ -279,6 +287,7 @@ public:
         result[1] = m_data[0] * sin + m_data[1] * cos;
         return result;
     }
+
 private:
     std::array<T, Size> m_data{};
 };
