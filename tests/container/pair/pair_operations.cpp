@@ -5,7 +5,7 @@ int main() {
     {
         static_assert(xme::CTupleLike<xme::Pair<int, int&>>);
         static_assert(xme::CPairLike<xme::Pair<int, int&>>);
-        static_assert(xme::CPairLike<xme::Pair<int, int&>&&>);
+        static_assert(xme::CPairLike<const xme::Pair<int, int&>>);
 
         std::vector<short> results;
         xme::Pair<std::string, std::string> t1{"Hello", "World"};

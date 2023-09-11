@@ -12,3 +12,4 @@ endfunction()
 CreateBench(vector_operator)
 
 add_subdirectory(container)
+add_subdirectory(math)

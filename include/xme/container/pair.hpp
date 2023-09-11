@@ -8,7 +8,8 @@ private:
     using self = Pair<T, U>;
 
 public:
-    template<CPairLike P>
+    template<typename P>
+        requires(CPairLike<std::decay_t<P>>)
     constexpr auto operator=(P&& p) noexcept(std::is_nothrow_swappable_v<T> &&
                                              std::is_nothrow_swappable_v<U>) -> self& {
         first = std::forward<P>(p).first;

@@ -5,7 +5,7 @@ int main() {
     {
         static_assert(xme::CTupleLike<xme::Tuple<>>);
         static_assert(xme::CTupleLike<xme::Tuple<int, int, int&>>);
-        static_assert(xme::CTupleLike<xme::Tuple<int, int, int&>&>);
+        static_assert(xme::CTupleLike<const xme::Tuple<int, int, int&>>);
 
         std::vector<short> results;
         xme::Tuple<std::string, std::string> t1{"Hello", "World"};

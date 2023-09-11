@@ -1,7 +1,10 @@
 #pragma once
 #include "concepts.hpp"
+#include <algorithm>
 #include <array>
 #include <cmath>
+#include <functional>
+#include <memory>
 #include <type_traits>
 
 namespace xme {
@@ -13,11 +16,10 @@ public:
     static constexpr std::size_t size = Size;
 
     constexpr Vector() noexcept = default;
+    
     constexpr Vector(const Vector&) noexcept = default;
+    
     constexpr Vector(Vector&&) noexcept = default;
-
-    constexpr auto operator=(const Vector&) noexcept -> Vector& = default;
-    constexpr auto operator=(Vector&&) noexcept -> Vector& = default;
 
     template<CArithmetic U>
     constexpr Vector(U s) noexcept {
@@ -147,6 +149,10 @@ public:
         return result;
     }
 
+    constexpr auto operator=(const Vector&) noexcept -> Vector& = default;
+
+    constexpr auto operator=(Vector&&) noexcept -> Vector& = default;
+
     template<typename U>
     constexpr auto operator=(const Vector<U, Size>& v) noexcept -> Vector& {
         for (std::size_t i = 0; i < Size; ++i)
@@ -210,11 +216,19 @@ public:
         return *this;
     }
 
-    constexpr auto operator[](std::size_t i) noexcept -> T& { return m_data[i]; }
+    constexpr auto operator[](std::size_t i) & noexcept -> T& { return m_data[i]; }
 
-    constexpr auto operator[](std::size_t i) const noexcept -> const T& {
+    constexpr auto operator[](std::size_t i) const& noexcept -> const T& {
         return m_data[i];
     }
+
+    constexpr auto operator[](std::size_t i) && noexcept -> T&& {
+        return std::move(m_data[i]);
+    }
+
+    constexpr auto operator<=>(const Vector&) const noexcept = default;
+
+    constexpr bool operator==(const Vector&) const noexcept = default;
 
     constexpr auto dot(const Vector& v) const noexcept -> T {
         T result = 0;
@@ -292,22 +306,53 @@ private:
     std::array<T, Size> m_data{};
 };
 
-template<typename T, std::size_t Size>
-constexpr bool operator==(const Vector<T, Size>& v1, const Vector<T, Size>& v2) noexcept {
-    for (std::size_t i = 0; i < Size; ++i) {
-        if (v1[i] != v2[i])
-            return false;
-    }
-    return true;
-}
-
-template<typename T, std::size_t Size>
-constexpr bool operator!=(const Vector<T, Size>& v1, const Vector<T, Size>& v2) noexcept {
-    return !xme::operator==(v1, v2);
-}
-
 template<typename T, typename... Args>
 Vector(T, Args...) -> Vector<std::common_type_t<T, Args...>, sizeof...(Args) + 1>;
+
+template<std::size_t I, typename T, std::size_t Size>
+constexpr auto get(Vector<T, Size>& v) noexcept -> decltype(auto) {
+    return v[I];
+}
+
+template<std::size_t I, typename T, std::size_t Size>
+constexpr auto get(const Vector<T, Size>& v) noexcept -> decltype(auto) {
+    return v[I];
+}
+
+template<std::size_t I, typename T, std::size_t Size>
+constexpr auto get(Vector<T, Size>&& v) noexcept -> decltype(auto) {
+    return std::move(v)[I];
+}
+
+template<typename T, std::size_t Size>
+constexpr auto begin(Vector<T, Size>& v) noexcept -> T* {
+    return std::addressof(get<0>(v));
+}
+
+template<typename T, std::size_t Size>
+constexpr auto begin(const Vector<T, Size>& v) noexcept -> const T* {
+    return std::addressof(get<0>(v));
+}
+
+template<typename T, std::size_t Size>
+constexpr auto end(Vector<T, Size>& v) noexcept -> T* {
+    return std::addressof(get<Size>(v));
+}
+
+template<typename T, std::size_t Size>
+constexpr auto end(const Vector<T, Size>& v) noexcept -> const T* {
+    return std::addressof(get<Size>(v));
+}
 } // namespace xme
+
+namespace std {
+template<typename T, std::size_t Size>
+struct tuple_size<xme::Vector<T, Size>> : integral_constant<std::size_t, Size> {};
+
+template<std::size_t I, typename T, std::size_t Size>
+struct tuple_element<I, xme::Vector<T, Size>> {
+    using type = T;
+};
+} // namespace std
 
 #include "../../../private/math/vectors/io.hpp"

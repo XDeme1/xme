@@ -18,7 +18,8 @@ public:
 
     static constexpr std::size_t size = sizeof...(T);
 
-    template<CTupleLike U>
+    template<typename U>
+        requires(CTupleLike<std::decay_t<U>>)
     constexpr auto operator=(U&& tup) -> self& {
         assignTupleIndex(std::forward<U>(tup), std::make_index_sequence<size>{});
         return *this;
@@ -58,7 +59,8 @@ public:
     constexpr auto operator<=>(const Tuple&) const = default;
     constexpr bool operator==(const Tuple&) const = default;
 
-    template<CTupleLike U>
+    template<typename U>
+        requires(CTupleLike<std::decay_t<U>>)
     constexpr auto operator=(U&&) noexcept -> self& {
         return *this;
     }
@@ -91,14 +93,16 @@ constexpr void swap(Tuple<T...>& lhs,
 }
 
 namespace detail {
-template<typename F, CTupleLike T, std::size_t... I>
+template<typename F, typename T, std::size_t... I>
+    requires(CTupleLike<std::decay_t<T>>)
 constexpr auto apply(F&& fun, T&& tup, std::index_sequence<I...>) noexcept(
     noexcept(std::forward<F>(fun)(get<I>(std::forward<T>(tup))...))) -> decltype(auto) {
     return std::forward<F>(fun)(get<I>(std::forward<T>(tup))...);
 }
 } // namespace detail
 
-template<typename F, CTupleLike T>
+template<typename F, typename T>
+    requires(CTupleLike<std::decay_t<T>>)
 constexpr auto apply(F&& fun, T&& tup) noexcept(noexcept(detail::apply(
     std::forward<F>(fun), std::forward<T>(tup),
     std::make_index_sequence<std::tuple_size_v<std::decay_t<T>>>{}))) -> decltype(auto) {
@@ -143,7 +147,7 @@ struct TupleCat<T, std::index_sequence<OuterIdx...>, std::index_sequence<InnerId
                std::index_sequence<InnerIdx..., (Next + 0 * OuterNext)...>, Next + 1,
                Rest...> {};
 
-template<CTupleLike... T>
+template<typename... T>
 using tuple_cat =
     TupleCat<Tuple<T&&...>, std::index_sequence<>, std::index_sequence<>, 0,
              std::make_index_sequence<std::tuple_size_v<std::remove_cvref_t<T>>>...>;
@@ -155,7 +159,8 @@ constexpr auto tupleCat(std::index_sequence<OuterIndex...>,
 }
 } // namespace detail
 
-template<CTupleLike... T>
+template<typename... T>
+    requires(CTupleLike<std::decay_t<T>> && ...)
 constexpr auto tupleCat(T&&... t) {
     using cat = detail::tuple_cat<T...>;
     using outer = typename cat::outer_indices;
