@@ -3,18 +3,7 @@
 template<std::size_t Size>
 int testUnary() {
     int errors = 0;
-    static_assert(std::is_same_v<decltype(+xme::Vector<float, Size>{}), xme::Vector<float, Size>>);
     static_assert(std::is_same_v<decltype(-xme::Vector<float, Size>{}), xme::Vector<float, Size>>);
-    {
-        xme::Vector<float, Size> v{5};
-        xme::Vector r{+v};
-        
-        bool error = v != r;
-        if(error) {
-            std::cerr << "Vector::operator+() error\n";
-            ++errors;
-        }
-    }
 
     {
         xme::Vector<float, Size> v{5};

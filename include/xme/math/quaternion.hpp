@@ -1,6 +1,5 @@
 #pragma once
 #include "matrix.hpp"
-#include <array>
 
 namespace xme {
 template<typename T>

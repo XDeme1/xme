@@ -37,8 +37,7 @@ public:
         for(std::size_t i = 0; i < Cols; ++i)
             m_data[i] = m[i];
     }
-
-    constexpr auto operator+() const noexcept -> Matrix { return *this; }
+    
     constexpr auto operator-() const noexcept -> Matrix {
         Matrix result{0};
         for (std::size_t i = 0; i < Cols; ++i)
@@ -161,6 +160,10 @@ public:
     constexpr auto& operator[](std::size_t i) noexcept { return m_data[i]; }
     constexpr auto& operator[](std::size_t i) const noexcept { return m_data[i]; }
 
+    constexpr auto operator<=>(const Matrix&) const noexcept = default;
+    
+    constexpr bool operator==(const Matrix&) const noexcept = default;
+
     constexpr auto row(std::size_t row) const noexcept -> row_type {
         row_type result;
         for (auto i = 0u; i < row_type::size; ++i)
@@ -235,22 +238,6 @@ public:
 private:
     std::array<column_type, Cols> m_data{};
 };
-
-template<typename T, std::size_t Cols, std::size_t Rows>
-constexpr bool operator==(const Matrix<T, Cols, Rows>& m1,
-                          const Matrix<T, Cols, Rows>& m2) noexcept {
-    for (std::size_t i = 0; i < Cols; ++i) {
-        if (m1[i] != m2[i])
-            return false;
-    }
-    return true;
-}
-
-template<typename T, std::size_t Cols, std::size_t Rows>
-constexpr bool operator!=(const Matrix<T, Cols, Rows>& m1,
-                          const Matrix<T, Cols, Rows>& m2) noexcept {
-    return !operator==(m1, m2);
-}
 
 template<typename T, typename... Args, std::size_t Rows>
 Matrix(Vector<T, Rows>, Vector<Args, Rows>...)

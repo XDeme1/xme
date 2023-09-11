@@ -5,12 +5,10 @@ int testUnary() {
     int errors = 0;
     {
         xme::Matrix<float, Cols, Rows> m{5};
-        static_assert(std::is_same_v<decltype(+m), xme::Matrix<float, Cols, Rows>>);
         static_assert(std::is_same_v<decltype(-m), xme::Matrix<float, Cols, Rows>>);
 
-        bool error1 = -m != xme::Matrix<float, Cols, Rows>{-5};
-        bool error2 = +m != xme::Matrix<float, Cols, Rows>{5};
-        if(error1 || error2) {
+        bool error = -m != xme::Matrix<float, Cols, Rows>{-5};
+        if(error) {
             std::cerr << "matrix unary operator error\n";
             ++errors;
         }

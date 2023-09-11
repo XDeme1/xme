@@ -3,8 +3,6 @@
 #include <algorithm>
 #include <array>
 #include <cmath>
-#include <functional>
-#include <memory>
 #include <type_traits>
 
 namespace xme {
@@ -16,18 +14,19 @@ public:
     static constexpr std::size_t size = Size;
 
     constexpr Vector() noexcept = default;
-    
+
     constexpr Vector(const Vector&) noexcept = default;
-    
+
     constexpr Vector(Vector&&) noexcept = default;
 
-    template<CArithmetic U>
+    template<typename U>
+        requires(CArithmetic<std::decay_t<U>>)
     constexpr Vector(U s) noexcept {
         m_data.fill(s);
     }
 
-    template<CArithmetic... Args>
-        requires(sizeof...(Args) == Size)
+    template<typename... Args>
+        requires((sizeof...(Args) == Size) && (CArithmetic<std::decay_t<Args>> && ...))
     constexpr Vector(Args... args) noexcept : m_data({static_cast<T>(args)...}) {}
 
     // Vector3 Conversion constructors
@@ -76,8 +75,6 @@ public:
             m_data[i] = static_cast<T>(v[i]);
     }
 
-    constexpr auto operator+() const noexcept -> Vector { return *this; }
-
     constexpr auto operator-() const noexcept -> Vector {
         Vector result;
         for (std::size_t i = 0; i < Size; ++i)
@@ -85,67 +82,58 @@ public:
         return result;
     }
 
-    template<CArithmetic U>
-    constexpr auto operator+(U s) const noexcept -> Vector {
+    template<typename U>
+        requires(CArithmetic<std::decay_t<U>> || is_vector_v<std::decay_t<U>>)
+    constexpr auto operator+(U&& v) const noexcept -> Vector {
         Vector result;
-        for (std::size_t i = 0; i < Size; ++i)
-            result[i] = m_data[i] + s;
+        for (std::size_t i = 0; i < Size; ++i) {
+            if constexpr (is_vector_v<std::decay_t<U>>)
+                result[i] = m_data[i] + v[i];
+            else
+                result[i] = m_data[i] + v;
+        }
         return result;
     }
 
     template<typename U>
-    constexpr auto operator+(const Vector<U, Size>& v) const noexcept -> Vector {
+        requires(CArithmetic<std::decay_t<U>> || is_vector_v<std::decay_t<U>>)
+    constexpr auto operator-(U&& v) const noexcept -> Vector {
         Vector result;
-        for (std::size_t i = 0; i < Size; ++i)
-            result[i] = m_data[i] + v[i];
-        return result;
-    }
-
-    template<CArithmetic U>
-    constexpr auto operator-(U s) const noexcept -> Vector {
-        Vector result;
-        for (std::size_t i = 0; i < Size; ++i)
-            result[i] = m_data[i] - s;
-        return result;
-    }
-
-    template<typename U>
-    constexpr auto operator-(const Vector<U, Size>& v) const noexcept -> Vector {
-        Vector result;
-        for (std::size_t i = 0; i < Size; ++i)
-            result[i] = m_data[i] - v[i];
-        return result;
-    }
-
-    template<CArithmetic U>
-    constexpr auto operator*(U s) const noexcept -> Vector {
-        Vector result;
-        for (std::size_t i = 0; i < Size; ++i)
-            result[i] = m_data[i] * s;
+        for (std::size_t i = 0; i < Size; ++i) {
+            if constexpr (is_vector_v<std::decay_t<U>>)
+                result[i] = m_data[i] - v[i];
+            else
+                result[i] = m_data[i] - v;
+            ;
+        }
         return result;
     }
 
     template<typename U>
-    constexpr auto operator*(const Vector<U, Size>& v) const noexcept -> Vector {
+        requires(CArithmetic<std::decay_t<U>> || is_vector_v<std::decay_t<U>>)
+    constexpr auto operator*(U&& v) const noexcept -> Vector {
         Vector result;
-        for (std::size_t i = 0; i < Size; ++i)
-            result[i] = m_data[i] * v[i];
-        return result;
-    }
-
-    template<CArithmetic U>
-    constexpr auto operator/(U s) const noexcept -> Vector {
-        Vector result;
-        for (std::size_t i = 0; i < Size; ++i)
-            result[i] = m_data[i] / s;
+        for (std::size_t i = 0; i < Size; ++i) {
+            if constexpr (is_vector_v<std::decay_t<U>>)
+                result[i] = m_data[i] * v[i];
+            else
+                result[i] = m_data[i] * v;
+            ;
+        }
         return result;
     }
 
     template<typename U>
-    constexpr auto operator/(const Vector<U, Size>& v) const noexcept -> Vector {
+        requires(CArithmetic<std::decay_t<U>> || is_vector_v<std::decay_t<U>>)
+    constexpr auto operator/(U&& v) const noexcept -> Vector {
         Vector result;
-        for (std::size_t i = 0; i < Size; ++i)
-            result[i] = m_data[i] / v[i];
+        for (std::size_t i = 0; i < Size; ++i) {
+            if constexpr (is_vector_v<std::decay_t<U>>)
+                result[i] = m_data[i] / v[i];
+            else
+                result[i] = m_data[i] / v;
+            ;
+        }
         return result;
     }
 
@@ -160,59 +148,51 @@ public:
         return *this;
     }
 
-    template<CArithmetic U>
-    constexpr auto operator+=(U s) noexcept -> Vector& {
-        for (std::size_t i = 0; i < Size; ++i)
-            m_data[i] += s;
+    template<typename U>
+        requires(CArithmetic<std::decay_t<U>> || is_vector_v<std::decay_t<U>>)
+    constexpr auto operator+=(U&& v) noexcept -> Vector& {
+        for (std::size_t i = 0; i < Size; ++i) {
+            if constexpr (is_vector_v<std::decay_t<U>>)
+                m_data[i] += v[i];
+            else
+                m_data[i] += v;
+        }
         return *this;
     }
 
     template<typename U>
-    constexpr auto operator+=(const Vector<U, Size>& v) noexcept -> Vector& {
-        for (std::size_t i = 0; i < Size; ++i)
-            m_data[i] += v[i];
-        return *this;
-    }
-
-    template<CArithmetic U>
-    constexpr auto operator-=(U s) noexcept -> Vector& {
-        for (std::size_t i = 0; i < Size; ++i)
-            m_data[i] -= s;
-        return *this;
-    }
-
-    template<typename U>
-    constexpr auto operator-=(const Vector<U, Size>& v) noexcept -> Vector& {
-        for (std::size_t i = 0; i < Size; ++i)
-            m_data[i] -= v[i];
-        return *this;
-    }
-
-    template<CArithmetic U>
-    constexpr auto operator*=(U s) noexcept -> Vector& {
-        for (std::size_t i = 0; i < Size; ++i)
-            m_data[i] *= s;
+        requires(CArithmetic<std::decay_t<U>> || is_vector_v<std::decay_t<U>>)
+    constexpr auto operator-=(U&& v) noexcept -> Vector& {
+        for (std::size_t i = 0; i < Size; ++i) {
+            if constexpr (is_vector_v<std::decay_t<U>>)
+                m_data[i] -= v[i];
+            else
+                m_data[i] -= v;
+        }
         return *this;
     }
 
     template<typename U>
-    constexpr auto operator*=(const Vector<U, Size>& v) noexcept -> Vector& {
-        for (std::size_t i = 0; i < Size; ++i)
-            m_data[i] *= v[i];
-        return *this;
-    }
-
-    template<CArithmetic U>
-    constexpr auto operator/=(U s) noexcept -> Vector& {
-        for (std::size_t i = 0; i < Size; ++i)
-            m_data[i] /= s;
+        requires(CArithmetic<std::decay_t<U>> || is_vector_v<std::decay_t<U>>)
+    constexpr auto operator*=(U&& v) noexcept -> Vector& {
+        for (std::size_t i = 0; i < Size; ++i) {
+            if constexpr (is_vector_v<std::decay_t<U>>)
+                m_data[i] *= v[i];
+            else
+                m_data[i] *= v;
+        }
         return *this;
     }
 
     template<typename U>
-    constexpr auto operator/=(const Vector<U, Size>& v) noexcept -> Vector& {
-        for (std::size_t i = 0; i < Size; ++i)
-            m_data[i] /= v[i];
+        requires(CArithmetic<std::decay_t<U>> || is_vector_v<std::decay_t<U>>)
+    constexpr auto operator/=(U&& v) noexcept -> Vector& {
+        for (std::size_t i = 0; i < Size; ++i) {
+            if constexpr (is_vector_v<std::decay_t<U>>)
+                m_data[i] /= v[i];
+            else
+                m_data[i] /= v;
+        }
         return *this;
     }
 
@@ -301,7 +281,6 @@ public:
         result[1] = m_data[0] * sin + m_data[1] * cos;
         return result;
     }
-
 private:
     std::array<T, Size> m_data{};
 };

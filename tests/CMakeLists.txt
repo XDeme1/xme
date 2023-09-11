@@ -1,5 +1,3 @@
-include(CTest)
-
 function(CreateTest NAME)
     add_executable(test_${NAME} ${NAME}.cpp)
     target_link_libraries(test_${NAME} PRIVATE xme)

@@ -8,6 +8,7 @@ option(XME_BUILD_MODULES "Enable modules" OFF)
 add_subdirectory(include/xme)
 
 if(${PROJECT_IS_TOP_LEVEL} OR ${XME_BUILD_TESTS})
+    include(CTest)
     add_subdirectory(tests)
 endif()
 
