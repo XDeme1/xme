@@ -1,6 +1,7 @@
 #include <xme/functional/bind.hpp>
 #include "common.hpp"
 
+
 int main() {
     int errors = 0;
     {
@@ -16,19 +17,24 @@ int main() {
         static_assert(std::is_invocable_v<decltype(fn2), int&, int&&>);
         static_assert(std::is_invocable_v<decltype(fn2), const int&, const int&&>);
         static_assert(std::is_invocable_v<decltype(fn2), int, int>);
+        
+        auto fn3 = xme::bindFront([](){});
+        static_assert(sizeof(decltype(fn3)) == 1);
 
-        auto fn3 = xme::bindBack([](int, int&, int&&){});
+        auto fn6 = xme::bindBack([](int, int&, int&&){});
 
-        static_assert(std::is_invocable_v<decltype(fn3), int, int&, int>);
-        static_assert(std::is_invocable_v<decltype(fn3), int, int&, int&&>);
-        static_assert(std::is_invocable_v<decltype(fn3), int&, int&, int&&>);
-        static_assert(std::is_invocable_v<decltype(fn3), int&&, int&, int&&>);
+        static_assert(std::is_invocable_v<decltype(fn6), int, int&, int>);
+        static_assert(std::is_invocable_v<decltype(fn6), int, int&, int&&>);
+        static_assert(std::is_invocable_v<decltype(fn6), int&, int&, int&&>);
+        static_assert(std::is_invocable_v<decltype(fn6), int&&, int&, int&&>);
 
-        auto fn4 = xme::bindBack([](const int&, const int&&, int&&){}, 5);
+        auto fn7 = xme::bindBack([](const int&, const int&&, int&&){}, 5);
+        static_assert(std::is_invocable_v<decltype(fn7), int&, int&&>);
+        static_assert(std::is_invocable_v<decltype(fn7), const int&, const int&&>);
+        static_assert(std::is_invocable_v<decltype(fn7), int, int>);
 
-        static_assert(std::is_invocable_v<decltype(fn4), int&, int&&>);
-        static_assert(std::is_invocable_v<decltype(fn4), const int&, const int&&>);
-        static_assert(std::is_invocable_v<decltype(fn4), int, int>);
+        auto fn8 = xme::bindBack([](){});
+        static_assert(sizeof(decltype(fn8)) == 1);
     }
 
     {

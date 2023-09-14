@@ -135,52 +135,6 @@ private:
     [[no_unique_address]] F callable;
     [[no_unique_address]] xme::Tuple<Args...> bound_args;
 };
-
-template<typename F>
-struct Bind0 {
-private:
-    using self = Bind0<F>;
-
-public:
-    constexpr Bind0(const Bind0&) noexcept = default;
-
-    constexpr Bind0(Bind0&&) noexcept = default;
-
-    template<typename Fn>
-    explicit constexpr Bind0(Fn&& func) noexcept(std::is_nothrow_constructible_v<F, Fn>)
-        : callable(std::forward<Fn>(func)) {}
-
-    constexpr auto operator=(const Bind0&) noexcept -> self& = default;
-
-    constexpr auto operator=(Bind0&&) noexcept -> self& = default;
-
-    template<typename... CallArgs>
-    constexpr auto operator()(CallArgs&&... args) & noexcept(
-        std::is_nothrow_invocable_v<F&, CallArgs...>) -> decltype(auto) {
-        return std::invoke(callable, std::forward<CallArgs>(args)...);
-    }
-
-    template<typename... CallArgs>
-    constexpr auto operator()(CallArgs&&... args) const& noexcept(
-        std::is_nothrow_invocable_v<const F&, CallArgs...>) -> decltype(auto) {
-        return std::invoke(callable, std::forward<CallArgs>(args)...);
-    }
-
-    template<typename... CallArgs>
-    constexpr auto operator()(CallArgs&&... args) && noexcept(
-        std::is_nothrow_invocable_v<F, CallArgs...>) -> decltype(auto) {
-        return std::invoke(std::move(callable), std::forward<CallArgs>(args)...);
-    }
-
-    template<typename... CallArgs>
-    constexpr auto operator()(CallArgs&&... args) const&& noexcept(
-        std::is_nothrow_invocable_v<const F, CallArgs...>) -> decltype(auto) {
-        return std::invoke(std::move(callable), std::forward<CallArgs>(args)...);
-    }
-
-private:
-    [[no_unique_address]] F callable;
-};
 } // namespace detail
 
 template<typename F, typename... Args>
@@ -189,11 +143,9 @@ constexpr auto bindFront(F&& func, Args&&... args) {
     static_assert(std::is_move_constructible_v<std::decay<F>>);
     static_assert((std::is_constructible_v<std::decay_t<Args>, Args> && ...));
     static_assert((std::is_move_constructible_v<std::decay_t<Args>> && ...));
-    if constexpr (sizeof...(Args) == 0)
-        return detail::Bind0<std::decay_t<F>>(std::forward<F>(func));
-    else
-        return detail::BindFront<std::decay_t<F>, std::decay_t<Args>...>(
-            std::forward<F>(func), std::forward<Args>(args)...);
+
+    return detail::BindFront<std::decay_t<F>, std::decay_t<Args>...>(
+        std::forward<F>(func), std::forward<Args>(args)...);
 }
 
 template<typename F, typename... Args>
@@ -203,10 +155,7 @@ constexpr auto bindBack(F&& func, Args&&... args) {
     static_assert((std::is_constructible_v<std::decay_t<Args>, Args> && ...));
     static_assert((std::is_move_constructible_v<std::decay_t<Args>> && ...));
 
-    if constexpr (sizeof...(Args) == 0)
-        return detail::Bind0<std::decay_t<F>>(std::forward<F>(func));
-    else
-        return detail::BindBack<std::decay_t<F>, std::decay_t<Args>...>(
-            std::forward<F>(func), std::forward<Args>(args)...);
+    return detail::BindBack<std::decay_t<F>, std::decay_t<Args>...>(
+        std::forward<F>(func), std::forward<Args>(args)...);
 }
 } // namespace xme
