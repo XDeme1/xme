@@ -11,11 +11,6 @@ private:
     using super = detail::tuple_base<T...>;
 
 public:
-    using super::operator[];
-    using super::declval;
-    using base_list = super::base_list;
-    using element_list = detail::TypeList<T...>;
-
     static constexpr std::size_t size = sizeof...(T);
 
     template<typename U>
@@ -44,28 +39,6 @@ private:
          std::index_sequence<I...>) noexcept((std::is_nothrow_swappable_v<T> && ...)) {
         (std::ranges::swap(get<I>(*this), get<I>(tup)), ...);
     }
-};
-
-template<>
-struct Tuple<> : public detail::tuple_base<> {
-private:
-    using self = Tuple<>;
-
-public:
-    using element_list = detail::TypeList<>;
-
-    static constexpr std::size_t size = 0;
-
-    constexpr auto operator<=>(const Tuple&) const = default;
-    constexpr bool operator==(const Tuple&) const = default;
-
-    template<typename U>
-        requires(CTupleLike<std::decay_t<U>>)
-    constexpr auto operator=(U&&) noexcept -> self& {
-        return *this;
-    }
-
-    constexpr void swap() noexcept {}
 };
 
 template<typename... T>
