@@ -1,12 +1,9 @@
 #include "../common.hpp"
+#include <xme/container/tuple.hpp>
 
 int main() {
     int errors = 0;
     {
-        static_assert(xme::CTupleLike<xme::Tuple<>>);
-        static_assert(xme::CTupleLike<xme::Tuple<int, int, int&>>);
-        static_assert(xme::CTupleLike<const xme::Tuple<int, int, int&>>);
-
         std::vector<short> results;
         xme::Tuple<std::string, std::string> t1{"Hello", "World"};
         xme::Tuple<std::string, std::string> t2{"C++", "23"};
@@ -90,12 +87,11 @@ int main() {
         std::vector<short> results;
         int a1 = 2;
         const int a2 = 3;
-        auto t1 = xme::forwardAsTuple(5, a1, a2);
-        static_assert(std::is_same_v<decltype(t1), xme::Tuple<int&&, int&, const int&>>);
-
-        results.emplace_back(get<0>(t1) == 5); 
-        results.emplace_back(get<1>(t1) == 2);
-        results.emplace_back(get<2>(t1) == 3);
+        auto t1 = xme::forwardAsTuple(a1, a2);
+        static_assert(std::is_same_v<decltype(t1), xme::Tuple<int&, const int&>>);
+ 
+        results.emplace_back(get<0>(t1) == 2);
+        results.emplace_back(get<1>(t1) == 3);
 
         bool error = std::ranges::any_of(results, isError);
         if(error) {

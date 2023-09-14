@@ -96,6 +96,7 @@ constexpr auto makeTuple(T&&... values) noexcept(
 
 template<typename... T>
 constexpr auto forwardAsTuple(T&&... values) -> Tuple<T&&...> {
+    static_assert((!std::is_rvalue_reference_v<T> && ...), "T is a dangling reference");
     return Tuple<T&&...>{std::forward<T>(values)...};
 }
 

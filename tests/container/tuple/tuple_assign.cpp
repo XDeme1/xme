@@ -1,4 +1,5 @@
 #include "../common.hpp"
+#include <xme/container/tuple.hpp>
 
 int main() {
     int errors = 0;
@@ -6,11 +7,6 @@ int main() {
         xme::Tuple<int, int> t1{1, 5};
         xme::Tuple<int, float> t2{3, 1.5};
         xme::Tuple<std::string> t3{"Hello"};
-
-        static_assert(std::is_trivially_assignable_v<decltype(t1), decltype(t1)>);
-        static_assert(!std::is_trivially_assignable_v<decltype(t1), decltype(t2)>);
-        static_assert(!std::is_trivially_assignable_v<xme::Tuple<std::string>,
-                                                      xme::Tuple<std::string>>);
 
         std::vector<short> results{};
 

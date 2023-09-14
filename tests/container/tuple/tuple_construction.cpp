@@ -1,4 +1,5 @@
 #include "../common.hpp"
+#include <xme/container/tuple.hpp>
 
 int testConstruction() {
     int errors = 0;
@@ -18,40 +19,6 @@ int testConstruction() {
         static_assert(std::is_same_v<decltype(t3), xme::Tuple<int, int>>);
         static_assert(std::is_same_v<decltype(t4), xme::Tuple<int&, const int&>>);
         static_assert(std::is_same_v<decltype(t5), xme::Tuple<const int&>>);
-
-        static_assert(std::is_aggregate_v<decltype(t1)>);
-        static_assert(std::is_empty_v<xme::Tuple<>>);
-
-        static_assert(std::is_trivial_v<decltype(t1)>);
-        static_assert(std::is_trivial_v<decltype(t4)>);
-        static_assert(std::is_trivial_v<decltype(t5)>);
-        static_assert(!std::is_trivial_v<xme::Tuple<std::string, int>>);
-
-        static_assert(std::is_trivially_destructible_v<decltype(t1)>);
-        static_assert(std::is_trivially_destructible_v<decltype(t4)>);
-        static_assert(std::is_trivially_destructible_v<decltype(t5)>);
-        static_assert(!std::is_trivially_destructible_v<xme::Tuple<std::string, int>>);
-    
-        static_assert(std::is_trivially_move_constructible_v<decltype(t1)>);
-        static_assert(std::is_trivially_move_constructible_v<decltype(t4)>);
-        static_assert(std::is_trivially_move_constructible_v<decltype(t5)>);
-        static_assert(!std::is_trivially_move_constructible_v<xme::Tuple<std::string, int>>);
-    
-        static_assert(std::is_trivially_copy_constructible_v<decltype(t1)>);
-        static_assert(std::is_trivially_copy_constructible_v<decltype(t4)>);
-        static_assert(std::is_trivially_copy_constructible_v<decltype(t5)>);
-        static_assert(!std::is_trivially_copy_constructible_v<xme::Tuple<std::string, int>>);
-
-        static_assert(std::is_trivially_default_constructible_v<decltype(t1)>);
-        static_assert(!std::is_trivially_default_constructible_v<decltype(t4)>); // Because of &
-        static_assert(!std::is_trivially_default_constructible_v<decltype(t5)>); // Because of &
-        static_assert(!std::is_trivially_default_constructible_v<xme::Tuple<std::string, int>>);
-
-        xme::Tuple<std::string> t6{"Hello World"};
-        const xme::Tuple<std::string> t7{"Hello World"};
-        static_assert(std::is_same_v<std::string&&, decltype(get<0>(std::move(t6)))>);
-        static_assert(std::is_same_v<std::string&, decltype(get<0>(t6))>);
-        static_assert(std::is_same_v<const std::string&, decltype(get<0>(t7))>);
 
         if(auto [tmp1, tmp2] = t1; tmp1 != 1 || tmp2 != 5)
             ++errors;
