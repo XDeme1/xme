@@ -1,1 +1,2 @@
 CreateTest(bind)
+CreateTest(delegate)

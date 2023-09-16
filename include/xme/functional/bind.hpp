@@ -16,7 +16,7 @@ public:
     constexpr BindFront(BindFront&&) noexcept = default;
 
     template<typename Fn, typename... BoundArgs>
-    constexpr BindFront(Fn&& func, BoundArgs&&... args) noexcept(
+    explicit constexpr BindFront(Fn&& func, BoundArgs&&... args) noexcept(
         std::is_nothrow_constructible_v<F, Fn> &&
         (std::is_nothrow_constructible_v<Args, BoundArgs> && ...))
         : callable(std::forward<Fn>(func)), bound_args{std::forward<BoundArgs>(args)...} {
@@ -83,7 +83,7 @@ public:
     constexpr BindBack(BindBack&&) noexcept = default;
 
     template<typename Fn, typename... BoundArgs>
-    constexpr BindBack(Fn&& func, BoundArgs&&... args) noexcept(
+    explicit constexpr BindBack(Fn&& func, BoundArgs&&... args) noexcept(
         std::is_nothrow_constructible_v<F, Fn> &&
         (std::is_nothrow_constructible_v<Args, BoundArgs> && ...))
         : callable(std::forward<Fn>(func)), bound_args{std::forward<BoundArgs>(args)...} {

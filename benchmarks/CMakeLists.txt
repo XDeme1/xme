@@ -11,3 +11,4 @@ endfunction()
 
 add_subdirectory(container)
 add_subdirectory(math)
+add_subdirectory(functional)

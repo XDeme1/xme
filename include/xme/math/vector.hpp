@@ -104,7 +104,6 @@ public:
                 result[i] = m_data[i] - v[i];
             else
                 result[i] = m_data[i] - v;
-            ;
         }
         return result;
     }
@@ -118,7 +117,6 @@ public:
                 result[i] = m_data[i] * v[i];
             else
                 result[i] = m_data[i] * v;
-            ;
         }
         return result;
     }
@@ -132,7 +130,6 @@ public:
                 result[i] = m_data[i] / v[i];
             else
                 result[i] = m_data[i] / v;
-            ;
         }
         return result;
     }
@@ -281,6 +278,7 @@ public:
         result[1] = m_data[0] * sin + m_data[1] * cos;
         return result;
     }
+
 private:
     std::array<T, Size> m_data{};
 };
