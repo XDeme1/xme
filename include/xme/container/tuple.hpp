@@ -8,7 +8,6 @@ template<typename... T>
 struct Tuple : public detail::tuple_base<T...> {
 private:
     using self = Tuple<T...>;
-    using super = detail::tuple_base<T...>;
 
 public:
     static constexpr std::size_t size = sizeof...(T);

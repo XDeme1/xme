@@ -6,9 +6,6 @@
 
 namespace xme {
 template<typename T>
-concept CStateless = std::is_empty_v<T>;
-
-template<typename T>
 concept CAllocator = requires(T a, typename T::value_type* ptr) {
     typename T::value_type;
     typename T::size_type;
@@ -18,10 +15,10 @@ concept CAllocator = requires(T a, typename T::value_type* ptr) {
 };
 
 template<typename T>
-concept CStatefulAllocator = CAllocator<T> && !CStateless<T>;
+concept CStatefulAllocator = CAllocator<T> && !std::is_empty_v<T>;
 
 template<typename T>
-concept CStatelessAllocator = CAllocator<T> && CStateless<T>;
+concept CStatelessAllocator = CAllocator<T> && std::is_empty_v<T>;
 
 namespace detail {
 template<typename T, std::size_t I>
