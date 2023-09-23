@@ -1,7 +1,16 @@
+option(XME_TESTS_LIBCXX "Use libc++ to test xme" OFF)
+if(${XME_TESTS_LIBCXX})
+    message(STATUS "Using libc++ to test XME Library")
+endif()
+
 function(CreateTest NAME)
     add_executable(test_${NAME} ${NAME}.cpp)
     target_link_libraries(test_${NAME} PRIVATE xme)
 
+    if(${XME_TESTS_LIBCXX})
+        target_compile_options(test_${NAME} PRIVATE -stdlib=libc++)
+        target_link_options(test_${NAME} PRIVATE -lc++)
+    endif()
     target_compile_options(test_${NAME} PRIVATE -Wall -Wextra -Wpedantic -Wshadow -Wno-missing-braces)
     target_compile_features(test_${NAME} PRIVATE cxx_std_20)
     add_test(NAME test_${NAME} COMMAND test_${NAME})

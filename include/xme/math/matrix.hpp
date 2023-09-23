@@ -166,7 +166,7 @@ public:
 
     constexpr auto row(std::size_t row) const noexcept -> row_type {
         row_type result;
-        for (auto i = 0u; i < row_type::size; ++i)
+        for (std::size_t i = 0; i < row_type::size; ++i)
             result[i] = m_data[i][row];
         return result;
     }
@@ -243,5 +243,3 @@ template<typename T, typename... Args, std::size_t Rows>
 Matrix(Vector<T, Rows>, Vector<Args, Rows>...)
     -> Matrix<std::common_type_t<T, Args...>, sizeof...(Args) + 1, Rows>;
 } // namespace xme
-
-#include "../../../private/math/matrices/io.hpp"

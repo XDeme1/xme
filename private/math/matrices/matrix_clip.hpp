@@ -1,6 +1,7 @@
 #pragma once
 #include <xme/math/matrix.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
+
 namespace xme {
     template<std::floating_point T>
     constexpr auto perspectiveRH(T fov, T aspect_ratio, T far, T near) -> Matrix<T, 4> {

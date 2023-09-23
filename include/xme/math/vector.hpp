@@ -1,6 +1,5 @@
 #pragma once
 #include "concepts.hpp"
-#include <algorithm>
 #include <array>
 #include <cmath>
 #include <type_traits>
@@ -14,19 +13,19 @@ public:
     static constexpr std::size_t size = Size;
 
     constexpr Vector() noexcept = default;
-
     constexpr Vector(const Vector&) noexcept = default;
-
     constexpr Vector(Vector&&) noexcept = default;
 
-    template<typename U>
-        requires(CArithmetic<std::decay_t<U>>)
+    constexpr auto operator=(const Vector&) noexcept -> Vector& = default;
+    constexpr auto operator=(Vector&&) noexcept -> Vector& = default;
+
+    template<CArithmetic U>
     constexpr Vector(U s) noexcept {
         m_data.fill(s);
     }
 
     template<typename... Args>
-        requires((sizeof...(Args) == Size) && (CArithmetic<std::decay_t<Args>> && ...))
+        requires((sizeof...(Args) == Size) && (CArithmetic<Args> && ...))
     constexpr Vector(Args... args) noexcept : m_data({static_cast<T>(args)...}) {}
 
     // Vector3 Conversion constructors
@@ -133,10 +132,6 @@ public:
         }
         return result;
     }
-
-    constexpr auto operator=(const Vector&) noexcept -> Vector& = default;
-
-    constexpr auto operator=(Vector&&) noexcept -> Vector& = default;
 
     template<typename U>
     constexpr auto operator=(const Vector<U, Size>& v) noexcept -> Vector& {
@@ -331,5 +326,3 @@ struct tuple_element<I, xme::Vector<T, Size>> {
     using type = T;
 };
 } // namespace std
-
-#include "../../../private/math/vectors/io.hpp"

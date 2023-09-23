@@ -40,7 +40,7 @@ public:
     constexpr void clear() noexcept {
         if constexpr (!std::is_trivially_destructible_v<T>) {
             while (m_read_index != m_write_index) {
-                std::ranges::destroy_at(&m_data[m_data]);
+                std::ranges::destroy_at(m_data[m_read_index].data());
                 m_read_index = nextIndex(m_read_index);
             }
         } else {
@@ -60,8 +60,8 @@ public:
         if (this->isEmpty(write_index, read_index))
             return false;
 
-        out_value = std::move(m_data[read_index]);
-        std::ranges::destroy_at(&m_data[read_index]);
+        out_value = std::move(*m_data[read_index].data());
+        std::ranges::destroy_at(m_data[read_index].data());
         m_read_index.store(this->nextIndex(read_index), std::memory_order_release);
         return true;
     }
@@ -73,7 +73,7 @@ public:
         if (next == m_read_index.load(std::memory_order_acquire))
             return false; // SPSCQueue is full
 
-        std::ranges::construct_at(&m_data[m_write_index], std::forward<Args>(args)...);
+        std::ranges::construct_at(m_data[m_write_index].data(), std::forward<Args>(args)...);
         m_write_index.store(next, std::memory_order_release);
         return true;
     }
@@ -85,14 +85,14 @@ public:
         if (this->isEmpty(write_index, read_index))
             return false;
 
-        fn(std::move(m_data[read_index]));
-        std::ranges::destroy_at(&m_data[read_index]);
+        fn(std::move(*m_data[read_index].data()));
+        std::ranges::destroy_at(m_data[read_index].data());
         m_read_index.store(this->nextIndex(read_index), std::memory_order_release);
         return true;
     }
 
 private:
-    xme::AlignedData<T, Size> m_data;
+    std::array<xme::AlignedData<T>, Size> m_data;
 };
 
 template<typename T, std::size_t Size, CStatelessAllocator Alloc>
@@ -129,7 +129,7 @@ public:
     constexpr void clear() noexcept {
         if constexpr (!std::is_trivially_destructible_v<T>) {
             while (m_read_index != m_write_index) {
-                std::ranges::destroy_at(&m_data[m_data]);
+                std::ranges::destroy_at(&m_data[m_read_index]);
                 m_read_index = nextIndex(m_read_index);
             }
         } else {

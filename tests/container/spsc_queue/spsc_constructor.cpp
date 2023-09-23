@@ -3,7 +3,7 @@
 #include <thread>
 
 struct TestQueue {
-    TestQueue() { worker = std::jthread(&TestQueue::job, this); }
+    TestQueue() { worker = std::thread(&TestQueue::job, this); }
 
     ~TestQueue() {
         running = false;
@@ -27,12 +27,13 @@ struct TestQueue {
             const std::size_t available = queue.readAvailable();
             for (std::size_t i = 0; i < available; ++i)
                 queue.consume([](int&& a) { std::cerr << a << ' '; });
-
+            
+            std::this_thread::yield();
             std::this_thread::sleep_until(end);
         }
     }
 
-    std::jthread worker;
+    std::thread worker;
     xme::SPSCQueue<int, 512, xme::StaticAllocation> queue;
     bool running = true;
 };

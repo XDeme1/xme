@@ -14,11 +14,12 @@ class SharedLibrary {
 public:
     constexpr SharedLibrary() noexcept = default;
     constexpr SharedLibrary(const SharedLibrary&) = delete;
+    constexpr auto operator=(const SharedLibrary&) -> SharedLibrary& = delete;
+
     constexpr SharedLibrary(SharedLibrary&& rhs) noexcept : m_library(rhs.m_library) {
         rhs.m_library = nullptr;
     }
 
-    constexpr auto operator=(const SharedLibrary&) -> SharedLibrary& = delete;
     constexpr auto operator=(SharedLibrary&& rhs) noexcept -> SharedLibrary& {
         std::ranges::swap(m_library, rhs.m_library);
         return *this;
