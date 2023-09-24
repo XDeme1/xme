@@ -34,10 +34,16 @@ public:
 
     template<typename U>
     constexpr Matrix(const Matrix<U, Cols, Rows>& m) noexcept {
-        for(std::size_t i = 0; i < Cols; ++i)
+        for (std::size_t i = 0; i < Cols; ++i)
             m_data[i] = m[i];
     }
-    
+
+    template<typename U>
+        requires(Cols == Rows && Cols == 4)
+    constexpr Matrix(const Matrix<U, 3, 3>& m) noexcept
+        : m_data({column_type{m[0], 0}, column_type{m[1], 0}, column_type{m[2], 0},
+                 column_type{0, 0, 0, 1}}) {}
+
     constexpr auto operator-() const noexcept -> Matrix {
         Matrix result{0};
         for (std::size_t i = 0; i < Cols; ++i)
@@ -145,14 +151,14 @@ public:
 
     template<CArithmetic U>
     constexpr auto operator*=(U s) noexcept -> Matrix& {
-        for(std::size_t i = 0; i < Cols; ++i)
+        for (std::size_t i = 0; i < Cols; ++i)
             m_data[i] *= s;
         return *this;
     }
 
     template<CArithmetic U>
     constexpr auto operator/=(U s) noexcept -> Matrix& {
-        for(std::size_t i = 0; i < Cols; ++i)
+        for (std::size_t i = 0; i < Cols; ++i)
             m_data[i] /= s;
         return *this;
     }
@@ -161,7 +167,7 @@ public:
     constexpr auto& operator[](std::size_t i) const noexcept { return m_data[i]; }
 
     constexpr auto operator<=>(const Matrix&) const noexcept = default;
-    
+
     constexpr bool operator==(const Matrix&) const noexcept = default;
 
     constexpr auto row(std::size_t row) const noexcept -> row_type {
