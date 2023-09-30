@@ -14,12 +14,6 @@ concept CAllocator = requires(T a, typename T::value_type* ptr) {
     a.deallocate(ptr, std::size_t(1));
 };
 
-template<typename T>
-concept CStatefulAllocator = CAllocator<T> && !std::is_empty_v<T>;
-
-template<typename T>
-concept CStatelessAllocator = CAllocator<T> && std::is_empty_v<T>;
-
 namespace detail {
 template<typename T, std::size_t I>
 concept CTupleElement = requires(T t) {

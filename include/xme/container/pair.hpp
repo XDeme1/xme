@@ -44,7 +44,6 @@ public:
     }
 
     constexpr auto operator<=>(const self&) const = default;
-
     constexpr bool operator==(const self&) const = default;
 
     constexpr void swap(Pair& p) noexcept(std::is_nothrow_swappable_v<T> &&

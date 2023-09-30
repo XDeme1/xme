@@ -1,10 +1,17 @@
 #pragma once
 #include "../../../private/container/array_base.hpp"
 #include "concepts.hpp"
+#include <cassert>
 #include <memory>
 
 namespace xme {
-template<typename T, CStatelessAllocator Alloc = std::allocator<T>>
+//! Array is a contigous container with dynamic size.
+//! Random access is O(1).
+//! push and pop from end is amortized O(1).
+//! insert at the middle is O(n).
+//! @param T the type of the stored element
+//! @param Alloc must be an allocator that satisfies the Allocator concept
+template<typename T, CAllocator Alloc = std::allocator<T>>
 class Array {
 private:
     using self = Array<T, Alloc>;
@@ -16,23 +23,25 @@ public:
                   "xme::Array must have the same T as its allocator");
 
     using allocator_type = Alloc;
+    using size_type = std::size_t;
+    using difference_type = std::ptrdiff_t;
     using value_type = T;
     using reference = T&;
     using const_reference = const T&;
     using pointer = T*;
     using const_pointer = const T*;
-    using size_type = std::size_t;
-    using difference_type = std::ptrdiff_t;
     using iterator = detail::ContinuousIterator<T>;
     using const_iterator = detail::ContinuousIterator<const T>;
 
     constexpr Array() noexcept = default;
 
+    //! Allocates memory for N elements, but doesn't create any.
     explicit constexpr Array(size_type n) {
         m_data.begin = m_data.end = m_allocator.allocate(n);
         m_data.storage_end = m_data.begin + n;
     }
 
+    //! Allocates and create N elements of the same value.
     constexpr Array(size_type n, const T& value) : Array(n) {
         try {
             for (std::size_t i = 0; i < n; ++i) {
@@ -87,9 +96,8 @@ public:
     }
 
     constexpr auto operator=(Array&& other) noexcept -> Array& {
-        self tmp;
-        std::ranges::swap(m_data, other.m_data);
-        std::ranges::swap(tmp.m_data, other.m_data);
+        self tmp{std::move(other)};
+        std::ranges::swap(m_data, tmp.m_data);
         return *this;
     }
 
@@ -102,15 +110,12 @@ public:
     }
 
     constexpr auto begin() noexcept -> iterator { return m_data.begin; }
-
     constexpr auto end() noexcept -> iterator { return m_data.end; }
 
     constexpr auto begin() const noexcept -> const_iterator { return m_data.begin; }
-
     constexpr auto end() const noexcept -> const_iterator { return m_data.end; }
 
     constexpr auto cbegin() const noexcept -> const_iterator { return m_data.begin; }
-
     constexpr auto cend() const noexcept -> const_iterator { return m_data.end; }
 
     constexpr auto size() const noexcept -> size_type {
@@ -125,7 +130,7 @@ public:
 
     constexpr void clear() noexcept {
         if constexpr (!std::is_trivially_destructible_v<T>) {
-            T* first = m_data.begin;
+            pointer first = m_data.begin;
             for (; first != m_data.end; ++first) {
                 std::ranges::destroy_at(first);
             }
@@ -133,9 +138,20 @@ public:
         m_data.end = m_data.begin;
     }
 
+    //! Grows the Array capacity,
+    //! If the argument is lower than the current capacity, nothing happens,
     constexpr void reserve(size_type n) {
         if(capacity() < n)
             growStorage(n);
+    }
+
+    //! Grows or shrinks the Array capacity.
+    //! When growing, only allocates memory, doesn't create objects.
+    constexpr void resize(size_type n) {
+        if (capacity() < n)
+            growStorage(n);
+        else if (capacity() > n)
+            shrinkStorage(n);
     }
 
     template<std::convertible_to<T> U>
@@ -143,7 +159,10 @@ public:
         emplaceBack(std::forward<U>(value));
     }
 
-    constexpr void popBack() { std::ranges::destroy_at(--m_data.end); }
+    constexpr void popBack() {
+        assert(size() > 0);
+        std::ranges::destroy_at(--m_data.end);
+    }
 
     template<typename... Args>
     constexpr auto emplaceBack(Args&&... args) -> reference {
@@ -159,11 +178,18 @@ private:
     constexpr void growStorage(std::size_t n) {
         self tmp(n);
         for (std::size_t i = 0; i < size(); ++i) {
-            tmp[i] = std::move(m_data.begin[i]);
-            std::ranges::destroy_at(&m_data.begin[i]);
+            std::ranges::construct_at(tmp.m_data.end, std::move(m_data.begin[i]));
+            ++tmp.m_data.end;
         }
-        m_data.end = m_data.begin;
-        tmp.m_data.end = tmp.m_data.begin + size();
+        std::ranges::swap(m_data, tmp.m_data);
+    }
+
+    constexpr void shrinkStorage(std::size_t n) {
+        self tmp(n);
+        for (std::size_t i = 0; i < n; ++i) {
+            std::ranges::construct_at(tmp.m_data.end, std::move(m_data.begin[i]));
+            ++tmp.m_data.end;
+        }
         std::ranges::swap(m_data, tmp.m_data);
     }
 

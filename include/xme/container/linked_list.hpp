@@ -6,7 +6,7 @@
 #include <type_traits>
 
 namespace xme {
-template<typename T, CStatelessAllocator Alloc = std::allocator<T>>
+template<typename T, CAllocator Alloc = std::allocator<T>>
 class LinkedList {
 private:
     using node_base = detail::LinkedListNodeBase;

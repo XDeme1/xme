@@ -95,7 +95,7 @@ private:
     std::array<xme::AlignedData<T>, Size> m_data;
 };
 
-template<typename T, std::size_t Size, CStatelessAllocator Alloc>
+template<typename T, std::size_t Size, CAllocator Alloc>
     requires(is_power_of_2<Size>)
 class SPSCQueue<T, Size, DynamicAllocation<Alloc>>
     : public detail::SPSCQueueBase<T, Size> {

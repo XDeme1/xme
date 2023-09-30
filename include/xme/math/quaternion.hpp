@@ -11,8 +11,8 @@ public:
     constexpr Quaternion() noexcept = default;
 
     constexpr Quaternion(auto _w, auto _x, auto _y, auto _z) noexcept
-        : data({static_cast<T>(_w), static_cast<T>(_x), static_cast<T>(_y),
-                  static_cast<T>(_z)}) {}
+        : w(static_cast<T>(_w)), x(static_cast<T>(_x)), y(static_cast<T>(_y)),
+          z(static_cast<T>(_z)) {}
 
     constexpr Quaternion(const xme::Vector<T, 3>& euler) noexcept {
         const auto c = xme::cos(euler * T(0.5));
@@ -23,7 +23,7 @@ public:
         y = c[0] * s[1] * c[2] + s[0] * c[1] * s[2];
         z = c[0] * c[1] * s[2] - s[0] * s[1] * c[2];
     }
-    
+
     constexpr operator Matrix<T, 3>() const noexcept;
     constexpr operator Matrix<T, 4>() const noexcept;
 
@@ -34,18 +34,13 @@ public:
     template<typename U>
     constexpr auto operator*(const Quaternion<U>& q) const noexcept;
 
-    constexpr auto& operator[](std::size_t i) noexcept { return data[i]; }
-    constexpr auto& operator[](std::size_t i) const noexcept { return data[i]; }
+    constexpr auto& operator[](std::size_t i) noexcept { return (&w)[i]; }
+    constexpr auto& operator[](std::size_t i) const noexcept { return (&w)[i]; }
 
-    union {
-        struct {
-            T w;
-            T x;
-            T y;
-            T z;
-        };
-        std::array<T, 4> data{1, 0, 0, 0}; // w, x, y, z
-    };
+    T w{1};
+    T x{0};
+    T y{0};
+    T z{0};
 };
 
 template<typename T, typename... Args, typename Temp = std::common_type_t<T, Args...>>

@@ -1,4 +1,5 @@
 #include "../common.hpp"
+#include <xme/container/array.hpp>
 
 int main() {
     int errors = 0;
@@ -146,8 +147,7 @@ int main() {
             std::cerr << "xme::Array(const Array&) || xme::Array(Array&&) error\n";
         }
     }
-    std::vector<int> a;
-    a.emplace_back(1);
+
     return errors;
 }
 
