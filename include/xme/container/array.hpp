@@ -3,6 +3,7 @@
 #include "concepts.hpp"
 #include <cassert>
 #include <memory>
+#include <cstring>
 
 namespace xme {
 //! Array is a contigous container with dynamic size.
@@ -118,6 +119,12 @@ public:
     constexpr auto cbegin() const noexcept -> const_iterator { return m_data.begin; }
     constexpr auto cend() const noexcept -> const_iterator { return m_data.end; }
 
+    constexpr auto front() noexcept -> reference { return *begin(); }
+    constexpr auto front() const noexcept -> const_reference { return *begin(); }
+
+    constexpr auto back() noexcept -> reference { return *(end()-1); }
+    constexpr auto back() const noexcept -> reference { return *(end()-1); }
+
     constexpr auto size() const noexcept -> size_type {
         return m_data.end - m_data.begin;
     }
@@ -129,11 +136,8 @@ public:
     constexpr bool isEmpty() const noexcept { return m_data.begin == m_data.end; }
 
     constexpr void clear() noexcept {
-        if constexpr (!std::is_trivially_destructible_v<T>) {
-            pointer first = m_data.begin;
-            for (; first != m_data.end; ++first) {
-                std::ranges::destroy_at(first);
-            }
+        if constexpr (!std::is_trivially_destructible_v<T>){
+            std::ranges::destroy(*this);
         }
         m_data.end = m_data.begin;
     }
@@ -189,25 +193,21 @@ public:
         }
         std::ranges::construct_at(m_data.end, std::forward<Args>(args)...);
         ++m_data.end;
-        return *(m_data.end - 1);
+        return back();
     }
 
 private:
     constexpr void growStorage(std::size_t n) {
         self tmp(n);
-        for (std::size_t i = 0; i < size(); ++i) {
-            std::ranges::construct_at(tmp.m_data.end, std::move(m_data.begin[i]));
-            ++tmp.m_data.end;
-        }
+        tmp.m_data.end = tmp.m_data.begin + size();
+        std::ranges::move(*this, tmp.begin());
         std::ranges::swap(m_data, tmp.m_data);
     }
 
     constexpr void shrinkStorage(std::size_t n) {
         self tmp(n);
-        for (std::size_t i = 0; i < n; ++i) {
-            std::ranges::construct_at(tmp.m_data.end, std::move(m_data.begin[i]));
-            ++tmp.m_data.end;
-        }
+        tmp.m_data.end = tmp.m_data.begin + n;
+        std::ranges::move(*this, tmp.begin());
         std::ranges::swap(m_data, tmp.m_data);
     }
 

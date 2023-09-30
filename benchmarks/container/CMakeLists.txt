@@ -1,3 +1,4 @@
+CreateBench(array)
 CreateBench(tuple_homogeneous)
 CreateBench(tuple_heterogeneous)
 CreateBench(tuple_single)
