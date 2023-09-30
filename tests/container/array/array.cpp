@@ -28,11 +28,31 @@ int testInsertion() {
     int errors = 0;
     {
         xme::Array<float> arr(2, 0.5);
-        arr.pushBacK(0.25);
+        arr.pushBack(0.25);
         bool error = arr[0] != 0.5f || arr[1] != 0.5f || arr[2] != 0.25f;
         error |= arr.capacity() != 4 || arr.size() != 3;
         if(error) {
             std::cerr << "xme::Array::pushBack error\n";
+            ++errors;
+        }
+    }
+    {
+        std::array<int, 3> ar{1, 5, 3};
+        xme::Array<float> arr;
+        arr.pushBack(ar.begin(), ar.end());
+        bool error = arr[0] != 1 || arr[1] != 5 || arr[2] != 3;
+        if(error) {
+            std::cerr << "xme::Array::pushBack iterators error\n";
+            ++errors;
+        }
+    }
+    {
+        std::array<float, 2> ar{-0.5, 9.25};
+        xme::Array<float> arr;
+        arr.pushBack(ar);
+        bool error = arr[0] != -0.5 || arr[1] != 9.25;
+        if(error) {
+            std::cerr << "xme::Array::pushBack range error\n";
             ++errors;
         }
     }
@@ -112,7 +132,5 @@ int main() {
     errors += testInsertion();
     errors += testDelete();
     errors += testResize();
-    std::vector<int> a;
-    a.insert(a.begin(), 2);
     return errors;
 }

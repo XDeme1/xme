@@ -155,8 +155,26 @@ public:
     }
 
     template<std::convertible_to<T> U>
-    constexpr void pushBacK(U&& value) {
+    constexpr void pushBack(U&& value) {
         emplaceBack(std::forward<U>(value));
+    }
+
+    template<std::input_iterator Iter, std::sentinel_for<Iter> Sent>
+    constexpr void pushBack(Iter first, Sent last) {
+        std::size_t dist = std::ranges::distance(first, last);
+        if(size()+dist > capacity()) {
+            growStorage(capacity()+dist);
+        }
+        for(; first != last; ++first) {
+            std::ranges::construct_at(m_data.end, *first);
+            ++m_data.end;
+        }
+    }
+
+    template<std::ranges::input_range R>
+        requires(std::convertible_to<std::ranges::range_reference_t<R>, T>)
+    constexpr void pushBack(R&& range) {
+        pushBack(std::ranges::begin(range), std::ranges::end(range));
     }
 
     constexpr void popBack() {
