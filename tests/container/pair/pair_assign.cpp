@@ -1,4 +1,5 @@
 #include "../common.hpp"
+#include <xme/container/pair.hpp>
 
 int main() {
     int errors = 0;

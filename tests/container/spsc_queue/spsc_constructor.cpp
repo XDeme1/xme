@@ -1,4 +1,5 @@
 #include "../common.hpp"
+#include <xme/container/spsc_queue.hpp>
 #include <chrono>
 #include <thread>
 

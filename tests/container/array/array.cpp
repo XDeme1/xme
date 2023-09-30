@@ -12,12 +12,22 @@ int testAccess() {
         }
     }
     {
-        xme::Array<float> arr{5, 0.5};
+        std::array<float, 2> a{5, 0.5};
+        xme::Array<float> arr{a.begin(), a.end()};
         auto b = arr.cbegin();
         bool error = (*(b++) != 5);
         error |= (*(b++) != 0.5f);
         if(error) {
             std::cerr << "xme::Array iterator error\n";
+            ++errors;
+        }
+    }
+    {
+        std::array<float, 2> a{0.25, 0.125};
+        xme::Array<float> arr{a};
+        bool error = arr.front() != 0.25 || arr.back() != 0.125;
+        if(error) {
+            std::cerr << "xme::Array::front and xme::Array::back error\n";
             ++errors;
         }
     }

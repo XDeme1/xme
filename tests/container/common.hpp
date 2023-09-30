@@ -1,9 +1,9 @@
 #pragma once
 
-#include <xme/container/container.hpp>
 #include <algorithm>
 #include <iostream>
 #include <vector>
+#include <array>
 
 constexpr bool isError(bool b) { return b == false; }
 

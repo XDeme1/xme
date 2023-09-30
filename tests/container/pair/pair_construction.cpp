@@ -1,4 +1,5 @@
 #include "../common.hpp"
+#include <xme/container/pair.hpp>
 
 int main() {
     int errors = 0;
@@ -37,7 +38,7 @@ int main() {
     static_assert(std::is_trivially_copy_constructible_v<decltype(p1)>);
     static_assert(std::is_trivially_copy_constructible_v<decltype(p4)>);
     static_assert(std::is_trivially_copy_constructible_v<decltype(p5)>);
-    static_assert(!std::is_trivially_copy_constructible_v<xme::Tuple<std::string, int>>);
+    static_assert(!std::is_trivially_copy_constructible_v<xme::Pair<std::string, int>>);
 
     static_assert(std::is_trivially_default_constructible_v<decltype(p1)>);
     static_assert(

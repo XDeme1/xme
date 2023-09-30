@@ -1,4 +1,6 @@
 #include "../common.hpp"
+#include <xme/container/pair.hpp>
+#include <xme/container/tuple.hpp>
 
 int main() {
     int errors = 0;
