@@ -80,8 +80,9 @@ public:
     constexpr Array(Array&& other) noexcept { std::ranges::swap(m_data, other.m_data); }
 
     constexpr ~Array() noexcept {
-        clear();
-        m_allocator.deallocate(m_data.begin, capacity());
+        std::ranges::destroy(*this);
+        if(m_data.begin)
+            m_allocator.deallocate(m_data.begin, capacity());
     }
 
     constexpr auto operator=(std::initializer_list<T> list) -> Array& {
@@ -158,6 +159,32 @@ public:
             shrinkStorage(n);
     }
 
+    //! Inserts value in a specified position and returns the position.
+    //! If the copy/move constructor throw, the state is unspecified.
+    //! It is recommended to never throw on move construcor/assignment.
+    template<std::convertible_to<T> U>
+    constexpr auto insert(const_iterator pos, U&& value) -> iterator {
+        pointer p = const_cast<pointer>(pos.operator->());
+        if(size()+1 > capacity()) {
+            self tmp(capacity() == 0 ? 1 : capacity()*2);
+            const auto elements_before = std::ranges::distance(begin(), pos);
+            // Must be constructed first, so if it throws we don't break the original array
+            std::ranges::construct_at(tmp.m_data.begin+elements_before, std::forward<U>(value));
+
+            std::ranges::move(begin(), pos, tmp.begin());
+            std::ranges::move(pos, end(), tmp.begin()+elements_before+1);
+            tmp.m_data.end = tmp.m_data.begin+size()+1;
+            std::ranges::swap(m_data, tmp.m_data);
+            
+            return tmp.begin()+elements_before;
+        }
+        
+        std::ranges::move_backward(pos, end(), end()+1);
+        ++m_data.end;
+        std::ranges::construct_at(p, std::forward<U>(value));
+        return p;
+    }
+
     template<std::convertible_to<T> U>
     constexpr void pushBack(U&& value) {
         emplaceBack(std::forward<U>(value));
@@ -188,26 +215,30 @@ public:
 
     template<typename... Args>
     constexpr auto emplaceBack(Args&&... args) -> reference {
-        if (m_data.end == m_data.storage_end) {
-            growStorage(capacity() == 0 ? 1 : capacity() * 2);
-        }
-        std::ranges::construct_at(m_data.end, std::forward<Args>(args)...);
-        ++m_data.end;
+        if(m_data.end == m_data.storage_end)
+            growStorage(size() + std::max(size(), size_type(1)));
+            
+        std::ranges::construct_at(m_data.end++, std::forward<Args>(args)...);
         return back();
     }
 
 private:
     constexpr void growStorage(std::size_t n) {
-        self tmp(n);
-        tmp.m_data.end = tmp.m_data.begin + size();
-        std::ranges::move(*this, tmp.begin());
-        std::ranges::swap(m_data, tmp.m_data);
+        const auto old_size = size();
+        pointer new_begin = m_allocator.allocate(n);
+
+        std::ranges::move(m_data.begin, m_data.end, new_begin);
+        m_allocator.deallocate(m_data.begin, capacity());
+        m_data.begin = new_begin;
+        m_data.end = new_begin+old_size;
+        m_data.storage_end = new_begin+n;
     }
 
     constexpr void shrinkStorage(std::size_t n) {
         self tmp(n);
         tmp.m_data.end = tmp.m_data.begin + n;
-        std::ranges::move(*this, tmp.begin());
+        std::ranges::move(begin(), begin()+n, tmp.begin());
+        std::ranges::destroy(begin()+n, end());
         std::ranges::swap(m_data, tmp.m_data);
     }
 

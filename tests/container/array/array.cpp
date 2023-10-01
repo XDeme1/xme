@@ -76,6 +76,20 @@ int testInsertion() {
             ++errors;
         }
     }
+    {
+        xme::Array<float> arr(3);
+        arr.insert(arr.begin(), 0.25);
+        arr.insert(arr.end(), 0.5f);
+        arr.insert(arr.begin()+1, 1);
+        bool error = arr[0] != 0.25 || arr[1] != 1 || arr[2] != 0.5;
+        arr.insert(arr.begin()+1, 2.5);
+        error |= arr[0] != 0.25 || arr[1] != 2.5 || arr[2] != 1 || arr[3] != 0.5;
+        error |= arr.size() != 4 || arr.capacity() != 6;
+        if(error) {
+            std::cerr << "xme::Array::insert error\n";
+            ++errors;
+        }
+    }
     return errors;
 }
 

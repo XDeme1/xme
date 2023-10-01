@@ -30,32 +30,20 @@ public:
 
     constexpr auto operator*() const noexcept -> reference { return *current; }
 
-    constexpr auto operator+(std::ptrdiff_t n) const noexcept -> self {
+    constexpr auto operator+(difference_type n) const noexcept -> self {
         return current + n;
     }
 
-    constexpr auto operator-(std::ptrdiff_t n) const noexcept -> self {
+    constexpr auto operator-(difference_type n) const noexcept -> self {
         return current - n;
     }
 
-    friend constexpr auto operator+(std::ptrdiff_t n, const self& it) noexcept -> self {
+    friend constexpr auto operator+(difference_type n, const self& it) noexcept -> self {
         return n + it.current;
     }
 
-    friend constexpr auto operator-(std::ptrdiff_t n, const self& it) noexcept -> self {
+    friend constexpr auto operator-(difference_type n, const self& it) noexcept -> self {
         return n - it.current;
-    }
-
-    template<typename U1, typename U2>
-    friend constexpr auto operator+(const ContinuousIterator<U1>& lhs,
-                                    const ContinuousIterator<U2>& rhs) noexcept -> self {
-        return lhs.current + rhs.current;
-    }
-
-    template<typename U1, typename U2>
-    friend constexpr auto operator-(const ContinuousIterator<U1>& lhs,
-                                    const ContinuousIterator<U2>& rhs) noexcept -> self {
-        return lhs.current - rhs.current;
     }
 
     constexpr auto operator++() noexcept -> self& {
@@ -80,12 +68,12 @@ public:
         return tmp;
     }
 
-    constexpr auto operator+=(std::ptrdiff_t n) noexcept -> self& {
+    constexpr auto operator+=(difference_type n) noexcept -> self& {
         current += n;
         return *this;
     }
 
-    constexpr auto operator-=(std::ptrdiff_t n) noexcept -> self& {
+    constexpr auto operator-=(difference_type n) noexcept -> self& {
         current -= n;
         return *this;
     }
