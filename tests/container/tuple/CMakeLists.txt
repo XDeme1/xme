@@ -1,5 +1,1 @@
-CreateTest(tuple_construction)
-CreateTest(tuple_assign)
-CreateTest(tuple_operations)
-CreateTest(tuple_access)
-CreateTest(tuple_traits)
+CreateTest(tuple)
