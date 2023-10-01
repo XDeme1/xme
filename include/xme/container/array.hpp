@@ -1,9 +1,8 @@
 #pragma once
-#include "../../../private/container/array_base.hpp"
 #include "concepts.hpp"
 #include <cassert>
 #include <memory>
-#include <cstring>
+#include <xme/iterators/contiguous_iterator.hpp>
 
 namespace xme {
 //! Array is a contigous container with dynamic size.
@@ -31,8 +30,8 @@ public:
     using const_reference = const T&;
     using pointer = T*;
     using const_pointer = const T*;
-    using iterator = detail::ContinuousIterator<T>;
-    using const_iterator = detail::ContinuousIterator<const T>;
+    using iterator = ContiguousIterator<T>;
+    using const_iterator = ContiguousIterator<const T>;
 
     constexpr Array() noexcept = default;
 

@@ -17,6 +17,7 @@ function(CreateTest NAME)
 endfunction()
 
 add_subdirectory(container)
+add_subdirectory(iterators)
 add_subdirectory(math)
 add_subdirectory(platform)
 add_subdirectory(algorithm)

@@ -19,11 +19,11 @@ private:
     using self = LinkedListIterator<T>;
 
 public:
-
+    using size_type = std::size_t;
+    using difference_type = std::ptrdiff_t;
     using value_type = T;
     using pointer = T*;
     using reference = T&;
-    using difference_type = std::ptrdiff_t;
     using iterator_category = std::forward_iterator_tag;
 
     constexpr LinkedListIterator() noexcept = default;
@@ -38,20 +38,20 @@ public:
         return *static_cast<node*>(current_node)->storage.data();
     }
 
-    constexpr auto operator++() noexcept -> LinkedListIterator& {
+    constexpr auto operator++() noexcept -> self& {
         current_node = current_node->next;
         return *this;
     }
 
-    constexpr auto operator++(int) noexcept -> LinkedListIterator {
+    constexpr auto operator++(int) noexcept -> self {
         self tmp{*this};
         current_node = current_node->next;
         return tmp;
     }
 
-    friend constexpr bool operator==(const self& lhs, const self& rhs) noexcept {
-        return lhs.current_node == rhs.current_node;
-    }
+    constexpr auto operator<=>(const LinkedListIterator&) const noexcept = default;
+
+    constexpr bool operator==(const LinkedListIterator&) const noexcept = default;
 
     node_base* current_node = nullptr;
 };
@@ -97,9 +97,9 @@ public:
         return tmp;
     }
 
-    friend constexpr bool operator==(const self& lhs, const self& rhs) noexcept {
-        return lhs.current_node == rhs.current_node;
-    }
+    constexpr auto operator<=>(const LinkedListConstIterator&) const noexcept = default;
+
+    constexpr bool operator==(const LinkedListConstIterator&) const noexcept = default;
 
     const node_base* current_node = nullptr;
 };
