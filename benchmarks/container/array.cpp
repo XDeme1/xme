@@ -11,9 +11,8 @@ template<typename T>
 void benchPushXme(benchmark::State& state) {
     xme::Array<int64_t> arr(10'000);
     for(auto&& _ : state) {
-        for(auto i = 0; i < 20'000; ++i)
-            arr.emplaceBack();
-        arr.clear();
+        arr.emplaceBack();
+        benchmark::DoNotOptimize(arr);
     }
 }
 
@@ -22,9 +21,8 @@ void benchPushStd(benchmark::State& state) {
     std::vector<int64_t> arr;
     arr.reserve(10'000);
     for(auto&& _ : state) {
-        for(auto i = 0; i < 20'000; ++i)
-            arr.emplace_back();
-        arr.clear();
+        arr.emplace_back();
+        benchmark::DoNotOptimize(arr);
     }
 }
 

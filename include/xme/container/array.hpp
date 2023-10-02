@@ -49,7 +49,7 @@ public:
                 ++m_data.end;
             }
         } catch (...) {
-            clear();
+            std::ranges::destroy(*this);
             throw;
         }
     }
@@ -64,7 +64,7 @@ public:
                 ++m_data.end;
             }
         } catch (...) {
-            clear();
+            std::ranges::destroy(*this);
             throw;
         }
     }
@@ -103,12 +103,17 @@ public:
     }
 
     constexpr auto operator[](size_type index) noexcept -> reference {
+        assert(index < size());
         return m_data.begin[index];
     }
 
     constexpr auto operator[](size_type index) const noexcept -> const_reference {
+        assert(index < size());
         return m_data.begin[index];
     }
+
+    constexpr auto data() noexcept -> pointer { return m_data.begin; }
+    constexpr auto data() const noexcept -> const_pointer { return m_data.begin; } 
 
     constexpr auto begin() noexcept -> iterator { return m_data.begin; }
     constexpr auto end() noexcept -> iterator { return m_data.end; }
@@ -234,11 +239,15 @@ private:
     }
 
     constexpr void shrinkStorage(std::size_t n) {
-        self tmp(n);
-        tmp.m_data.end = tmp.m_data.begin + n;
-        std::ranges::move(begin(), begin()+n, tmp.begin());
-        std::ranges::destroy(begin()+n, end());
-        std::ranges::swap(m_data, tmp.m_data);
+        const auto elements_to_move = std::min(size(), n);
+        pointer new_begin = m_allocator.allocate(n);
+
+        std::ranges::move(begin(), begin()+elements_to_move, new_begin);
+        std::ranges::destroy(begin()+elements_to_move, end());
+        m_allocator.deallocate(m_data.begin, capacity());
+        m_data.begin = new_begin;
+        m_data.end = new_begin+elements_to_move;
+        m_data.storage_end = new_begin+n;
     }
 
 private:

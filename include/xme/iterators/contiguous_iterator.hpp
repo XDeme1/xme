@@ -76,7 +76,7 @@ public:
         return *this;
     }
 
-    constexpr auto operator[](size_type n) const noexcept -> reference {
+    constexpr auto operator[](difference_type n) const noexcept -> reference {
         return m_current[n];
     }
 
