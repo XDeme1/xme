@@ -17,8 +17,21 @@ int testAccess() {
         auto b = arr.cbegin();
         bool error = (*(b++) != 5);
         error |= (*(b++) != 0.5f);
+        error |= b != arr.cend();
         if(error) {
             std::cerr << "xme::Array iterator error\n";
+            ++errors;
+        }
+    }
+    {
+        const xme::Array<float> a{5, 0.5};
+        xme::Array<float> arr{a};
+        auto b = arr.rbegin();
+        bool error = (*(b++) != 0.5);
+        error |= (*(b++) != 5);
+        error |= b != arr.rend();
+        if(error) {
+            std::cerr << "xme::Array reverse_iterator error\n";
             ++errors;
         }
     }

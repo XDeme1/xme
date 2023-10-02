@@ -12,7 +12,7 @@ void benchPushXme(benchmark::State& state) {
     xme::Array<int64_t> arr(10'000);
     for(auto&& _ : state) {
         arr.emplaceBack();
-        benchmark::DoNotOptimize(arr);
+        benchmark::DoNotOptimize(arr.data());
     }
 }
 
@@ -22,7 +22,7 @@ void benchPushStd(benchmark::State& state) {
     arr.reserve(10'000);
     for(auto&& _ : state) {
         arr.emplace_back();
-        benchmark::DoNotOptimize(arr);
+        benchmark::DoNotOptimize(arr.data());
     }
 }
 
@@ -31,6 +31,7 @@ void benchInsertXme(benchmark::State& state) {
     xme::Array<T> arr;
     for(auto&& _ : state) {
         arr.insert(arr.cbegin(), T());
+        benchmark::DoNotOptimize(arr.data());
     }
 }
 
@@ -39,6 +40,7 @@ void benchInsertStd(benchmark::State& state) {
     std::vector<T> arr;
     for(auto&& _ : state) {
         arr.insert(arr.cbegin(), T());
+        benchmark::DoNotOptimize(arr.data());
     }
 }
 BENCHMARK(benchPushStd<int64_t>);

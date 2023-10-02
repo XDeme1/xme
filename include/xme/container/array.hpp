@@ -3,6 +3,7 @@
 #include <cassert>
 #include <memory>
 #include <xme/iterators/contiguous_iterator.hpp>
+#include <xme/iterators/reverse_iterator.hpp>
 
 namespace xme {
 //! Array is a contigous container with dynamic size.
@@ -32,6 +33,8 @@ public:
     using const_pointer = const T*;
     using iterator = ContiguousIterator<T>;
     using const_iterator = ContiguousIterator<const T>;
+    using reverse_iterator = xme::ReverseIterator<iterator>;
+    using const_reverse_iterator = xme::ReverseIterator<const_iterator>;
 
     constexpr Array() noexcept = default;
 
@@ -123,6 +126,15 @@ public:
 
     constexpr auto cbegin() const noexcept -> const_iterator { return m_data.begin; }
     constexpr auto cend() const noexcept -> const_iterator { return m_data.end; }
+
+    constexpr auto rbegin() noexcept -> reverse_iterator { return end(); }
+    constexpr auto rend() noexcept -> reverse_iterator { return begin(); }
+
+    constexpr auto rbegin() const noexcept -> const_reverse_iterator { return end(); }
+    constexpr auto rend() const noexcept -> const_reverse_iterator { return begin(); }
+
+    constexpr auto crbegin() const noexcept -> const_reverse_iterator { return cend(); }
+    constexpr auto crend() const noexcept -> const_reverse_iterator { return cbegin(); }
 
     constexpr auto front() noexcept -> reference { return *begin(); }
     constexpr auto front() const noexcept -> const_reference { return *begin(); }

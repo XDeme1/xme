@@ -1,6 +1,4 @@
-#include <array>
 #include <iostream>
-#include <vector>
 #include <xme/iterators/contiguous_iterator.hpp>
 #include <xme/iterators/reverse_iterator.hpp>
 
