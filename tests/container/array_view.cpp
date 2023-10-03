@@ -1,9 +1,10 @@
 #include <xme/container/array_view.hpp>
-#include <span>
 #include <iostream>
 
 static_assert(sizeof(xme::ArrayView<int>) == sizeof(int*) + sizeof(std::size_t));
 static_assert(sizeof(xme::ArrayView<int, 2>) == sizeof(int*));
+static_assert(std::ranges::view<xme::ArrayView<int>>);
+static_assert(std::ranges::borrowed_range<xme::ArrayView<int>>);
 
 int testAccess() {
     int errors = 0;

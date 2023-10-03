@@ -139,13 +139,19 @@ public:
 
     constexpr auto size() const noexcept -> size_type { return m_size.size(); }
 
+    constexpr auto sizeBytes() const noexcept -> size_type {
+        return m_size.size() * sizeof(T);
+    }
+
+    constexpr bool isEmpty() const noexcept { return m_size.size() == 0; }
+
     template<std::size_t Offset, std::size_t Count>
     constexpr auto subview() const noexcept -> ArrayView<T, Count> {
-        if constexpr(Size == dynamic_size)
+        if constexpr (Size == dynamic_size)
             assert(Count + Offset <= size());
         else
             static_assert(Count + Offset <= Size);
-        return ArrayView<T, Count>(m_view+Offset, Count);
+        return ArrayView<T, Count>(m_view + Offset, Count);
     }
 
     constexpr auto subview(size_type offset, size_type count) const noexcept
@@ -186,4 +192,31 @@ private:
     T* m_view = nullptr;
     [[no_unique_address]] detail::Extent<static_cast<std::size_t>(Size)> m_size;
 };
+
+template<typename T, std::size_t Size>
+constexpr auto asBytes(ArrayView<T, Size> view) noexcept
+    -> ArrayView<const std::byte, Size == -1 ? -1 : sizeof(T) * Size> {
+    auto data = reinterpret_cast<const std::byte*>(view.data());
+    auto byteSize = view.sizeBytes();
+    constexpr std::size_t size = Size == -1 ? -1 : sizeof(T) * Size;
+    return ArrayView<const std::byte, size>(data, byteSize);
+}
+
+template<typename T, std::size_t Size>
+    requires(!std::is_const_v<T>)
+constexpr auto asWritableBytes(ArrayView<T, Size> view) noexcept
+    -> ArrayView<std::byte, Size == -1 ? -1 : sizeof(T) * Size> {
+    auto data = reinterpret_cast<std::byte*>(view.data());
+    auto byteSize = view.sizeBytes();
+    constexpr std::size_t size = Size == -1 ? -1 : sizeof(T) * Size;
+    return ArrayView<std::byte, size>(data, byteSize);
+}
 } // namespace xme
+
+namespace std::ranges {
+template<typename T, std::size_t S>
+constexpr bool enable_borrowed_range<xme::ArrayView<T, S>> = true;
+
+template<typename T, std::size_t S>
+constexpr bool enable_view<xme::ArrayView<T, S>> = true;
+} // namespace std::ranges
