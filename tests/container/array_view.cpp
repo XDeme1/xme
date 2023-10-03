@@ -62,8 +62,51 @@ int testAccess() {
     return errors;
 }
 
+int testSubviews() {
+    int errors = 0;
+    {
+        std::array<int, 2> arr{3, -1};
+        xme::ArrayView<int, 2> v{arr};
+        xme::ArrayView<int, 2> view1{v};
+        auto sub = view1.subview(1, 1);
+        auto sub2 = view1.subview<1, 1>();
+        bool error = view1.begin()+1 != sub.begin() || view1.end() != sub.end();
+        error |= view1.begin()+1 != sub2.begin() || view1.end() != sub2.end();
+        if(error) {
+            std::cerr << "xme::ArrayView::subview error\n";
+            ++errors;
+        }
+    }
+    {
+        std::array<int, 3> arr{1, 8, 3};
+        xme::ArrayView<int, 3> view{arr};
+        auto f1 = view.first(2);
+        auto f2 = view.first<2>();
+        bool error = f1.begin() != view.begin() || f1.end() != view.begin()+2;
+        error |= f2.begin() != view.begin() || f2.end() != view.begin()+2;
+        if(error) {
+            std::cerr << "xme::ArrayView::first error\n";
+            ++errors;
+        }
+    }
+    {
+        const std::array<const int, 3> arr{1, 8, 3};
+        const  xme::ArrayView<const int, 3> view{arr};
+        auto f1 = view.last(2);
+        auto f2 = view.last<2>();
+        bool error = f1.begin() != view.begin()+1 || f1.end() != view.end();
+        error |= f2.begin() != view.begin()+1 || f2.end() != view.end();
+        if(error) {
+            std::cerr << "xme::ArrayView::last error\n";
+            ++errors;
+        }
+    }
+    return errors;
+}
+
 int main() {
     int errors = 0;
     errors += testAccess();
+    errors += testSubviews();
     return errors;
 }  

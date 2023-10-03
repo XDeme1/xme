@@ -34,11 +34,11 @@ template<typename U, std::size_t Lenght>
 constexpr bool is_std_array<std::array<U, Lenght>> = true;
 
 template<typename U>
-constexpr bool is_array_view = false; 
+constexpr bool is_array_view = false;
 template<typename U, std::size_t N>
 constexpr bool is_array_view<xme::ArrayView<U, N>> = true;
-}
-}
+} // namespace detail
+} // namespace xme
 
 namespace xme {
 
@@ -132,13 +132,57 @@ public:
     constexpr auto crend() const noexcept -> const_reverse_iterator { return begin(); }
 
     constexpr auto front() noexcept -> reference { return *m_view; }
-    constexpr auto back() noexcept -> reference { return m_view[size()-1]; }
+    constexpr auto back() noexcept -> reference { return m_view[size() - 1]; }
 
     constexpr auto front() const noexcept -> const_reference { return *m_view; }
-    constexpr auto back() const noexcept -> const_reference { return m_view[size()-1]; }
+    constexpr auto back() const noexcept -> const_reference { return m_view[size() - 1]; }
 
     constexpr auto size() const noexcept -> size_type { return m_size.size(); }
 
+    template<std::size_t Offset, std::size_t Count>
+    constexpr auto subview() const noexcept -> ArrayView<T, Count> {
+        if constexpr(Size == dynamic_size)
+            assert(Count + Offset <= size());
+        else
+            static_assert(Count + Offset <= Size);
+        return ArrayView<T, Count>(m_view+Offset, Count);
+    }
+
+    constexpr auto subview(size_type offset, size_type count) const noexcept
+        -> ArrayView<T, dynamic_size> {
+        assert(count + offset <= size());
+        return ArrayView<T, dynamic_size>(m_view + offset, count);
+    }
+
+    template<std::size_t Count>
+    constexpr auto first() const noexcept -> ArrayView<T, Count> {
+        if constexpr (Size == dynamic_size)
+            assert(Count <= size());
+        else
+            static_assert(Count <= Size);
+        return ArrayView<T, Count>(m_view, Count);
+    }
+
+    constexpr auto first(size_type count) const noexcept -> ArrayView<T, dynamic_size> {
+        assert(count <= size());
+        return ArrayView<T, dynamic_size>(m_view, count);
+    }
+
+    template<std::size_t Count>
+    constexpr auto last() const noexcept -> ArrayView<T, Count> {
+        if constexpr (Size == dynamic_size)
+            assert(Count <= size());
+        else
+            static_assert(Count <= Size);
+        return ArrayView<T, Count>(m_view + (size() - Count), Count);
+    }
+
+    constexpr auto last(size_type count) const noexcept -> ArrayView<T, dynamic_size> {
+        assert(count <= size());
+        return ArrayView<T, dynamic_size>(m_view + (size() - count), count);
+    }
+
+private:
     T* m_view = nullptr;
     [[no_unique_address]] detail::Extent<static_cast<std::size_t>(Size)> m_size;
 };
