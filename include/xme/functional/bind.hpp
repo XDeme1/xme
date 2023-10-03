@@ -1,6 +1,7 @@
 #pragma once
 #include <functional>
 #include <xme/container/tuple.hpp>
+#include <xme/utility/forward_like.hpp>
 
 namespace xme {
 namespace detail {
@@ -148,6 +149,18 @@ constexpr auto bindFront(F&& func, Args&&... args) {
         std::forward<F>(func), std::forward<Args>(args)...);
 }
 
+#if defined(_cpp_explicit_this_parameter)
+template<auto f, typename...Args>
+constexpr auto bindFront(Args&&...args) {
+    static_assert((std::is_constructible_v<std::decay_t<Args>, Args> && ...));
+    static_assert((std::is_move_constructible_v<std::decay<Args>> && ...));
+
+    return [...bound_args(std::forward<Args>(args))]<typename Self, typename...T>(this Self&&, T&&...call_args) -> decltype(auto) {
+        return std::invoke(f, xme::forwardLike<Self>(bound_args)..., std::forward<T>(call_args)...);
+    };
+}
+#endif
+
 template<typename F, typename... Args>
 constexpr auto bindBack(F&& func, Args&&... args) {
     static_assert(std::is_constructible_v<std::decay_t<F>, F>);
@@ -158,4 +171,16 @@ constexpr auto bindBack(F&& func, Args&&... args) {
     return detail::BindBack<std::decay_t<F>, std::decay_t<Args>...>(
         std::forward<F>(func), std::forward<Args>(args)...);
 }
+
+#if defined(_cpp_explicit_this_parameter)
+template<auto f, typename...Args>
+constexpr auto bindBack(Args&&...args) {
+    static_assert((std::is_constructible_v<std::decay_t<Args>, Args> && ...));
+    static_assert((std::is_move_constructible_v<std::decay<Args>> && ...));
+
+    return [...bound_args(std::forward<Args>(args))]<typename Self, typename...T>(this Self&&, T&&...call_args) -> decltype(auto) {
+        return std::invoke(f, xme::forwardLike<Self>(bound_args)..., std::forward<T>(call_args)...);
+    };
+}
+#endif
 } // namespace xme
