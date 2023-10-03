@@ -163,11 +163,43 @@ int testResize() {
     return errors;
 }
 
+int testInsertIterators() {
+    int errors = 0;
+    {
+        xme::Array<int> arr(2);
+        std::back_insert_iterator<xme::Array<int>> it{arr};
+        it = 10;
+        it = -3;
+        it = 5;
+        bool error = arr.size() != 3 || arr.capacity() != 4;
+        error |= arr[0] != 10 || arr[1] != -3 || arr[2] != 5;
+        if(error) {
+            std::cerr << "xme::Array back_insert_iterator error\n";
+            ++errors;
+        }
+    }
+    {
+        xme::Array<int> arr;
+        std::insert_iterator<xme::Array<int>> it{arr, arr.begin()};
+        it = -3;
+        it = 2;
+        it = 7;
+        bool error = arr.size() != 3 || arr.capacity() != 4;
+        error |= arr[0] != -3 || arr[1] != 2 || arr[2] != 7;
+        if(error) {
+            std::cerr << "xme::Array insert_iterator error\n";
+            ++errors;
+        }
+    }
+    return errors;
+}
+
 int main() {
     int errors = 0;
     errors += testAccess();
     errors += testInsertion();
     errors += testDelete();
     errors += testResize();
+    errors += testInsertIterators();
     return errors;
 }

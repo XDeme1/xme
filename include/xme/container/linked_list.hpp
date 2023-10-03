@@ -272,6 +272,6 @@ public:
     constexpr auto operator++(int) noexcept -> self { return *this; }
 
 protected:
-    xme::LinkedList<T>* m_container;
+    container_type* m_container;
 };
 } // namespace std

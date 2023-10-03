@@ -192,7 +192,7 @@ public:
             tmp.m_data.end = tmp.m_data.begin+size()+1;
             std::ranges::swap(m_data, tmp.m_data);
             
-            return tmp.begin()+elements_before;
+            return begin()+elements_before;
         }
         
         std::ranges::move_backward(pos, end(), end()+1);
@@ -286,3 +286,73 @@ private:
     [[no_unique_address]] Alloc m_allocator;
 };
 } // namespace xme
+
+namespace std {
+template<typename T, typename Alloc>
+class back_insert_iterator<xme::Array<T, Alloc>> {
+    using self = back_insert_iterator<xme::Array<T, Alloc>>;
+
+public:
+    using container_type = xme::Array<T, Alloc>;
+    using iterator_category = output_iterator_tag;
+
+    explicit constexpr back_insert_iterator(container_type& c) noexcept
+        : m_container(std::addressof(c)) {}
+
+    constexpr auto operator=(const container_type::value_type& value) -> self& {
+        m_container->pushBack(value);
+        return *this;
+    }
+
+    constexpr auto operator=(container_type::value_type&& value) -> self& {
+        m_container->pushBack(std::move(value));
+        return *this;
+    }
+
+    // no-op
+    constexpr auto operator*() noexcept -> self& { return *this; }
+    // no-op
+    constexpr auto operator++() noexcept -> self& { return *this; }
+    // no-op
+    constexpr auto operator++(int) noexcept -> self { return *this; }
+
+protected:
+    container_type* m_container;
+};
+
+template<typename T, typename Alloc>
+class insert_iterator<xme::Array<T, Alloc>> {
+    using self = insert_iterator<xme::Array<T, Alloc>>;
+    using iter = std::ranges::iterator_t<xme::Array<T, Alloc>>;
+
+public:
+    using container_type = xme::Array<T, Alloc>;
+    using iterator_category = output_iterator_tag;
+
+    explicit constexpr insert_iterator(container_type& c, iter _iter) noexcept
+        : m_container(std::addressof(c)), m_iter(_iter) {}
+
+    constexpr auto operator=(const container_type::value_type& value) -> self& {
+        m_iter = m_container->insert(m_iter, value);
+        ++m_iter;
+        return *this;
+    }
+
+    constexpr auto operator=(container_type::value_type&& value) -> self& {
+        m_iter = m_container->insert(m_iter, std::move(value));
+        ++m_iter;
+        return *this;
+    }
+
+    // no-op
+    constexpr auto operator*() noexcept -> self& { return *this; }
+    // no-op
+    constexpr auto operator++() noexcept -> self& { return *this; }
+    // no-op
+    constexpr auto operator++(int) noexcept -> self { return *this; }
+
+protected:
+    container_type* m_container;
+    iter m_iter;
+};
+} // namespace std
