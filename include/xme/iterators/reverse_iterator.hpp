@@ -41,7 +41,6 @@ public:
         if constexpr (std::is_pointer_v<It>)
             return *(m_current - 1);
         else {
-            std::prev(m_current);
             It tmp{m_current};
             return *(--tmp);
         }

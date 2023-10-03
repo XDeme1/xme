@@ -1,4 +1,5 @@
 CreateTest(aligned_data)
+CreateTest(array_view)
 
 add_subdirectory(tuple)
 add_subdirectory(pair)
