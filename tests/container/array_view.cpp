@@ -1,10 +1,51 @@
 #include <xme/container/array_view.hpp>
+#include <xme/container/array.hpp>
 #include <iostream>
 
 static_assert(sizeof(xme::ArrayView<int>) == sizeof(int*) + sizeof(std::size_t));
 static_assert(sizeof(xme::ArrayView<int, 2>) == sizeof(int*));
 static_assert(std::ranges::view<xme::ArrayView<int>>);
 static_assert(std::ranges::borrowed_range<xme::ArrayView<int>>);
+
+
+void testDeductionGuides() {
+    {
+        int a1[2]{};
+        const int a2[2]{};
+        xme::ArrayView v1{a1, 2};
+        xme::ArrayView v2{a2, 2};
+        static_assert(std::is_same_v<decltype(v1), xme::ArrayView<int>>);
+        static_assert(std::is_same_v<decltype(v2), xme::ArrayView<const int>>);
+    }
+    {
+        int arr1[2]{};
+        const int arr2[2]{};
+        xme::ArrayView v1{arr1};
+        xme::ArrayView v2{arr2};
+        static_assert(std::is_same_v<decltype(v1), xme::ArrayView<int, 2>>);
+        static_assert(std::is_same_v<decltype(v2), xme::ArrayView<const int, 2>>);
+    }
+    {
+        std::array<int, 2> a1{};
+        std::array<const int, 2> a3{1, 2};
+        const std::array<int, 2> a2{1, 2};
+        xme::ArrayView v1{a1};
+        xme::ArrayView v2{a2};
+        xme::ArrayView v3{a3};
+        static_assert(std::is_same_v<decltype(v1), xme::ArrayView<int, 2>>);
+        static_assert(std::is_same_v<decltype(v2), xme::ArrayView<const int, 2>>);
+        static_assert(std::is_same_v<decltype(v3), xme::ArrayView<const int, 2>>);
+    }
+    {
+        xme::Array<int> a1{1, 5, 3};
+        const xme::Array<int> a2{1, 5, 3};
+        xme::ArrayView v1{a1};
+        xme::ArrayView v2{a2};
+
+        static_assert(std::is_same_v<decltype(v1), xme::ArrayView<int>>);
+        static_assert(std::is_same_v<decltype(v2), xme::ArrayView<const int>>);
+    }
+}
 
 int testAccess() {
     int errors = 0;
@@ -105,9 +146,36 @@ int testSubviews() {
     return errors;
 }
 
+int testAsBytes() {
+    int errors = 0;
+    {
+        int a1[1]{0x12'43'12'05};
+        xme::ArrayView v1{a1};
+        xme::ArrayView v2{xme::asBytes(v1)};
+        
+        bool error = false;
+        if constexpr(std::endian::native == std::endian::little) {
+            error |= *v2.data() != std::byte(0x5) || *(v2.data()+1) != std::byte(0x12);
+            error |= *(v2.data()+2) != std::byte(0x43) || *(v2.data()+3) != std::byte(0x12);
+        }
+        else {
+            error |= *(v2.data()) != std::byte(0x12) || *(v2.data()+1) != std::byte(0x43);
+            error |= *(v2.data()+2) != std::byte(0x12) || *(v2.data()+3) != std::byte(0x05);
+        }
+
+        if(error) {
+            std::cerr << "xme::ArrayView asBytes error\n";
+            ++errors;
+        }
+    }
+    return errors;
+}
+
 int main() {
     int errors = 0;
+    testDeductionGuides();
     errors += testAccess();
     errors += testSubviews();
+    errors += testAsBytes();
     return errors;
 }  

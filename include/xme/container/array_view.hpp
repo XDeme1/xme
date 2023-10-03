@@ -193,6 +193,21 @@ private:
     [[no_unique_address]] detail::Extent<static_cast<std::size_t>(Size)> m_size;
 };
 
+template<typename I, typename L>
+ArrayView(I*, L) -> ArrayView<I>;
+
+template<typename T, std::size_t N>
+ArrayView(T (&)[N]) -> ArrayView<T, N>;
+
+template<typename T, std::size_t N>
+ArrayView(std::array<T, N>&) -> ArrayView<T, N>;
+
+template<typename T, std::size_t N>
+ArrayView(const std::array<T, N>&) -> ArrayView<const T, N>;
+
+template<typename R>
+ArrayView(R&&) -> ArrayView<std::remove_pointer_t<decltype(std::declval<R&>().data())>>;
+
 template<typename T, std::size_t Size>
 constexpr auto asBytes(ArrayView<T, Size> view) noexcept
     -> ArrayView<const std::byte, Size == -1 ? -1 : sizeof(T) * Size> {
