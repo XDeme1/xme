@@ -22,6 +22,7 @@ add_subdirectory(math)
 add_subdirectory(platform)
 add_subdirectory(algorithm)
 add_subdirectory(functional)
+add_subdirectory(utility)
 
 if (${PROJECT_IS_TOP_LEVEL} OR ${XME_BUILD_MODULES})
 #TODO: Add tests for modules usage
