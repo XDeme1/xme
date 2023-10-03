@@ -1,5 +1,70 @@
-#include "../common.hpp"
+#include "common.hpp"
 #include <xme/container/array.hpp>
+
+int testMoveCopy() {
+    int errors = 0;
+    {
+        xme::Array<int> arr1{5, 3};
+        arr1.reserve(5);
+        xme::Array<int> arr2{arr1};
+
+        bool error = arr2[0] != arr1[0] || arr2[1] != arr1[1];
+        error |= arr2.capacity() != 2 || arr2.size() != 2;
+        error |= arr1.capacity() != 5 || arr1.size() != 2;
+        if(error) {
+            std::cerr << "xme::Array *copy* Constructor error\n";
+            ++errors;
+        }  
+    }
+    {
+        const xme::Array<int> arr1{5, 3};
+        xme::Array<int> arr2{arr1};
+
+        bool error = arr2[0] != arr1[0] || arr2[1] != arr1[1];
+        error |= arr2.capacity() != 2 || arr2.size() != 2;
+        if(error) {
+            std::cerr << "xme::Array copy Constructor error\n";
+            ++errors;
+        }  
+    }
+    {
+        xme::Array<int> arr1{3, 1};
+        arr1.reserve(3);
+        xme::Array<int> arr2{std::move(arr1)};
+        bool error = !arr1.isEmpty() || arr2.capacity() != 3 || arr2.size() != 2;
+        error |= arr2[0] != 3 || arr2[1] != 1;
+        if(error) {
+            std::cerr << "xme::Array move constructor error\n";
+            ++errors;
+        }
+    }
+    {
+        xme::Array<int> arr1{8, 1};
+        arr1.reserve(3);
+        xme::Array<int> arr2{5};
+        arr2 = arr1;
+        bool error = arr1.size() != 2 || arr1.capacity() != 3;
+        error |= arr2.size() != 2 || arr2.capacity() != 2;
+        error |= arr2[0] != 8 || arr2[1] != 1;
+        if(error) {
+            std::cerr << "xme::Array copy assignment error\n";
+            ++errors;
+        }
+    }
+    {
+        xme::Array<int> arr1{5, 3};
+        arr1.reserve(3);
+        xme::Array<int> arr2{1};
+        arr2 = std::move(arr1);
+        bool error = !arr1.isEmpty() || arr2.size() != 2 || arr2.capacity() != 3;
+        error |= arr2[0] != 5 || arr2[1] != 3;
+        if(error) {
+            std::cerr << "xme::Array move assignment error\n";
+            ++errors;
+        }
+    }
+    return errors;
+}
 
 int testAccess() {
     int errors = 0;
@@ -197,6 +262,7 @@ int testInsertIterators() {
 int main() {
     int errors = 0;
     errors += testAccess();
+    errors += testMoveCopy();
     errors += testInsertion();
     errors += testDelete();
     errors += testResize();

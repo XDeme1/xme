@@ -79,7 +79,7 @@ public:
 
     constexpr Array(const Array& other) : Array(other.begin(), other.end()) {}
 
-    constexpr Array(Array&& other) noexcept { std::ranges::swap(m_data, other.m_data); }
+    constexpr Array(Array&& other) noexcept : m_data(std::move(other.m_data)) {}
 
     constexpr ~Array() noexcept {
         std::ranges::destroy(*this);
