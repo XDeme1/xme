@@ -7,7 +7,7 @@
 namespace xme {
 
 template<std::integral T>
-constexpr T rotr(T n, std::uint32_t c) {
+constexpr auto rotr(T n, std::uint32_t c) -> T {
     using u = std::make_unsigned_t<T>;
     constexpr u mask = std::numeric_limits<u>::digits - 1;
     c &= mask;
@@ -16,7 +16,7 @@ constexpr T rotr(T n, std::uint32_t c) {
 }
 
 template<std::integral T>
-constexpr T rotl(T n, std::uint32_t c) {
+constexpr auto rotl(T n, std::uint32_t c) -> T {
     using u = std::make_unsigned_t<T>;
     constexpr u mask = std::numeric_limits<u>::digits - 1;
     c &= mask;
