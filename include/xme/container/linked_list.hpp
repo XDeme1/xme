@@ -6,6 +6,12 @@
 #include <type_traits>
 
 namespace xme {
+//! LinkedList is a singly linked list.
+//! Access is O(N), unless it is the front which is O(1).
+//! push and pop from front is O(1).
+//! insert at the middle is O(n).
+//! @param T the type of the stored element
+//! @param Alloc must be an allocator that satisfies the Allocator concept
 template<typename T, CAllocator Alloc = std::allocator<T>>
 class LinkedList {
 private:
@@ -31,6 +37,7 @@ public:
 
     constexpr LinkedList() noexcept = default;
 
+    //! Default constructs N nodes
     explicit constexpr LinkedList(std::size_t n) {
         node_base* curr = &m_head;
         for (; n > 0; --n) {
@@ -39,6 +46,7 @@ public:
         }
     }
 
+    //! Constructs N nodes with value
     constexpr LinkedList(std::size_t n, const T& value) {
         node_base* curr = &m_head;
         for (; n > 0; --n) {
@@ -47,25 +55,30 @@ public:
         }
     }
 
+    //! Constructs a LinkedList from a [first, end) range
     template<std::input_iterator Iter, std::sentinel_for<Iter> Sent>
     constexpr LinkedList(Iter first, Sent last) {
         rangeInitialize(first, last);
     }
 
+    //! Constructs a LinkedList with the initializer_list syntax
     explicit constexpr LinkedList(std::initializer_list<T> list) {
         rangeInitialize(list.begin(), list.end());
     }
 
+    //! Constructs a LinkedList by Copying elements from other.
     explicit constexpr LinkedList(const LinkedList& other) {
         rangeInitialize(other.begin(), other.end());
     }
 
+    //! Constructs a LinkedList from [begin(range), end(range)) range
     template<std::ranges::input_range R>
         requires(std::convertible_to<std::ranges::range_reference_t<R>, T>)
     explicit constexpr LinkedList(R&& range) {
         rangeInitialize(std::ranges::begin(range), std::ranges::end(range));
     }
 
+    //! Constructs a LinkedList by transfering elements from other
     explicit constexpr LinkedList(LinkedList&& other) noexcept {
         m_head.next = other.m_head.next;
         other.m_head.next = nullptr;
@@ -73,48 +86,60 @@ public:
 
     constexpr ~LinkedList() noexcept { clear(); }
 
+    //! Clears the current elements and copy the elements from other
     constexpr auto operator=(const LinkedList& other) -> LinkedList& {
         assign(other);
         return *this;
     }
 
+    //! Clears the current elements and transfer elements from other
     constexpr auto operator=(LinkedList&& other) noexcept -> LinkedList& {
         clear();
         std::ranges::swap(m_head.next, other.m_head.next);
         return *this;
     }
 
+    //! Clears the current elements and copy elements from list to the current LinkedList
     constexpr auto operator=(std::initializer_list<T> list) -> LinkedList& {
         assign(list);
         return *this;
     }
 
+    //! Returns a iterator to the head
     constexpr auto beforeBegin() noexcept -> iterator { return &m_head; }
-
+    //! Returns a iterator to the head
     constexpr auto beforeBegin() const noexcept -> const_iterator { return &m_head; }
 
+    //! Returns a iterator to the first element
     constexpr auto begin() noexcept -> iterator { return m_head.next; }
-
+    //! Returns a iterator to the first element
     constexpr auto begin() const noexcept -> const_iterator { return m_head.next; }
 
+    //! Returns a iterator representing the end of the LinkedList
     constexpr auto end() noexcept -> iterator { return nullptr; }
-
+    //! Returns a iterator representing the end of the LinkedList
     constexpr auto end() const noexcept -> const_iterator { return nullptr; }
 
+    //! Returns a const iterator to the head
     constexpr auto cbeforeBegin() const noexcept -> const_iterator { return &m_head; }
 
+    //! Returns a const iterator to the first element
     constexpr auto cbegin() const noexcept -> const_iterator { return m_head.next; }
-
+    //! Returns a const iterator representing the end of the LinkedList
     constexpr auto cend() const noexcept -> const_iterator { return nullptr; }
 
+    //! Returns a reference to the first element
     constexpr auto front() noexcept -> reference { return *begin(); }
-
+    //! Returns a reference to the first element
     constexpr auto front() const noexcept -> reference { return *begin(); }
-
+    
+    //! Returns true if there are no elements in the LinkedList
     constexpr bool isEmpty() const noexcept { return m_head.next == nullptr; }
 
+    //! Erases every element in the LinkedList
     constexpr void clear() noexcept { eraseAfter(beforeBegin(), nullptr); }
 
+    //! Clears the current LinkedList and copy elements from a [first, end) range
     template<std::input_iterator Iter, std::sentinel_for<Iter> Sent>
     constexpr void assign(Iter first, Sent last) {
         auto prev = beforeBegin();
@@ -133,32 +158,39 @@ public:
             eraseAfter(prev, _end);
     }
 
+    //! Clears the current LinkedList and copy elements from the initializer_list
     constexpr void assign(std::initializer_list<T> list) {
         assign(list.begin(), list.end());
     }
 
+    //! Clears the current LinkedList and copy elements from a [begin(range), end(range)) range
     template<std::ranges::input_range R>
         requires(std::convertible_to<std::ranges::range_reference_t<R>, T>)
     constexpr void assign(R&& range) {
         assign(std::ranges::begin(range), std::ranges::end(range));
     }
 
+    //! Creates a node at the front by copying value  
     constexpr void pushFront(const T& value) { emplaceAfter(&m_head, value); }
-
+    //! Creates a node at the front by moving value
     constexpr void pushFront(T&& value) { emplaceAfter(&m_head, std::move(value)); }
-
+    
+    //! Erases a node at the front
     constexpr void popFront() noexcept { eraseAfter(&m_head); }
 
+    //! Creates a node at the front by forwarding args
     template<typename... Args>
     constexpr auto emplaceFront(Args&&... args) -> reference {
         return *emplaceAfter(&m_head, std::forward<Args>(args)...);
     }
 
+    //! Inserts a node after pos. 
     template<std::convertible_to<T> U>
     constexpr auto insertAfter(const_iterator pos, U&& value) -> iterator {
         return emplaceAfter(pos, std::forward<U>(value));
     }
 
+    //! Inserts a [first, last) range of nodes after pos 
     template<std::input_iterator Iter, std::sentinel_for<Iter> Sent>
     constexpr auto insertAfter(const_iterator pos, Iter first, Sent last) -> iterator {
         for (; first != last; ++first)
@@ -166,12 +198,14 @@ public:
         return iterator(const_cast<node_base*>(pos.current_node));
     }
 
+    //! Inserts a [begin(range), end(range)) range of nodes after pos
     template<std::ranges::input_range R>
         requires(std::is_convertible_v<std::ranges::range_reference_t<R>, T>)
     constexpr auto insertAfter(const_iterator pos, R&& range) -> iterator {
         return insertAfter(pos, std::ranges::begin(range), std::ranges::end(range));
     }
 
+    //! Constructs a node after pos by forward args
     template<typename... Args>
     constexpr auto emplaceAfter(const_iterator pos, Args&&... args) -> iterator {
         node_base* to = const_cast<node_base*>(pos.current_node);
@@ -181,6 +215,7 @@ public:
         return iterator(new_node);
     }
 
+    //! Erases the node after pos
     constexpr void eraseAfter(const_iterator pos) noexcept {
         node_base* tmp = const_cast<node_base*>(pos.current_node->next);
         const_cast<node_base*>(pos.current_node)->next = tmp->next;
@@ -188,6 +223,7 @@ public:
         m_allocator.deallocate(static_cast<node*>(tmp), 1);
     }
 
+    //! Erases the node after pos until one before last
     constexpr void eraseAfter(const_iterator pos, const_iterator last) noexcept {
         node* curr{static_cast<node*>(pos.current_node->next)};
 
@@ -201,6 +237,7 @@ public:
             const_cast<node_base*>(last.current_node);
     }
 
+    //! Reverses the linked list, making the last element the first
     constexpr void reverse() noexcept {
         if (m_head.next == nullptr)
             return;
