@@ -41,7 +41,11 @@ constexpr bool is_array_view<xme::ArrayView<U, N>> = true;
 } // namespace xme
 
 namespace xme {
-
+//! ArrayView is a view to a contigous container.
+//! ArrayView is cheap to copy.
+//! Uses 8 bytes when the size is not dynamic and 16 otherwise.
+//! @param T the type of element to view in a container
+//! @param Size Specifies the size of the container
 template<typename T, std::size_t Size = static_cast<std::size_t>(-1)>
 class ArrayView {
 private:
@@ -60,12 +64,12 @@ public:
     using reverse_iterator = ReverseIterator<iterator>;
     using const_reverse_iterator = ReverseIterator<const_iterator>;
 
+    //! ArrayView is only default constructible if size is not known
     constexpr ArrayView() noexcept
         requires(Size == dynamic_size || Size == 0)
     = default;
 
-    constexpr ArrayView(const ArrayView&) noexcept = default;
-
+    //! Creates an ArrayView pointing to an iterator up to it + size
     template<std::contiguous_iterator Iter>
     constexpr ArrayView(Iter it, std::size_t size) noexcept
         : m_view(std::to_address(it)), m_size(size) {
@@ -73,10 +77,12 @@ public:
             assert(size == Size);
     }
 
+    //! Creates an ArrayView pointing to first, up to first + distance(first, last)
     template<std::contiguous_iterator Iter, std::sentinel_for<Iter> Sent>
     constexpr ArrayView(Iter first, Sent last) noexcept
         : ArrayView(first, std::ranges::distance(first, last)) {}
 
+    //! Create an ArrayView pointing to begin(range) up to end(range)
     template<std::ranges::contiguous_range R>
         requires(std::ranges::sized_range<R>) && (std::ranges::borrowed_range<R>) &&
                 (!detail::is_std_array<std::remove_cvref_t<R>>) &&
@@ -85,66 +91,93 @@ public:
     constexpr ArrayView(R&& range) noexcept
         : ArrayView(std::ranges::data(range), std::ranges::size(range)) {}
 
+    //! Create an ArrayView pointing to a C-Style array
     template<std::size_t Lenght>
         requires(Size == dynamic_size || Size == Lenght)
     constexpr ArrayView(T (&arr)[Lenght]) noexcept
         : ArrayView(static_cast<pointer>(arr), Lenght) {}
 
+    //! Create an ArrayView pointing to a C++-Style array
     template<typename U, std::size_t Lenght>
         requires(Size == dynamic_size || Size == Lenght)
     constexpr ArrayView(std::array<U, Lenght>& arr) noexcept
         : ArrayView(static_cast<pointer>(arr.data()), Lenght) {}
 
+    //! Create an ArrayView pointing to a const C++-Style array
+    //! Do not pass a temporary array, a view does not extends the lifetime of the array
     template<typename U, std::size_t Lenght>
         requires(Size == dynamic_size || Size == Lenght)
     constexpr ArrayView(const std::array<U, Lenght>& arr) noexcept
         : ArrayView(static_cast<pointer>(arr.data()), Lenght) {}
 
+    //! returns a reference to an element in the view
     constexpr auto operator[](size_type i) noexcept -> reference {
         assert(i < size());
         return m_view[i];
     }
-
+    //! returns a reference to an element in the view
     constexpr auto operator[](size_type i) const noexcept -> const_reference {
         assert(i < size());
         return m_view[i];
     }
 
+    //! Returns a raw pointer to beggining of the view
     constexpr auto data() noexcept -> pointer { return m_view; }
+    //! Returns a raw pointer to beggining of the view
     constexpr auto data() const noexcept -> const_pointer { return m_view; }
 
+    //! Returns an iterator to the first element of the view
     constexpr auto begin() noexcept -> iterator { return m_view; }
-    constexpr auto end() noexcept -> iterator { return m_view + size(); }
-
+    //! Returns an iterator to the first element of the view
     constexpr auto begin() const noexcept -> const_iterator { return m_view; }
+    
+    //! Returns an iterator to one past the last element of the view
+    constexpr auto end() noexcept -> iterator { return m_view + size(); }
+    //! Returns an iterator to one past the last element of the view
     constexpr auto end() const noexcept -> const_iterator { return m_view + size(); }
-
+    
+    //! Returns a const iterator to the first element of the view
     constexpr auto cbegin() const noexcept -> const_iterator { return m_view; }
+    //! Returns a const iterator to one past the last element of the view
     constexpr auto cend() const noexcept -> const_iterator { return m_view + size(); }
 
+    //! Returns a reverse iterator to one past the last element of the view
     constexpr auto rbegin() noexcept -> reverse_iterator { return end(); }
+    //! Returns a reverse iterator to the first element of the view
     constexpr auto rend() noexcept -> reverse_iterator { return begin(); }
 
+    //! Returns a reverse iterator to one past the last element of the view
     constexpr auto rbegin() const noexcept -> const_reverse_iterator { return end(); }
+    //! Returns a reverse iterator to the first element of the view
     constexpr auto rend() const noexcept -> const_reverse_iterator { return begin(); }
 
+    //! Returns a const reverse iterator to one past the last element of the view
     constexpr auto crbegin() const noexcept -> const_reverse_iterator { return end(); }
+    //! Returns a reverse iterator to the first element of the view
     constexpr auto crend() const noexcept -> const_reverse_iterator { return begin(); }
 
+    //! Returns a reference to the first element of the view
     constexpr auto front() noexcept -> reference { return *m_view; }
+    //! Returns a reference to the last element of the view
     constexpr auto back() noexcept -> reference { return m_view[size() - 1]; }
 
+    //! Returns a reference to the first element of the view
     constexpr auto front() const noexcept -> const_reference { return *m_view; }
+    //! Returns a reference to the last element of the view
     constexpr auto back() const noexcept -> const_reference { return m_view[size() - 1]; }
 
+    //! Returns the size of the view
     constexpr auto size() const noexcept -> size_type { return m_size.size(); }
 
+    //! Returns the size in bytes of the view
     constexpr auto sizeBytes() const noexcept -> size_type {
         return m_size.size() * sizeof(T);
     }
 
+    //! Returns true is the view is empty
     constexpr bool isEmpty() const noexcept { return m_size.size() == 0; }
 
+    //! Creates a new ArrayView containing a part of the view
     template<std::size_t Offset, std::size_t Count>
     constexpr auto subview() const noexcept -> ArrayView<T, Count> {
         if constexpr (Size == dynamic_size)
@@ -154,12 +187,14 @@ public:
         return ArrayView<T, Count>(m_view + Offset, Count);
     }
 
+    //! Creates a new ArrayView containing a part of the view
     constexpr auto subview(size_type offset, size_type count) const noexcept
         -> ArrayView<T, dynamic_size> {
         assert(count + offset <= size());
         return ArrayView<T, dynamic_size>(m_view + offset, count);
     }
 
+    //! Creates a new ArrayView containing the first N elements
     template<std::size_t Count>
     constexpr auto first() const noexcept -> ArrayView<T, Count> {
         if constexpr (Size == dynamic_size)
@@ -169,11 +204,13 @@ public:
         return ArrayView<T, Count>(m_view, Count);
     }
 
+    //! Creates a new ArrayView containing the first N elements
     constexpr auto first(size_type count) const noexcept -> ArrayView<T, dynamic_size> {
         assert(count <= size());
         return ArrayView<T, dynamic_size>(m_view, count);
     }
 
+    //! Creates a new ArrayView containing the last N elements
     template<std::size_t Count>
     constexpr auto last() const noexcept -> ArrayView<T, Count> {
         if constexpr (Size == dynamic_size)
@@ -183,6 +220,7 @@ public:
         return ArrayView<T, Count>(m_view + (size() - Count), Count);
     }
 
+    //! Creates a new ArrayView containing the last N elements
     constexpr auto last(size_type count) const noexcept -> ArrayView<T, dynamic_size> {
         assert(count <= size());
         return ArrayView<T, dynamic_size>(m_view + (size() - count), count);
@@ -208,6 +246,7 @@ ArrayView(const std::array<T, N>&) -> ArrayView<const T, N>;
 template<typename R>
 ArrayView(R&&) -> ArrayView<std::remove_pointer_t<decltype(std::declval<R&>().data())>>;
 
+//! Creates a readonly byte ArrayView of any ArrayView 
 template<typename T, std::size_t Size>
 constexpr auto asBytes(ArrayView<T, Size> view) noexcept
     -> ArrayView<const std::byte, Size == -1 ? -1 : sizeof(T) * Size> {
@@ -217,6 +256,7 @@ constexpr auto asBytes(ArrayView<T, Size> view) noexcept
     return ArrayView<const std::byte, size>(data, byteSize);
 }
 
+//! Creates a writable byte ArrayView of any ArrayView
 template<typename T, std::size_t Size>
     requires(!std::is_const_v<T>)
 constexpr auto asWritableBytes(ArrayView<T, Size> view) noexcept

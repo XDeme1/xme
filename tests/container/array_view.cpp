@@ -109,7 +109,9 @@ int testSubviews() {
     {
         std::array<int, 2> arr{3, -1};
         xme::ArrayView<int, 2> v{arr};
+        const xme::ArrayView<int, 2> v2{arr};
         xme::ArrayView<int, 2> view1{v};
+        void(xme::ArrayView<int, 2>{v2});
         auto sub = view1.subview(1, 1);
         auto sub2 = view1.subview<1, 1>();
         bool error = view1.begin()+1 != sub.begin() || view1.end() != sub.end();
