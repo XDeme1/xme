@@ -1,6 +1,52 @@
 #include "common.hpp"
 #include <xme/container/array.hpp>
 
+int testAccess() {
+    int errors = 0;
+    {
+        xme::Array<float> arr{5, 3, 2.5};
+        bool error = arr[0] != 5 || arr[1] != 3 || arr[2] != 2.5f;
+        if(error) {
+            std::cerr << "xme::Array::operator[] error\n";
+            ++errors;
+        }
+    }
+    {
+        std::array<float, 2> a{5, 0.5};
+        xme::Array<float> arr{a.begin(), a.end()};
+        auto b = arr.cbegin();
+        bool error = (*(b++) != 5);
+        error |= (*(b++) != 0.5f);
+        error |= b != arr.cend();
+        if(error) {
+            std::cerr << "xme::Array iterator error\n";
+            ++errors;
+        }
+    }
+    {
+        const xme::Array<float> a{5, 0.5};
+        xme::Array<float> arr{a};
+        auto b = arr.rbegin();
+        bool error = (*(b++) != 0.5);
+        error |= (*(b++) != 5);
+        error |= b != arr.rend();
+        if(error) {
+            std::cerr << "xme::Array reverse_iterator error\n";
+            ++errors;
+        }
+    }
+    {
+        std::array<float, 2> a{0.25, 0.125};
+        xme::Array<float> arr{a};
+        bool error = arr.front() != 0.25 || arr.back() != 0.125;
+        if(error) {
+            std::cerr << "xme::Array::front and xme::Array::back error\n";
+            ++errors;
+        }
+    }
+    return errors;
+}
+
 int testMoveCopy() {
     int errors = 0;
     {
@@ -60,52 +106,6 @@ int testMoveCopy() {
         error |= arr2[0] != 5 || arr2[1] != 3;
         if(error) {
             std::cerr << "xme::Array move assignment error\n";
-            ++errors;
-        }
-    }
-    return errors;
-}
-
-int testAccess() {
-    int errors = 0;
-    {
-        xme::Array<float> arr{5, 3, 2.5};
-        bool error = arr[0] != 5 || arr[1] != 3 || arr[2] != 2.5f;
-        if(error) {
-            std::cerr << "xme::Array::operator[] error\n";
-            ++errors;
-        }
-    }
-    {
-        std::array<float, 2> a{5, 0.5};
-        xme::Array<float> arr{a.begin(), a.end()};
-        auto b = arr.cbegin();
-        bool error = (*(b++) != 5);
-        error |= (*(b++) != 0.5f);
-        error |= b != arr.cend();
-        if(error) {
-            std::cerr << "xme::Array iterator error\n";
-            ++errors;
-        }
-    }
-    {
-        const xme::Array<float> a{5, 0.5};
-        xme::Array<float> arr{a};
-        auto b = arr.rbegin();
-        bool error = (*(b++) != 0.5);
-        error |= (*(b++) != 5);
-        error |= b != arr.rend();
-        if(error) {
-            std::cerr << "xme::Array reverse_iterator error\n";
-            ++errors;
-        }
-    }
-    {
-        std::array<float, 2> a{0.25, 0.125};
-        xme::Array<float> arr{a};
-        bool error = arr.front() != 0.25 || arr.back() != 0.125;
-        if(error) {
-            std::cerr << "xme::Array::front and xme::Array::back error\n";
             ++errors;
         }
     }
