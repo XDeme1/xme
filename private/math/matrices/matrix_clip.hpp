@@ -1,6 +1,5 @@
 #pragma once
 #include <xme/math/matrix.hpp>
-#include <glm/ext/matrix_clip_space.hpp>
 
 namespace xme {
     template<std::floating_point T>
