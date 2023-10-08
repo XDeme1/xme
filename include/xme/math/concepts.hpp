@@ -5,7 +5,4 @@
 namespace xme {
 template<typename T>
 concept CArithmetic = std::floating_point<T> || std::integral<T>;
-
-template<typename T>
-concept CVector = is_vector_v<T>;
 }
