@@ -9,12 +9,7 @@ namespace xme {
 template<typename T, std::size_t Size,
          typename AllocPolicy = DynamicAllocation<std::allocator<T>>>
     requires(is_power_of_2<Size>)
-class SPSCQueue {
-public:
-    static_assert(
-        false, "Please Use either DynamicAllocation<Allocator> or StaticAllocation for "
-               "the third template argument");
-};
+class SPSCQueue;
 
 template<typename T, std::size_t Size>
     requires(is_power_of_2<Size>)

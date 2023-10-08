@@ -1,6 +1,7 @@
 #include <xme/container/array_view.hpp>
 #include <xme/container/array.hpp>
 #include <iostream>
+#include <array>
 
 static_assert(sizeof(xme::ArrayView<int>) == sizeof(int*) + sizeof(std::size_t));
 static_assert(sizeof(xme::ArrayView<int, 2>) == sizeof(int*));

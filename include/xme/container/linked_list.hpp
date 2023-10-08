@@ -2,7 +2,6 @@
 #include "../../../private/container/linked_list_base.hpp"
 #include "concepts.hpp"
 #include <memory>
-#include <ranges>
 #include <type_traits>
 
 namespace xme {

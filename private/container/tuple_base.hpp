@@ -30,9 +30,7 @@ struct TupleElement {
     
     constexpr bool operator==(const TupleElement&) const = default;
 
-    static constexpr T declval(std::integral_constant<std::size_t, I>) {
-        static_assert(false, "This should only be used to get the type of the element");
-    }
+    static constexpr T declval(std::integral_constant<std::size_t, I>);
     
     [[no_unique_address]] T value;
 };

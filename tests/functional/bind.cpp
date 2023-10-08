@@ -54,7 +54,7 @@ int main() {
             results.emplace_back(get<1>(r) == 5);
         }
 
-        bool error = std::ranges::any_of(results, isError);
+        bool error = std::ranges::any_of(results, [](bool b){ return b == false; });
         if(error) {
             std::cerr << "bind(Back|Front) variable binding place error\n";
             ++errors;

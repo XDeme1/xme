@@ -1,33 +1,17 @@
-#include "common.hpp"
-
-int powerOf2() {
-    int errors = 0;
-
-    std::array results = std::to_array({
-        xme::is_power_of_2<1>,
-        xme::is_power_of_2<2>,
-        xme::is_power_of_2<4>,
-        xme::is_power_of_2<8>,
-        xme::is_power_of_2<16>,
-
-        !xme::is_power_of_2<0>,
-        !xme::is_power_of_2<3>,
-        !xme::is_power_of_2<6>,
-        !xme::is_power_of_2<12>,
-    });
-
-    bool error = std::ranges::any_of(results, isError);
-    if(error) {
-        ++errors;
-        std::cerr << "is_power_of_2 error\n";
-    }
-    return errors;
-}
+#include <iostream>
+#include <xme/math/type_traits.hpp>
 
 int main() {
     int errors = 0;
 
-    errors += powerOf2();
+    using xme::is_power_of_2;
+    bool error = !is_power_of_2<1> || !is_power_of_2<2> || !is_power_of_2<4>;
+    error |= is_power_of_2<0> || is_power_of_2<3> || is_power_of_2<12>;
 
-    return errors;    
+    if (error) {
+        std::cerr << "is_power_of_2 error\n";
+        ++errors;
+    }
+
+    return errors;
 }

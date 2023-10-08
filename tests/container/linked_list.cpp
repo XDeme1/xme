@@ -1,5 +1,6 @@
-#include "common.hpp"
 #include <xme/container/linked_list.hpp>
+#include <iostream>
+#include <vector>
 
 int testAccess() {
     int errors = 0;

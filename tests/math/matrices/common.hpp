@@ -1,6 +1,5 @@
 #include <xme/math/math.hpp>
 #include <algorithm>
-#include <ranges>
 #include <iostream>
 #include <vector>
 

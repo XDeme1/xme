@@ -1,7 +1,7 @@
 #pragma once
 #include <cassert>
 #include <cstddef>
-#include <ranges>
+#include <array>
 #include <xme/iterators/contiguous_iterator.hpp>
 #include <xme/iterators/reverse_iterator.hpp>
 

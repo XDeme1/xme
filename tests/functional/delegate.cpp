@@ -1,4 +1,4 @@
-#include "common.hpp"
+#include <vector>
 #include <xme/functional/delegate.hpp>
 #include <xme/functional/bind.hpp>
 
