@@ -1,6 +1,7 @@
 #pragma once
 #include "concepts.hpp"
 #include <cassert>
+#include <algorithm>
 #include <memory>
 #include <xme/iterators/contiguous_iterator.hpp>
 #include <xme/iterators/reverse_iterator.hpp>
@@ -187,15 +188,15 @@ public:
             // Must be constructed first, so if it throws we don't break the original array
             std::ranges::construct_at(tmp.m_data.begin+elements_before, std::forward<U>(value));
 
-            std::ranges::move(begin(), pos, tmp.begin());
-            std::ranges::move(pos, end(), tmp.begin()+elements_before+1);
+            std::move(cbegin(), pos, tmp.begin());
+            std::move(pos, cend(), tmp.begin()+elements_before+1);
             tmp.m_data.end = tmp.m_data.begin+size()+1;
             std::ranges::swap(m_data, tmp.m_data);
             
             return begin()+elements_before;
         }
         
-        std::ranges::move_backward(pos, end(), end()+1);
+        std::move_backward(pos, cend(), end()+1);
         ++m_data.end;
         std::ranges::construct_at(p, std::forward<U>(value));
         return p;
@@ -243,7 +244,7 @@ private:
         const auto old_size = size();
         pointer new_begin = m_allocator.allocate(n);
 
-        std::ranges::move(m_data.begin, m_data.end, new_begin);
+        std::move(m_data.begin, m_data.end, new_begin);
         m_allocator.deallocate(m_data.begin, capacity());
         m_data.begin = new_begin;
         m_data.end = new_begin+old_size;
@@ -254,7 +255,7 @@ private:
         const auto elements_to_move = std::min(size(), n);
         pointer new_begin = m_allocator.allocate(n);
 
-        std::ranges::move(begin(), begin()+elements_to_move, new_begin);
+        std::move(begin(), begin()+elements_to_move, new_begin);
         std::ranges::destroy(begin()+elements_to_move, end());
         m_allocator.deallocate(m_data.begin, capacity());
         m_data.begin = new_begin;

@@ -2,7 +2,7 @@
 #include "../../../private/container/linked_list_base.hpp"
 #include "concepts.hpp"
 #include <memory>
-#include <type_traits>
+#include <iterator>
 
 namespace xme {
 //! LinkedList is a singly linked list.

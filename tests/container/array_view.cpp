@@ -2,12 +2,12 @@
 #include <xme/container/array.hpp>
 #include <iostream>
 #include <array>
+#include <bit>
 
 static_assert(sizeof(xme::ArrayView<int>) == sizeof(int*) + sizeof(std::size_t));
 static_assert(sizeof(xme::ArrayView<int, 2>) == sizeof(int*));
 static_assert(std::ranges::view<xme::ArrayView<int>>);
 static_assert(std::ranges::borrowed_range<xme::ArrayView<int>>);
-
 
 void testDeductionGuides() {
     {
