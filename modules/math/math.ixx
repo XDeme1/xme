@@ -3,9 +3,46 @@ module;
 export module xme.math;
 
 export namespace xme {
+    using xme::is_power_of_2;
+    using xme::CArithmetic;
+
+    using xme::pi;
+    using xme::e;
+    using xme::phi;
+    using xme::ln10;
+    using xme::ln2;
+    using xme::sqrt2;
+    using xme::sqrt3;
+
     using xme::Vector;
+    using xme::get;
+    using xme::begin;
+    using xme::end;
+
     using xme::Matrix;
+    using xme::perspective;
+    using xme::perspectiveRH;
+
     using xme::Quaternion;
+
+    using xme::radians;
+    using xme::degrees;
+
+    using xme::sin;
+    using xme::cos;
+    using xme::tan;
+
+    using xme::sec;
+    using xme::csc;
+    using xme::cot;
+
+    using xme::arcsin;
+    using xme::arccos;
+    using xme::arctan;
+
+    using xme::arcsec;
+    using xme::arccsc;
+    using xme::arccot;
 
     using xme::bvec2;
     using xme::bvec3;
@@ -37,20 +74,4 @@ export namespace xme {
 
     using xme::quat;
     using xme::dquat;
-
-    using xme::sin;
-    using xme::cos;
-    using xme::tan;
-
-    using xme::sec;
-    using xme::csc;
-    using xme::cot;
-
-    using xme::arcsin;
-    using xme::arccos;
-    using xme::arctan;
-
-    using xme::arcsec;
-    using xme::arccsc;
-    using xme::arccot;
 }

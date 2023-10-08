@@ -11,6 +11,7 @@ function(CreateTest NAME)
         target_compile_options(test_${NAME} PRIVATE -stdlib=libc++)
         target_link_options(test_${NAME} PRIVATE -lc++)
     endif()
+
     target_compile_options(test_${NAME} PRIVATE -Wall -Wextra -Wpedantic -Wshadow -Wno-missing-braces)
     target_compile_features(test_${NAME} PRIVATE cxx_std_20)
     add_test(NAME test_${NAME} COMMAND test_${NAME})
@@ -25,5 +26,5 @@ add_subdirectory(functional)
 add_subdirectory(utility)
 
 if (${PROJECT_IS_TOP_LEVEL} OR ${XME_BUILD_MODULES})
-#TODO: Add tests for modules usage
+    add_subdirectory(modules)
 endif ()

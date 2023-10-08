@@ -37,7 +37,7 @@ public:
         requires(Cols == Rows && Cols == 4)
     constexpr Matrix(const Matrix<U, 3, 3>& m) noexcept
         : m_data({column_type{m[0], 0}, column_type{m[1], 0}, column_type{m[2], 0},
-                 column_type{0, 0, 0, 1}}) {}
+                  column_type{0, 0, 0, 1}}) {}
 
     constexpr auto operator-() const noexcept -> Matrix {
         Matrix result{0};
@@ -243,4 +243,22 @@ private:
 template<typename T, typename... Args, std::size_t Rows>
 Matrix(Vector<T, Rows>, Vector<Args, Rows>...)
     -> Matrix<std::common_type_t<T, Args...>, sizeof...(Args) + 1, Rows>;
+
+template<std::floating_point T>
+constexpr auto perspectiveRH(T fov, T aspect_ratio, T far, T near) -> Matrix<T, 4> {
+    const auto halfTan = std::tan(fov / 2);
+
+    Matrix<T, 4> result{0};
+    result[0][0] = 1 / (aspect_ratio * halfTan);
+    result[1][1] = 1 / halfTan;
+    result[2][2] = -(far + near) / (far - near);
+    result[2][3] = -1;
+    result[3][2] = -(2 * far * near) / (far - near);
+    return result;
+}
+
+template<std::floating_point T>
+constexpr auto perspective(T fov, T aspect_ratio, T far, T near) -> Matrix<T, 4> {
+    return perspectiveRH(fov, aspect_ratio, far, near);
+}
 } // namespace xme
