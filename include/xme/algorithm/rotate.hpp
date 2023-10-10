@@ -5,7 +5,6 @@
 #include <type_traits>
 
 namespace xme {
-
 template<std::integral T>
 constexpr auto rotr(T n, std::uint32_t c) -> T {
     using u = std::make_unsigned_t<T>;

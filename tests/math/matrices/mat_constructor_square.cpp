@@ -8,7 +8,7 @@ int testMat() {
         xme::Matrix<float, Size> m2{6};
 
         std::vector<short> errorList;
-        for (auto i = 0uz; i < Size; ++i) {
+        for (std::size_t i = 0; i < Size; ++i) {
             for(auto j = 0u; j < Size; ++j) {
                 errorList.emplace_back(m1[i][j] == ((i == j) ? 1 : 0));
                 errorList.emplace_back(m2[i][j] == ((i == j) ? 6 : 0));
