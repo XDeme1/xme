@@ -2,22 +2,19 @@
 #include <concepts>
 #include <cstdint>
 #include <limits>
-#include <type_traits>
 
 namespace xme {
-template<std::integral T>
-constexpr auto rotr(T n, std::uint32_t c) -> T {
-    using u = std::make_unsigned_t<T>;
-    constexpr u mask = std::numeric_limits<u>::digits - 1;
+template<std::unsigned_integral T>
+constexpr auto rotr(T n, std::int32_t c) -> T {
+    constexpr auto mask = std::numeric_limits<T>::digits - 1;
     c &= mask;
 
     return (n >> c) | (n << ((-c) & mask));
 }
 
-template<std::integral T>
-constexpr auto rotl(T n, std::uint32_t c) -> T {
-    using u = std::make_unsigned_t<T>;
-    constexpr u mask = std::numeric_limits<u>::digits - 1;
+template<std::unsigned_integral T>
+constexpr auto rotl(T n, std::int32_t c) -> T {
+    constexpr auto mask = std::numeric_limits<T>::digits - 1;
     c &= mask;
 
     return (n << c) | (n >> ((-c) & mask));
