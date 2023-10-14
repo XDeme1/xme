@@ -1,1 +1,2 @@
 CreateTest(rotate)
+CreateTest(minmax)
