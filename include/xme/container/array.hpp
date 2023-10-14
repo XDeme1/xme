@@ -239,6 +239,27 @@ public:
         return back();
     }
 
+    //! Erases the element in pos
+    //! Returns an iterator pointing to the element after it
+    constexpr auto erase(const_iterator pos) -> iterator {
+        auto p = const_cast<pointer>(pos.operator->());
+        std::ranges::destroy_at(p);
+        std::move(std::next(pos), cend(), p);
+        --m_data.end;
+        return p;
+    }
+
+    //! Erases the element in [first, last)
+    //! Returns an iterator pointing to the element at last
+    constexpr auto erase(const_iterator first, const_iterator last) -> iterator {
+        auto p = const_cast<pointer>(first.operator->());
+        const std::size_t elements = std::ranges::distance(first, last);
+        std::ranges::destroy_n(p, elements);
+        std::move(first+elements, cend(), p);
+        m_data.end -= elements;
+        return p;
+    }
+
 private:
     constexpr void growStorage(std::size_t n) {
         const auto old_size = size();

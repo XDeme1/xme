@@ -184,6 +184,24 @@ int testDelete() {
             ++errors;
         }
     }
+    {
+        xme::Array<int> arr{2, 3, 1};
+        auto it = arr.erase(arr.begin());
+        bool error = *(it++) != 3 || *(it++) != 1;
+        if(error) {
+            std::cerr << "xme::Array::erase 1 error\n";
+            ++errors;
+        }
+    }
+    {
+        xme::Array<int> arr{2, 3, 1};
+        auto it = arr.erase(arr.begin(), arr.end()-1);
+        bool error = *(it++) != 1 || it != arr.end();
+        if(error) {
+            std::cerr << "xme::Array::erase 2 error\n";
+            ++errors;
+        }
+    }
     return errors;
 }
 
