@@ -4,6 +4,7 @@ export module xme.math;
 
 export namespace xme {
     using xme::is_power_of_2;
+    using xme::is_power_of_3;
     using xme::CArithmetic;
 
     using xme::pi;
