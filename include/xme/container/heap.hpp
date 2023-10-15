@@ -22,6 +22,29 @@ public:
 
     constexpr Heap() = default;
 
+    //! Creates a heap with [first, last) elements.
+    template<std::input_iterator Iter, std::sentinel_for<Iter> Sent>
+    constexpr Heap(Iter first, Sent last) {
+        if constexpr(std::contiguous_iterator<Iter>)
+            m_array.reserve(std::ranges::distance(first, last));
+        for(; first != last; ++first) {
+            push(*first);
+        }
+    }
+
+    //! Creates a heap with [begin(range), end(range)) elements.
+    template<std::ranges::input_range R>
+        requires(std::convertible_to<std::ranges::range_reference_t<R>, T>) &&
+        (!std::is_same_v<Heap, std::remove_cvref_t<R>>)
+    constexpr Heap(R&& range) {
+        m_array.reserve(std::ranges::size(range));
+        auto first = std::ranges::begin(range);
+        auto last = std::ranges::end(range);
+        for(; first != last; ++first) {
+            push(*first);
+        }
+    }
+
     constexpr bool isEmpty() const noexcept { return m_array.isEmpty(); }
 
     constexpr auto size() const noexcept -> size_type { return m_array.size(); }
@@ -34,7 +57,7 @@ public:
 
     //! Pop the front element and rearrange elements to keep a week sort.
     //! O(log(N)) operation
-    constexpr void pop() {
+    constexpr void pop() noexcept {
         assert(m_array.size() > 0);
         std::ranges::swap(m_array.front(), m_array.back());
         m_array.popBack();
