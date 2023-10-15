@@ -1,5 +1,6 @@
 #include "common.hpp"
 #include <xme/container/array.hpp>
+#include <list>
 
 int testAccess() {
     int errors = 0;
@@ -164,7 +165,33 @@ int testInsertion() {
         error |= arr[0] != 0.25 || arr[1] != 2.5 || arr[2] != 1 || arr[3] != 0.5;
         error |= arr.size() != 4 || arr.capacity() != 6;
         if(error) {
-            std::cerr << "xme::Array::insert error\n";
+            std::cerr << "xme::Array::insert 1 error\n";
+            ++errors;
+        }
+    }
+    {
+        std::vector<int> v{5, 3};
+        std::vector<int> v2{7, 1};
+        xme::Array<float> arr(3);
+        auto it1 = arr.insert(arr.begin(), v.begin(), v.end());
+        bool error = arr[0] != 5 || arr[1] != 3 || it1 != arr.begin();
+        arr.insert(arr.begin()+1, v2.begin(), v2.end());
+        error |= arr[0] != 5 || arr[1] != 7 || arr[2] != 1 || arr[3] != 3; 
+        if(error) {
+            std::cerr << "xme::Array::insert 2 error\n";
+            ++errors;
+        }
+    }
+    {
+        std::vector<int> v{5, 3};
+        std::list<int> v2{7, 1};
+        xme::Array<float> arr(3);
+        auto it1 = arr.insert(arr.begin(), v);
+        bool error = arr[0] != 5 || arr[1] != 3 || it1 != arr.begin();
+        arr.insert(arr.end(), v2);
+        error |= arr[0] != 5 || arr[1] != 3 || arr[2] != 7 || arr[3] != 1; 
+        if(error) {
+            std::cerr << "xme::Array::insert 3 error\n";
             ++errors;
         }
     }

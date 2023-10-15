@@ -180,7 +180,7 @@ public:
             shrinkStorage(n);
     }
 
-    //! Inserts value in a specified position and returns the position.
+    //! Inserts value in a specified position.
     //! If the copy/move constructor throw, the state is unspecified.
     //! It is recommended to never throw on move construcor/assignment.
     //! @returns an iterator to the newly inserted element.
@@ -205,6 +205,47 @@ public:
         ++m_data.end;
         std::ranges::construct_at(p, std::forward<U>(value));
         return p;
+    }
+
+    //! Inserts [first, last) in a specified position..
+    //! If the copy/move constructor throw, the state is unspecified.
+    //! It is recommended to never throw on move construcor/assignment.
+    //! @returns an iterator to the first inserted element.
+    template<std::input_iterator Iter, std::sentinel_for<Iter> Sent>
+    constexpr auto insert(const_iterator pos, Iter first, Sent last) -> iterator {
+        pointer p = const_cast<pointer>(pos.operator->());
+        const std::size_t elements = std::ranges::distance(first, last);
+        if(size()+elements > capacity()) {
+            self tmp(capacity() == 0 ? elements : capacity()+elements);
+            const auto elements_before = std::ranges::distance(begin(), pos);
+            
+            // Must be constructed first, so if it throws we don't break the original array
+            for(std::size_t n = 0; first != last; ++first, ++n)
+                std::ranges::construct_at(tmp.m_data.begin+elements_before+n, *first);
+
+            std::move(cbegin(), pos, tmp.begin());
+            std::move(pos, cend(), tmp.begin()+elements_before+elements);
+            tmp.m_data.end = tmp.m_data.begin+size()+elements;
+            std::ranges::swap(m_data, tmp.m_data);
+            
+            return begin()+elements_before;
+        }
+        
+        std::move_backward(pos, cend(), end()+elements);
+        m_data.end += elements;
+        for(std::size_t n = 0; first != last; ++first, ++n)
+            std::ranges::construct_at(p+n, *first);
+        return p;
+    }
+
+    //! Inserts [begin(range), end(range)) in a specified position..
+    //! If the copy/move constructor throw, the state is unspecified.
+    //! It is recommended to never throw on move construcor/assignment.
+    //! @returns an iterator to the first inserted element.
+    template<std::ranges::input_range R>
+        requires(std::convertible_to<std::ranges::range_reference_t<R>, T>)
+    constexpr auto insert(const_iterator pos, R&& range) -> iterator {
+        return insert(pos, std::ranges::begin(range), std::ranges::end(range));
     }
 
     //! Pushes a `value` to the end of the array.
