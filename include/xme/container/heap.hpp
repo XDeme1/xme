@@ -66,6 +66,7 @@ public:
 
     //! Push value to the end of the queue and pushes
     //! to the front until needed to keep a week sort.
+    //! O(log(N)) operation
     template<std::convertible_to<T> U>
     constexpr void push(U&& value) {
         m_array.pushBack(std::forward<U>(value));
@@ -74,6 +75,7 @@ public:
 
     //! Push value to the end of the queue and pushes
     //! to the front until needed to keep a week sort.
+    //! O(log(N)) operation
     template<typename... Args>
     constexpr void emplace(Args&&... args) {
         m_array.emplaceBack(std::forward<Args>(args)...);

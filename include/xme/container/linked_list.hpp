@@ -177,19 +177,22 @@ public:
     //! Erases a node at the front
     constexpr void popFront() noexcept { eraseAfter(&m_head); }
 
-    //! Creates a node at the front by forwarding args
+    //! Creates a node at the front by forwarding args.
+    //! @returns a reference to the newly inserted element.
     template<typename... Args>
     constexpr auto emplaceFront(Args&&... args) -> reference {
         return *emplaceAfter(&m_head, std::forward<Args>(args)...);
     }
 
     //! Inserts a node after pos. 
+    //! @returns an iterator to the new node.
     template<std::convertible_to<T> U>
     constexpr auto insertAfter(const_iterator pos, U&& value) -> iterator {
         return emplaceAfter(pos, std::forward<U>(value));
     }
 
-    //! Inserts a [first, last) range of nodes after pos 
+    //! Inserts a [first, last) range of nodes after pos.
+    //! @returns an iterator to the last inserted element. 
     template<std::input_iterator Iter, std::sentinel_for<Iter> Sent>
     constexpr auto insertAfter(const_iterator pos, Iter first, Sent last) -> iterator {
         for (; first != last; ++first)
@@ -198,13 +201,15 @@ public:
     }
 
     //! Inserts a [begin(range), end(range)) range of nodes after pos
+    //! @returns an iterator to the last inserted element. 
     template<std::ranges::input_range R>
         requires(std::is_convertible_v<std::ranges::range_reference_t<R>, T>)
     constexpr auto insertAfter(const_iterator pos, R&& range) -> iterator {
         return insertAfter(pos, std::ranges::begin(range), std::ranges::end(range));
     }
 
-    //! Constructs a node after pos by forward args
+    //! Constructs a node after pos by forward args.
+    //! @returns an iterator to the new node.
     template<typename... Args>
     constexpr auto emplaceAfter(const_iterator pos, Args&&... args) -> iterator {
         node_base* to = const_cast<node_base*>(pos.current_node);

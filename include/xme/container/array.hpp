@@ -143,16 +143,20 @@ public:
     constexpr auto back() noexcept -> reference { return *(end()-1); }
     constexpr auto back() const noexcept -> reference { return *(end()-1); }
 
+    //! @returns the amount of elements currently in the array.
     constexpr auto size() const noexcept -> size_type {
         return m_data.end - m_data.begin;
     }
 
+    //! @returns the amount of elements the container can hold without a resize
     constexpr auto capacity() const noexcept -> size_type {
         return m_data.storage_end - m_data.begin;
     }
 
+    //! Checks if the underlying storage is empty
     constexpr bool isEmpty() const noexcept { return m_data.begin == m_data.end; }
 
+    //! Erases every element, leaving the array empty while keeping its capacity.
     constexpr void clear() noexcept {
         if constexpr (!std::is_trivially_destructible_v<T>){
             std::ranges::destroy(*this);
@@ -179,6 +183,7 @@ public:
     //! Inserts value in a specified position and returns the position.
     //! If the copy/move constructor throw, the state is unspecified.
     //! It is recommended to never throw on move construcor/assignment.
+    //! @returns an iterator to the newly inserted element.
     template<std::convertible_to<T> U>
     constexpr auto insert(const_iterator pos, U&& value) -> iterator {
         pointer p = const_cast<pointer>(pos.operator->());
@@ -202,11 +207,13 @@ public:
         return p;
     }
 
+    //! Pushes a `value` to the end of the array.
     template<std::convertible_to<T> U>
     constexpr void pushBack(U&& value) {
         emplaceBack(std::forward<U>(value));
     }
 
+    //! Pushes [first, last) to the end of the array.
     template<std::input_iterator Iter, std::sentinel_for<Iter> Sent>
     constexpr void pushBack(Iter first, Sent last) {
         std::size_t dist = std::ranges::distance(first, last);
@@ -219,17 +226,20 @@ public:
         }
     }
 
+    //! Pushes a range [begin(range), end(range)) to the end of the array.
     template<std::ranges::input_range R>
         requires(std::convertible_to<std::ranges::range_reference_t<R>, T>)
     constexpr void pushBack(R&& range) {
         pushBack(std::ranges::begin(range), std::ranges::end(range));
     }
 
+    //! Destroys the last element in the array.
     constexpr void popBack() {
         assert(size() > 0);
         std::ranges::destroy_at(--m_data.end);
     }
 
+    //! @returns a reference to the newly inserted element.
     template<typename... Args>
     constexpr auto emplaceBack(Args&&... args) -> reference {
         if(m_data.end == m_data.storage_end)
@@ -240,7 +250,7 @@ public:
     }
 
     //! Erases the element in pos
-    //! Returns an iterator pointing to the element after it
+    //! @returns an iterator pointing to the element after it
     constexpr auto erase(const_iterator pos) -> iterator {
         auto p = const_cast<pointer>(pos.operator->());
         std::ranges::destroy_at(p);
@@ -250,7 +260,7 @@ public:
     }
 
     //! Erases the element in [first, last)
-    //! Returns an iterator pointing to the element at last
+    //! @returns an iterator pointing to the element at `last`
     constexpr auto erase(const_iterator first, const_iterator last) -> iterator {
         auto p = const_cast<pointer>(first.operator->());
         const std::size_t elements = std::ranges::distance(first, last);
