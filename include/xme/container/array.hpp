@@ -1,7 +1,7 @@
 #pragma once
 #include "concepts.hpp"
-#include <cassert>
 #include <algorithm>
+#include <cassert>
 #include <memory>
 #include <xme/iterators/contiguous_iterator.hpp>
 #include <xme/iterators/reverse_iterator.hpp>
@@ -84,7 +84,7 @@ public:
 
     constexpr ~Array() noexcept {
         std::ranges::destroy(*this);
-        if(m_data.begin)
+        if (m_data.begin)
             m_allocator.deallocate(m_data.begin, capacity());
     }
 
@@ -117,7 +117,7 @@ public:
     }
 
     constexpr auto data() noexcept -> pointer { return m_data.begin; }
-    constexpr auto data() const noexcept -> const_pointer { return m_data.begin; } 
+    constexpr auto data() const noexcept -> const_pointer { return m_data.begin; }
 
     constexpr auto begin() noexcept -> iterator { return m_data.begin; }
     constexpr auto end() noexcept -> iterator { return m_data.end; }
@@ -140,8 +140,8 @@ public:
     constexpr auto front() noexcept -> reference { return *begin(); }
     constexpr auto front() const noexcept -> const_reference { return *begin(); }
 
-    constexpr auto back() noexcept -> reference { return *(end()-1); }
-    constexpr auto back() const noexcept -> reference { return *(end()-1); }
+    constexpr auto back() noexcept -> reference { return *(end() - 1); }
+    constexpr auto back() const noexcept -> reference { return *(end() - 1); }
 
     //! @returns the amount of elements currently in the array.
     constexpr auto size() const noexcept -> size_type {
@@ -158,7 +158,7 @@ public:
 
     //! Erases every element, leaving the array empty while keeping its capacity.
     constexpr void clear() noexcept {
-        if constexpr (!std::is_trivially_destructible_v<T>){
+        if constexpr (!std::is_trivially_destructible_v<T>) {
             std::ranges::destroy(*this);
         }
         m_data.end = m_data.begin;
@@ -167,7 +167,7 @@ public:
     //! Grows the Array capacity,
     //! If the argument is lower than the current capacity, nothing happens,
     constexpr void reserve(size_type n) {
-        if(capacity() < n)
+        if (capacity() < n)
             growStorage(n);
     }
 
@@ -187,21 +187,23 @@ public:
     template<std::convertible_to<T> U>
     constexpr auto insert(const_iterator pos, U&& value) -> iterator {
         pointer p = const_cast<pointer>(pos.operator->());
-        if(size()+1 > capacity()) {
-            self tmp(capacity() == 0 ? 1 : capacity()*2);
+        if (size() + 1 > capacity()) {
+            self tmp(capacity() == 0 ? 1 : capacity() * 2);
             const auto elements_before = std::ranges::distance(begin(), pos);
-            // Must be constructed first, so if it throws we don't break the original array
-            std::ranges::construct_at(tmp.m_data.begin+elements_before, std::forward<U>(value));
+            // Must be constructed first, so if it throws we don't break the original
+            // array
+            std::ranges::construct_at(tmp.m_data.begin + elements_before,
+                                      std::forward<U>(value));
 
             std::move(cbegin(), pos, tmp.begin());
-            std::move(pos, cend(), tmp.begin()+elements_before+1);
-            tmp.m_data.end = tmp.m_data.begin+size()+1;
+            std::move(pos, cend(), tmp.begin() + elements_before + 1);
+            tmp.m_data.end = tmp.m_data.begin + size() + 1;
             std::ranges::swap(m_data, tmp.m_data);
-            
-            return begin()+elements_before;
+
+            return begin() + elements_before;
         }
-        
-        std::move_backward(pos, cend(), end()+1);
+
+        std::move_backward(pos, cend(), end() + 1);
         ++m_data.end;
         std::ranges::construct_at(p, std::forward<U>(value));
         return p;
@@ -215,26 +217,27 @@ public:
     constexpr auto insert(const_iterator pos, Iter first, Sent last) -> iterator {
         pointer p = const_cast<pointer>(pos.operator->());
         const std::size_t elements = std::ranges::distance(first, last);
-        if(size()+elements > capacity()) {
-            self tmp(capacity() == 0 ? elements : capacity()+elements);
+        if (size() + elements > capacity()) {
+            self tmp(capacity() == 0 ? elements : capacity() + elements);
             const auto elements_before = std::ranges::distance(begin(), pos);
-            
-            // Must be constructed first, so if it throws we don't break the original array
-            for(std::size_t n = 0; first != last; ++first, ++n)
-                std::ranges::construct_at(tmp.m_data.begin+elements_before+n, *first);
+
+            // Must be constructed first, so if it throws we don't break the original
+            // array
+            for (std::size_t n = 0; first != last; ++first, ++n)
+                std::ranges::construct_at(tmp.m_data.begin + elements_before + n, *first);
 
             std::move(cbegin(), pos, tmp.begin());
-            std::move(pos, cend(), tmp.begin()+elements_before+elements);
-            tmp.m_data.end = tmp.m_data.begin+size()+elements;
+            std::move(pos, cend(), tmp.begin() + elements_before + elements);
+            tmp.m_data.end = tmp.m_data.begin + size() + elements;
             std::ranges::swap(m_data, tmp.m_data);
-            
-            return begin()+elements_before;
+
+            return begin() + elements_before;
         }
-        
-        std::move_backward(pos, cend(), end()+elements);
+
+        std::move_backward(pos, cend(), end() + elements);
         m_data.end += elements;
-        for(std::size_t n = 0; first != last; ++first, ++n)
-            std::ranges::construct_at(p+n, *first);
+        for (std::size_t n = 0; first != last; ++first, ++n)
+            std::ranges::construct_at(p + n, *first);
         return p;
     }
 
@@ -258,10 +261,10 @@ public:
     template<std::input_iterator Iter, std::sentinel_for<Iter> Sent>
     constexpr void pushBack(Iter first, Sent last) {
         std::size_t dist = std::ranges::distance(first, last);
-        if(size()+dist > capacity()) {
-            growStorage(capacity()+dist);
+        if (size() + dist > capacity()) {
+            growStorage(capacity() + dist);
         }
-        for(; first != last; ++first) {
+        for (; first != last; ++first) {
             std::ranges::construct_at(m_data.end, *first);
             ++m_data.end;
         }
@@ -283,9 +286,9 @@ public:
     //! @returns a reference to the newly inserted element.
     template<typename... Args>
     constexpr auto emplaceBack(Args&&... args) -> reference {
-        if(m_data.end == m_data.storage_end)
+        if (m_data.end == m_data.storage_end)
             growStorage(size() + std::max(size(), size_type(1)));
-            
+
         std::ranges::construct_at(m_data.end++, std::forward<Args>(args)...);
         return back();
     }
@@ -306,7 +309,7 @@ public:
         auto p = const_cast<pointer>(first.operator->());
         const std::size_t elements = std::ranges::distance(first, last);
         std::ranges::destroy_n(p, elements);
-        std::move(first+elements, cend(), p);
+        std::move(first + elements, cend(), p);
         m_data.end -= elements;
         return p;
     }
@@ -319,20 +322,20 @@ private:
         std::move(m_data.begin, m_data.end, new_begin);
         m_allocator.deallocate(m_data.begin, capacity());
         m_data.begin = new_begin;
-        m_data.end = new_begin+old_size;
-        m_data.storage_end = new_begin+n;
+        m_data.end = new_begin + old_size;
+        m_data.storage_end = new_begin + n;
     }
 
     constexpr void shrinkStorage(std::size_t n) {
         const auto elements_to_move = std::min(size(), n);
         pointer new_begin = m_allocator.allocate(n);
 
-        std::move(begin(), begin()+elements_to_move, new_begin);
-        std::ranges::destroy(begin()+elements_to_move, end());
+        std::move(begin(), begin() + elements_to_move, new_begin);
+        std::ranges::destroy(begin() + elements_to_move, end());
         m_allocator.deallocate(m_data.begin, capacity());
         m_data.begin = new_begin;
-        m_data.end = new_begin+elements_to_move;
-        m_data.storage_end = new_begin+n;
+        m_data.end = new_begin + elements_to_move;
+        m_data.storage_end = new_begin + n;
     }
 
 private:
@@ -372,12 +375,12 @@ public:
     explicit constexpr back_insert_iterator(container_type& c) noexcept
         : m_container(std::addressof(c)) {}
 
-    constexpr auto operator=(const container_type::value_type& value) -> self& {
+    constexpr auto operator=(const typename container_type::value_type& value) -> self& {
         m_container->pushBack(value);
         return *this;
     }
 
-    constexpr auto operator=(container_type::value_type&& value) -> self& {
+    constexpr auto operator=(typename container_type::value_type&& value) -> self& {
         m_container->pushBack(std::move(value));
         return *this;
     }
@@ -405,13 +408,13 @@ public:
     explicit constexpr insert_iterator(container_type& c, iter _iter) noexcept
         : m_container(std::addressof(c)), m_iter(_iter) {}
 
-    constexpr auto operator=(const container_type::value_type& value) -> self& {
+    constexpr auto operator=(const typename container_type::value_type& value) -> self& {
         m_iter = m_container->insert(m_iter, value);
         ++m_iter;
         return *this;
     }
 
-    constexpr auto operator=(container_type::value_type&& value) -> self& {
+    constexpr auto operator=(typename container_type::value_type&& value) -> self& {
         m_iter = m_container->insert(m_iter, std::move(value));
         ++m_iter;
         return *this;

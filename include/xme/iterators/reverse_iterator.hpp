@@ -11,9 +11,9 @@ private:
 public:
     using size_type = std::size_t;
     using difference_type = std::ptrdiff_t;
-    using value_type = iterator_traits::value_type;
-    using pointer = iterator_traits::pointer;
-    using reference = iterator_traits::reference;
+    using value_type = typename iterator_traits::value_type;
+    using pointer = typename iterator_traits::pointer;
+    using reference = typename iterator_traits::reference;
 
     template<std::bidirectional_iterator>
     friend struct ReverseIterator;

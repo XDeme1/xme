@@ -1,8 +1,8 @@
 #pragma once
 #include "../../../private/container/linked_list_base.hpp"
 #include "concepts.hpp"
-#include <memory>
 #include <iterator>
+#include <memory>
 
 namespace xme {
 //! LinkedList is a singly linked list.
@@ -23,8 +23,8 @@ public:
     static_assert(std::is_same_v<T, typename Alloc::value_type>,
                   "xme::LinkedList must have the same T as its allocator");
 
-    using allocator_type =
-        std::allocator_traits<Alloc>::template rebind_alloc<detail::LinkedListNode<T>>;
+    using allocator_type = typename std::allocator_traits<Alloc>::template rebind_alloc<
+        detail::LinkedListNode<T>>;
 
     using value_type = T;
     using pointer = T*;
@@ -131,7 +131,7 @@ public:
     constexpr auto front() noexcept -> reference { return *begin(); }
     //! Returns a reference to the first element
     constexpr auto front() const noexcept -> reference { return *begin(); }
-    
+
     //! Returns true if there are no elements in the LinkedList
     constexpr bool isEmpty() const noexcept { return m_head.next == nullptr; }
 
@@ -162,18 +162,19 @@ public:
         assign(list.begin(), list.end());
     }
 
-    //! Clears the current LinkedList and copy elements from a [begin(range), end(range)) range
+    //! Clears the current LinkedList and copy elements from a [begin(range), end(range))
+    //! range
     template<std::ranges::input_range R>
         requires(std::convertible_to<std::ranges::range_reference_t<R>, T>)
     constexpr void assign(R&& range) {
         assign(std::ranges::begin(range), std::ranges::end(range));
     }
 
-    //! Creates a node at the front by copying value  
+    //! Creates a node at the front by copying value
     constexpr void pushFront(const T& value) { emplaceAfter(&m_head, value); }
     //! Creates a node at the front by moving value
     constexpr void pushFront(T&& value) { emplaceAfter(&m_head, std::move(value)); }
-    
+
     //! Erases a node at the front
     constexpr void popFront() noexcept { eraseAfter(&m_head); }
 
@@ -184,7 +185,7 @@ public:
         return *emplaceAfter(&m_head, std::forward<Args>(args)...);
     }
 
-    //! Inserts a node after pos. 
+    //! Inserts a node after pos.
     //! @returns an iterator to the new node.
     template<std::convertible_to<T> U>
     constexpr auto insertAfter(const_iterator pos, U&& value) -> iterator {
@@ -192,7 +193,7 @@ public:
     }
 
     //! Inserts a [first, last) range of nodes after pos.
-    //! @returns an iterator to the last inserted element. 
+    //! @returns an iterator to the last inserted element.
     template<std::input_iterator Iter, std::sentinel_for<Iter> Sent>
     constexpr auto insertAfter(const_iterator pos, Iter first, Sent last) -> iterator {
         for (; first != last; ++first)
@@ -201,7 +202,7 @@ public:
     }
 
     //! Inserts a [begin(range), end(range)) range of nodes after pos
-    //! @returns an iterator to the last inserted element. 
+    //! @returns an iterator to the last inserted element.
     template<std::ranges::input_range R>
         requires(std::is_convertible_v<std::ranges::range_reference_t<R>, T>)
     constexpr auto insertAfter(const_iterator pos, R&& range) -> iterator {
@@ -295,12 +296,12 @@ public:
 
     explicit constexpr front_insert_iterator(container_type& c) noexcept
         : m_container(std::addressof(c)) {}
-    constexpr auto operator=(const container_type::value_type& value) -> self& {
+    constexpr auto operator=(const typename container_type::value_type& value) -> self& {
         m_container->pushFront(value);
         return *this;
     }
 
-    constexpr auto operator=(container_type::value_type&& value) -> self& {
+    constexpr auto operator=(typename container_type::value_type&& value) -> self& {
         m_container->pushFront(std::move(value));
         return *this;
     }

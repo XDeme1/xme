@@ -1,7 +1,7 @@
 #pragma once
+#include <array>
 #include <cassert>
 #include <cstddef>
-#include <array>
 #include <xme/iterators/contiguous_iterator.hpp>
 #include <xme/iterators/reverse_iterator.hpp>
 
@@ -94,7 +94,7 @@ public:
     //! Create an ArrayView pointing to a C-Style array
     template<std::size_t Lenght>
         requires(Size == dynamic_size || Size == Lenght)
-    constexpr ArrayView(T (&arr)[Lenght]) noexcept
+    constexpr ArrayView(std::type_identity_t<T> (&arr)[Lenght]) noexcept
         : ArrayView(static_cast<pointer>(arr), Lenght) {}
 
     //! Create an ArrayView pointing to a C++-Style array
@@ -130,12 +130,12 @@ public:
     constexpr auto begin() noexcept -> iterator { return m_view; }
     //! Returns an iterator to the first element of the view
     constexpr auto begin() const noexcept -> const_iterator { return m_view; }
-    
+
     //! Returns an iterator to one past the last element of the view
     constexpr auto end() noexcept -> iterator { return m_view + size(); }
     //! Returns an iterator to one past the last element of the view
     constexpr auto end() const noexcept -> const_iterator { return m_view + size(); }
-    
+
     //! Returns a const iterator to the first element of the view
     constexpr auto cbegin() const noexcept -> const_iterator { return m_view; }
     //! Returns a const iterator to one past the last element of the view
@@ -228,11 +228,8 @@ public:
 
 private:
     T* m_view = nullptr;
-    [[no_unique_address]] detail::Extent<static_cast<std::size_t>(Size)> m_size;
+    [[no_unique_address]] detail::Extent<Size> m_size;
 };
-
-template<typename I, typename L>
-ArrayView(I*, L) -> ArrayView<I>;
 
 template<typename T, std::size_t N>
 ArrayView(T (&)[N]) -> ArrayView<T, N>;
@@ -243,10 +240,13 @@ ArrayView(std::array<T, N>&) -> ArrayView<T, N>;
 template<typename T, std::size_t N>
 ArrayView(const std::array<T, N>&) -> ArrayView<const T, N>;
 
-template<typename R>
-ArrayView(R&&) -> ArrayView<std::remove_pointer_t<decltype(std::declval<R&>().data())>>;
+template<std::contiguous_iterator Iter, typename End>
+ArrayView(Iter, End) -> ArrayView<std::remove_reference_t<std::iter_reference_t<Iter>>>;
 
-//! Creates a readonly byte ArrayView of any ArrayView 
+template<std::ranges::contiguous_range R>
+ArrayView(R&&) -> ArrayView<std::remove_reference_t<std::ranges::range_reference_t<R>>>;
+
+//! Creates a readonly byte ArrayView of any ArrayView
 template<typename T, std::size_t Size>
 constexpr auto asBytes(ArrayView<T, Size> view) noexcept
     -> ArrayView<const std::byte, Size == -1 ? -1 : sizeof(T) * Size> {

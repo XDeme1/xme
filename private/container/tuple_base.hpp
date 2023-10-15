@@ -27,11 +27,11 @@ struct TupleElement {
     }
 
     constexpr auto operator<=>(const TupleElement&) const = default;
-    
+
     constexpr bool operator==(const TupleElement&) const = default;
 
     static constexpr T declval(std::integral_constant<std::size_t, I>);
-    
+
     [[no_unique_address]] T value;
 };
 
@@ -54,5 +54,6 @@ struct GetTupleBase<std::index_sequence<I...>, T...> {
 };
 
 template<typename... T>
-using tuple_base = GetTupleBase<std::make_index_sequence<sizeof...(T)>, T...>::type;
+using tuple_base =
+    typename GetTupleBase<std::make_index_sequence<sizeof...(T)>, T...>::type;
 } // namespace xme::detail

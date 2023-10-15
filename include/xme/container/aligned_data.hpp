@@ -14,7 +14,8 @@ class AlignedData {
 public:
     static_assert(std::is_same_v<T, std::remove_cv_t<T>>,
                   "xme::AlignedData must have a non-const and non-volatile T");
-    static_assert(alignof(T) <= Align, "The provided align must be higher or equal to the default align of T");
+    static_assert(alignof(T) <= Align,
+                  "The provided align must be higher or equal to the default align of T");
 
     using value_type = T;
     using reference = T&;
@@ -22,9 +23,9 @@ public:
     using pointer = T*;
     using const_pointer = const T*;
 
-    //! Returns a void pointer to the address of the object 
+    //! Returns a void pointer to the address of the object
     constexpr auto address() noexcept { return static_cast<void*>(m_data.data()); }
-    
+
     //! Returns a void pointer to the address of the object
     constexpr auto address() const noexcept {
         return static_cast<const void*>(m_data.data());
@@ -32,7 +33,7 @@ public:
 
     //! Returns a pointer to the object
     constexpr auto data() noexcept { return static_cast<T*>(address()); }
-    
+
     //! Returns a pointer to the object
     constexpr auto data() const noexcept { return static_cast<const T*>(address()); }
 
