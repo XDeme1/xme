@@ -12,8 +12,8 @@ public:
         requires(CPairLike<std::decay_t<P>>)
     constexpr auto operator=(P&& p) noexcept(std::is_nothrow_swappable_v<T> &&
                                              std::is_nothrow_swappable_v<U>) -> self& {
-        first = std::forward<P>(p).first;
-        second = std::forward<P>(p).second;
+        first = get<0>(std::forward<P>(p));
+        second = get<1>(std::forward<P>(p));
         return *this;
     }
 

@@ -122,6 +122,16 @@ int testMoveCopy() {
             ++errors;
         }
     }
+    {
+        xme::Pair<std::string, int> p1{"Te", 3};
+        xme::Tuple<std::string, int> t{"Op", 1};
+        p1 = std::move(t);
+        bool error = p1.first != "Op" || !get<0>(t).empty();
+        if(error) {
+            std::cerr << "xme::Pair generic assignment error\n";
+            ++errors;
+        }
+    }
     return errors;
 }
 
