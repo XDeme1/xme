@@ -1,4 +1,4 @@
-#include <xme/algorithm/rotate.hpp>
+#include <xme/bit/rotate.hpp>
 
 void rotateRight() {
     static_assert(xme::rotr(0b101u, 1) == 0b10000000'00000000'00000000'00000010);

@@ -1,2 +1,1 @@
-CreateTest(rotate)
 CreateTest(minmax)

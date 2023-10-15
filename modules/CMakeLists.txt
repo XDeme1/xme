@@ -4,6 +4,7 @@ target_sources(xme_modules PUBLIC
     FILE_SET xme_modules TYPE CXX_MODULES FILES
     xme.ixx 
     algorithm/algorithm.ixx
+    bit/bit.ixx
     container/container.ixx
     functional/functional.ixx
     iterators/iterators.ixx
