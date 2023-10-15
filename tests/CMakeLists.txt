@@ -1,4 +1,5 @@
 option(XME_TESTS_LIBCXX "Use libc++ to test xme" OFF)
+
 if(${XME_TESTS_LIBCXX})
     message(STATUS "Using libc++ to test XME Library")
 endif()
@@ -26,6 +27,6 @@ add_subdirectory(math)
 add_subdirectory(platform)
 add_subdirectory(utility)
 
-if (${PROJECT_IS_TOP_LEVEL} OR ${XME_BUILD_MODULES})
+if (${XME_BUILD_MODULES})
     add_subdirectory(modules)
 endif ()
