@@ -8,7 +8,7 @@ namespace xme {
 //! Pushing and poping is O(log(N))
 //! @param T the type of the stored element
 //! @param Alloc must be an allocator that satisfies the Allocator concept
-template<typename T, typename Cmp = std::less<T>>
+template<typename T, typename Cmp = std::less<>>
 class Heap {
 public:
     using size_type = std::size_t;
