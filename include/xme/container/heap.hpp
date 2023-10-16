@@ -8,9 +8,10 @@ namespace xme {
 //! Pushing and poping is O(log(N))
 //! @param T the type of the stored element
 //! @param Alloc must be an allocator that satisfies the Allocator concept
-template<typename T, typename Cmp = std::less<>>
+template<typename T, std::ranges::contiguous_range Container = Array<T>, typename Cmp = std::less<>>
 class Heap {
 public:
+    using container_type = Container;
     using size_type = std::size_t;
     using difference_type = std::ptrdiff_t;
     using value_type = T;
@@ -121,7 +122,7 @@ private:
         }
     }
 
-    xme::Array<T> m_array;
+    container_type m_array;
     [[no_unique_address]] Cmp m_compare;
 };
 } // namespace xme

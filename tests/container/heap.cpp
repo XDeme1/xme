@@ -44,7 +44,7 @@ int test_construction() {
             arr.emplace_back(i);
         }
     
-        xme::Heap<int, std::greater<>> h1{arr.begin(), arr.end()-1};
+        xme::Heap<int, xme::Array<int>, std::greater<>> h1{arr.begin(), arr.end()-1};
         auto b = h1.begin();
         bool error = h1.size() != 3 || *(b++) != 0 || *(b++) != 1;
         error |= *(b++) != 2 || b != h1.end();
@@ -60,7 +60,7 @@ int test_construction() {
             arr.emplace_back(i);
         }
     
-        xme::Heap<int, std::greater<>> h1{arr};
+        xme::Heap<int, xme::Array<int>, std::greater<>> h1{arr};
         auto b = h1.begin();
         bool error = h1.size() != 4 || *(b++) != 0 || *(b++) != 1;
         error |= *(b++) != 2 || *(b++) != 3 || b != h1.end();
