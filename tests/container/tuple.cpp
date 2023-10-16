@@ -1,5 +1,5 @@
-#include "common.hpp"
 #include <xme/container/tuple.hpp>
+#include <iostream>
 
 struct Empty {};
 

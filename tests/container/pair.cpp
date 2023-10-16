@@ -1,6 +1,6 @@
-#include "common.hpp"
 #include <xme/container/pair.hpp>
 #include <xme/container/tuple.hpp>
+#include <iostream>
 
 static_assert(xme::CTupleLike<xme::Pair<int, int&>>);
 static_assert(xme::CPairLike<xme::Pair<int, int&>>);

@@ -1,7 +1,7 @@
-#include "../common.hpp"
 #include <xme/container/spsc_queue.hpp>
 #include <chrono>
 #include <thread>
+#include <iostream>
 
 struct TestQueue {
     TestQueue() { worker = std::thread(&TestQueue::job, this); }
@@ -42,5 +42,6 @@ struct TestQueue {
 int main() {
     xme::SPSCQueue<int, 8, xme::StaticAllocation> static_queue;
     xme::SPSCQueue<int, 8, xme::DynamicAllocation<std::allocator<int>>> dynamic_queue;
+    std::this_thread::sleep_for(std::chrono::seconds(2));
     return 0;
 }

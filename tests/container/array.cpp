@@ -1,6 +1,8 @@
-#include "common.hpp"
 #include <xme/container/array.hpp>
+#include <iostream>
 #include <list>
+#include <array>
+#include <vector>
 
 int testAccess() {
     int errors = 0;
