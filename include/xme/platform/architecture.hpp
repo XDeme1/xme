@@ -8,9 +8,9 @@
 namespace xme {
 class Architecture {
 public:
-    static auto cpuFeatures() {
+    static auto cpu_features() {
 #if XME_ARCH_X86
-        return x86CpuFeatures();
+        return x86_cpu_features();
 #else
         return (char)0;
 #endif 

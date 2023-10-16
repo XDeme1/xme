@@ -154,7 +154,7 @@ public:
     }
 
     //! Checks if the underlying storage is empty
-    constexpr bool isEmpty() const noexcept { return m_data.begin == m_data.end; }
+    constexpr bool is_empty() const noexcept { return m_data.begin == m_data.end; }
 
     //! Erases every element, leaving the array empty while keeping its capacity.
     constexpr void clear() noexcept {
@@ -168,16 +168,16 @@ public:
     //! If the argument is lower than the current capacity, nothing happens,
     constexpr void reserve(size_type n) {
         if (capacity() < n)
-            growStorage(n);
+            grow_storage(n);
     }
 
     //! Grows or shrinks the Array capacity.
     //! When growing, only allocates memory, doesn't create objects.
     constexpr void resize(size_type n) {
         if (capacity() < n)
-            growStorage(n);
+            grow_storage(n);
         else if (capacity() > n)
-            shrinkStorage(n);
+            shrink_storage(n);
     }
 
     //! Inserts value in a specified position.
@@ -253,16 +253,16 @@ public:
 
     //! Pushes a `value` to the end of the array.
     template<std::convertible_to<T> U>
-    constexpr void pushBack(U&& value) {
-        emplaceBack(std::forward<U>(value));
+    constexpr void push_back(U&& value) {
+        emplace_back(std::forward<U>(value));
     }
 
     //! Pushes [first, last) to the end of the array.
     template<std::input_iterator Iter, std::sentinel_for<Iter> Sent>
-    constexpr void pushBack(Iter first, Sent last) {
+    constexpr void push_back(Iter first, Sent last) {
         std::size_t dist = std::ranges::distance(first, last);
         if (size() + dist > capacity()) {
-            growStorage(capacity() + dist);
+            grow_storage(capacity() + dist);
         }
         for (; first != last; ++first) {
             std::ranges::construct_at(m_data.end, *first);
@@ -273,21 +273,21 @@ public:
     //! Pushes a range [begin(range), end(range)) to the end of the array.
     template<std::ranges::input_range R>
         requires(std::convertible_to<std::ranges::range_reference_t<R>, T>)
-    constexpr void pushBack(R&& range) {
-        pushBack(std::ranges::begin(range), std::ranges::end(range));
+    constexpr void push_back(R&& range) {
+        push_back(std::ranges::begin(range), std::ranges::end(range));
     }
 
     //! Destroys the last element in the array.
-    constexpr void popBack() {
+    constexpr void pop_back() {
         assert(size() > 0);
         std::ranges::destroy_at(--m_data.end);
     }
 
     //! @returns a reference to the newly inserted element.
     template<typename... Args>
-    constexpr auto emplaceBack(Args&&... args) -> reference {
+    constexpr auto emplace_back(Args&&... args) -> reference {
         if (m_data.end == m_data.storage_end)
-            growStorage(size() + std::max(size(), size_type(1)));
+            grow_storage(size() + std::max(size(), size_type(1)));
 
         std::ranges::construct_at(m_data.end++, std::forward<Args>(args)...);
         return back();
@@ -315,7 +315,7 @@ public:
     }
 
 private:
-    constexpr void growStorage(std::size_t n) {
+    constexpr void grow_storage(std::size_t n) {
         const auto old_size = size();
         pointer new_begin = m_allocator.allocate(n);
 
@@ -326,7 +326,7 @@ private:
         m_data.storage_end = new_begin + n;
     }
 
-    constexpr void shrinkStorage(std::size_t n) {
+    constexpr void shrink_storage(std::size_t n) {
         const auto elements_to_move = std::min(size(), n);
         pointer new_begin = m_allocator.allocate(n);
 
@@ -362,73 +362,3 @@ private:
     [[no_unique_address]] Alloc m_allocator;
 };
 } // namespace xme
-
-namespace std {
-template<typename T, typename Alloc>
-class back_insert_iterator<xme::Array<T, Alloc>> {
-    using self = back_insert_iterator<xme::Array<T, Alloc>>;
-
-public:
-    using container_type = xme::Array<T, Alloc>;
-    using iterator_category = output_iterator_tag;
-
-    explicit constexpr back_insert_iterator(container_type& c) noexcept
-        : m_container(std::addressof(c)) {}
-
-    constexpr auto operator=(const typename container_type::value_type& value) -> self& {
-        m_container->pushBack(value);
-        return *this;
-    }
-
-    constexpr auto operator=(typename container_type::value_type&& value) -> self& {
-        m_container->pushBack(std::move(value));
-        return *this;
-    }
-
-    // no-op
-    constexpr auto operator*() noexcept -> self& { return *this; }
-    // no-op
-    constexpr auto operator++() noexcept -> self& { return *this; }
-    // no-op
-    constexpr auto operator++(int) noexcept -> self { return *this; }
-
-protected:
-    container_type* m_container;
-};
-
-template<typename T, typename Alloc>
-class insert_iterator<xme::Array<T, Alloc>> {
-    using self = insert_iterator<xme::Array<T, Alloc>>;
-    using iter = std::ranges::iterator_t<xme::Array<T, Alloc>>;
-
-public:
-    using container_type = xme::Array<T, Alloc>;
-    using iterator_category = output_iterator_tag;
-
-    explicit constexpr insert_iterator(container_type& c, iter _iter) noexcept
-        : m_container(std::addressof(c)), m_iter(_iter) {}
-
-    constexpr auto operator=(const typename container_type::value_type& value) -> self& {
-        m_iter = m_container->insert(m_iter, value);
-        ++m_iter;
-        return *this;
-    }
-
-    constexpr auto operator=(typename container_type::value_type&& value) -> self& {
-        m_iter = m_container->insert(m_iter, std::move(value));
-        ++m_iter;
-        return *this;
-    }
-
-    // no-op
-    constexpr auto operator*() noexcept -> self& { return *this; }
-    // no-op
-    constexpr auto operator++() noexcept -> self& { return *this; }
-    // no-op
-    constexpr auto operator++(int) noexcept -> self { return *this; }
-
-protected:
-    container_type* m_container;
-    iter m_iter;
-};
-} // namespace std

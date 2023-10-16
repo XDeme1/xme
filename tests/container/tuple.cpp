@@ -37,7 +37,7 @@ static_assert(xme::CTupleLike<const xme::Tuple<int, int, int&>>);
 static_assert(xme::CPairLike<xme::Tuple<int, int>>);
 static_assert(!xme::CPairLike<xme::Tuple<>>);
 
-int testAccess() {
+int test_access() {
     int errors = 0;
     {
         xme::Tuple<int, const float&> t1{5, 1.5f};
@@ -66,7 +66,7 @@ int testAccess() {
     return errors;
 }
 
-int testAssign() {
+int test_assign() {
     int errors = 0;
     {
         xme::Tuple<std::string> t1{"Hello"};
@@ -102,7 +102,7 @@ int testAssign() {
     return errors;
 }
 
-int testOperations() {
+int test_operations() {
     int errors = 0;
     {
         xme::Tuple<std::string> t1{"Hello"};
@@ -150,8 +150,8 @@ int testOperations() {
     }
 
     {
-        auto t1 = xme::makeTuple(std::string{"World"}, std::string{"23"});
-        auto t2 = xme::makeTuple(std::ref(get<0>(t1)), std::ref(get<1>(t1)));
+        auto t1 = xme::make_tuple(std::string{"World"}, std::string{"23"});
+        auto t2 = xme::make_tuple(std::ref(get<0>(t1)), std::ref(get<1>(t1)));
         
         static_assert(std::is_same_v<xme::Tuple<std::string, std::string>, decltype(t1)>);
         static_assert(std::is_same_v<xme::Tuple<std::string&, std::string&>, decltype(t2)>);
@@ -167,7 +167,7 @@ int testOperations() {
     {
         int a1 = 2;
         const int a2 = 3;
-        auto t1 = xme::forwardAsTuple(a1, a2);
+        auto t1 = xme::forward_as_tuple(a1, a2);
         static_assert(std::is_same_v<decltype(t1), xme::Tuple<int&, const int&>>);
 
         bool error = get<0>(t1) != 2 || get<1>(t1) != 3;
@@ -181,7 +181,7 @@ int testOperations() {
         xme::Tuple<int, const int, const int&> t1{1, 5, 3};
         xme::Tuple<> t2;
         xme::Tuple<float> t3{0.5};
-        auto t4 = xme::tupleCat(t1, t2, t3);
+        auto t4 = xme::tuple_cat(t1, t2, t3);
 
         static_assert(std::is_same_v<decltype(t4), xme::Tuple<int, int, const int&, float>>);
 
@@ -198,8 +198,8 @@ int testOperations() {
 
 int main() {
     int errors = 0;
-    errors += testAccess();
-    errors += testAssign();
-    errors += testOperations();
+    errors += test_access();
+    errors += test_assign();
+    errors += test_operations();
     return errors;
 }

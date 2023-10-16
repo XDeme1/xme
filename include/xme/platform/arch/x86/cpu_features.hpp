@@ -110,7 +110,7 @@ inline void cpuidex(int leaf, int count, std::uint32_t& eax, std::uint32_t& ebx,
 #endif
 }
 
-inline auto x86CpuFeatures() {
+inline auto x86_cpu_features() {
     std::uint32_t max_leaf;
     std::uint32_t eax, ebx, ecx, edx;
 

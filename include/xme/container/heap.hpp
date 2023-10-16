@@ -45,7 +45,7 @@ public:
         }
     }
 
-    constexpr bool isEmpty() const noexcept { return m_array.isEmpty(); }
+    constexpr bool is_empty() const noexcept { return m_array.isEmpty(); }
 
     constexpr auto size() const noexcept -> size_type { return m_array.size(); }
 
@@ -60,8 +60,8 @@ public:
     constexpr void pop() noexcept {
         assert(m_array.size() > 0);
         std::ranges::swap(m_array.front(), m_array.back());
-        m_array.popBack();
-        heapfyDown(0);
+        m_array.pop_back();
+        heapfy_down(0);
     }
 
     //! Push value to the end of the queue and pushes
@@ -69,8 +69,8 @@ public:
     //! O(log(N)) operation
     template<std::convertible_to<T> U>
     constexpr void push(U&& value) {
-        m_array.pushBack(std::forward<U>(value));
-        heapfyUp(m_array.size() - 1);
+        m_array.push_back(std::forward<U>(value));
+        heapfy_up(m_array.size() - 1);
     }
 
     //! Push value to the end of the queue and pushes
@@ -78,8 +78,8 @@ public:
     //! O(log(N)) operation
     template<typename... Args>
     constexpr void emplace(Args&&... args) {
-        m_array.emplaceBack(std::forward<Args>(args)...);
-        heapfyUp(m_array.size() - 1);
+        m_array.emplace_back(std::forward<Args>(args)...);
+        heapfy_up(m_array.size() - 1);
     }
 
 private:
@@ -87,15 +87,15 @@ private:
         return (index - 1) / 2;
     }
 
-    constexpr auto leftChild(size_type index) const noexcept -> size_type {
+    constexpr auto left_child(size_type index) const noexcept -> size_type {
         return index * 2 + 1;
     }
 
-    constexpr auto rightChild(size_type index) const noexcept -> size_type {
+    constexpr auto right_child(size_type index) const noexcept -> size_type {
         return index * 2 + 2;
     }
 
-    constexpr void heapfyUp(size_type index) noexcept {
+    constexpr void heapfy_up(size_type index) noexcept {
         for (auto parent_heap = parent(index); index != 0;) {
             if (!m_compare(m_array[parent_heap], m_array[index]))
                 return;
@@ -106,9 +106,9 @@ private:
         }
     }
 
-    constexpr void heapfyDown(size_type index) noexcept {
-        const auto lidx = leftChild(index);
-        const auto ridx = rightChild(index);
+    constexpr void heapfy_down(size_type index) noexcept {
+        const auto lidx = left_child(index);
+        const auto ridx = right_child(index);
 
         std::size_t swap_index = index;
         if (lidx < m_array.size() && m_compare(m_array[swap_index], m_array[lidx]))
@@ -117,7 +117,7 @@ private:
             swap_index = ridx;
         if (swap_index != index) {
             std::ranges::swap(m_array[index], m_array[swap_index]);
-            heapfyDown(swap_index);
+            heapfy_down(swap_index);
         }
     }
 

@@ -42,6 +42,5 @@ struct TestQueue {
 int main() {
     xme::SPSCQueue<int, 8, xme::StaticAllocation> static_queue;
     xme::SPSCQueue<int, 8, xme::DynamicAllocation<std::allocator<int>>> dynamic_queue;
-    std::this_thread::sleep_for(std::chrono::seconds(2));
     return 0;
 }

@@ -4,7 +4,7 @@
 
 namespace xme {
 template<typename Like, typename T>
-constexpr auto forwardLike(T&& value) noexcept -> decltype(auto) {
+constexpr auto forward_like(T&& value) noexcept -> decltype(auto) {
     constexpr bool is_adding_const = std::is_const_v<std::remove_reference_t<Like>>;
     if constexpr(std::is_lvalue_reference_v<Like&&>) {
         if constexpr(is_adding_const)

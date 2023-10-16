@@ -15,7 +15,7 @@ public:
     template<typename U>
         requires(CTupleLike<std::decay_t<U>>)
     constexpr auto operator=(U&& tup) -> self& {
-        assignTupleIndex(std::forward<U>(tup), std::make_index_sequence<size>{});
+        assign_tuple_index(std::forward<U>(tup), std::make_index_sequence<size>{});
         return *this;
     }
 
@@ -28,7 +28,7 @@ public:
 
 private:
     template<typename Tup, std::size_t... I>
-    constexpr void assignTupleIndex(Tup&& tup, std::index_sequence<I...>) {
+    constexpr void assign_tuple_index(Tup&& tup, std::index_sequence<I...>) {
         (void(detail::TupleElement<I, T>::value = get<I>(std::forward<Tup>(tup))), ...);
     }
 
@@ -88,13 +88,13 @@ constexpr auto tie(T&... t) -> Tuple<T&...> {
 }
 
 template<typename... T>
-constexpr auto makeTuple(T&&... values) noexcept(
+constexpr auto make_tuple(T&&... values) noexcept(
     std::is_nothrow_constructible_v<Tuple<std::unwrap_ref_decay_t<T>...>, T...>) {
     return Tuple<std::unwrap_ref_decay_t<T>...>{std::forward<T>(values)...};
 }
 
 template<typename... T>
-constexpr auto forwardAsTuple(T&&... values) -> Tuple<T&&...> {
+constexpr auto forward_as_tuple(T&&... values) -> Tuple<T&&...> {
     static_assert((!std::is_rvalue_reference_v<T> && ...), "T is a dangling reference");
     return Tuple<T&&...>{std::forward<T>(values)...};
 }
@@ -126,7 +126,7 @@ using tuple_cat =
              std::make_index_sequence<std::tuple_size_v<std::remove_cvref_t<T>>>...>;
 
 template<typename R, std::size_t... OuterIndex, std::size_t... InnerIndex, typename T>
-constexpr auto tupleCat(std::index_sequence<OuterIndex...>,
+constexpr auto tuple_cat_impl(std::index_sequence<OuterIndex...>,
                         std::index_sequence<InnerIndex...>, T tup) -> R {
     return R{get<OuterIndex>(get<InnerIndex>(std::move(tup)))...};
 }
@@ -134,12 +134,12 @@ constexpr auto tupleCat(std::index_sequence<OuterIndex...>,
 
 template<typename... T>
     requires(CTupleLike<std::decay_t<T>> && ...)
-constexpr auto tupleCat(T&&... t) {
+constexpr auto tuple_cat(T&&... t) {
     using cat = detail::tuple_cat<T...>;
     using outer = typename cat::outer_indices;
     using inner = typename cat::inner_indices;
-    return detail::tupleCat<typename cat::return_t>(
-        outer{}, inner{}, forwardAsTuple(std::forward<T>(t)...));
+    return detail::tuple_cat_impl<typename cat::return_t>(
+        outer{}, inner{}, forward_as_tuple(std::forward<T>(t)...));
 }
 
 } // namespace xme

@@ -19,8 +19,8 @@ int main() {
     xme::Delegate<void()> fn1{[](){}};
     const xme::Delegate<void()> fn2{[](){}};
 
-    xme::Delegate<void(int)> fn3{xme::bindFront([](int, int){}, 1)};
-    const xme::Delegate<void(int)> fn4{xme::bindFront([](int, int){}, 1)};
+    xme::Delegate<void(int)> fn3{xme::bind_front([](int, int){}, 1)};
+    const xme::Delegate<void(int)> fn4{xme::bind_front([](int, int){}, 1)};
 
     xme::Delegate<void(const char*)> fn5{&staticTest};
     const xme::Delegate<void(const char*)> fn6{&staticTest};

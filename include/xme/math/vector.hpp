@@ -246,7 +246,7 @@ public:
 
     template<CArithmetic U>
         requires(std::floating_point<T>)
-    constexpr auto rotateX(U angle) const noexcept -> Vector {
+    constexpr auto rotate_x(U angle) const noexcept -> Vector {
         static_assert(Size >= 3, "Vector size must be 3 or higher");
 
         const auto sin{std::sin(angle)};
@@ -260,7 +260,7 @@ public:
 
     template<CArithmetic U>
         requires(std::floating_point<T>)
-    constexpr auto rotateY(U angle) const noexcept -> Vector {
+    constexpr auto rotate_y(U angle) const noexcept -> Vector {
         static_assert(Size >= 3, "Vector size must be 3 or higher");
 
         const auto sin{std::sin(angle)};
@@ -274,7 +274,7 @@ public:
 
     template<CArithmetic U>
         requires(std::floating_point<T>)
-    constexpr auto rotateZ(U angle) const noexcept -> Vector {
+    constexpr auto rotate_z(U angle) const noexcept -> Vector {
         static_assert(Size >= 3, "Vector size must be 3 or higher");
 
         const auto sin{std::sin(angle)};

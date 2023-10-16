@@ -29,7 +29,7 @@ static_assert(
     !std::is_trivially_default_constructible_v<xme::Pair<int&&, float&>>); // Because of &
 static_assert(!std::is_trivially_default_constructible_v<xme::Pair<std::string, int>>);
 
-void testDeductionGuides() {
+void test_deduction_guides() {
     int a = 2;
     const int ca = 1;;
     int& ra = a;
@@ -46,7 +46,7 @@ void testDeductionGuides() {
     static_assert(std::is_same_v<decltype(p4), xme::Pair<int&, const int&>>);
 }
 
-int testAccess() {
+int test_access() {
     int errors = 0;
     {
         xme::Pair<int, const float&> p{5, 1.5f};
@@ -73,7 +73,7 @@ int testAccess() {
     return errors;
 }
 
-int testMoveCopy() {
+int test_move_copy() {
     int errors = 0;
     {
         xme::Pair<std::string, int> p1{"C++", 5};
@@ -135,7 +135,7 @@ int testMoveCopy() {
     return errors;
 }
 
-int testOperations() {
+int test_operations() {
     int errors = 0;
     {
         std::vector<short> results;
@@ -170,8 +170,8 @@ int testOperations() {
     }
 
     {
-        auto p1 = xme::makePair(std::string{"Hello World"}, std::string{"C++ 23"});
-        auto p2 = xme::makePair(std::ref(get<0>(p1)), std::ref(get<1>(p1)));
+        auto p1 = xme::make_pair(std::string{"Hello World"}, std::string{"C++ 23"});
+        auto p2 = xme::make_pair(std::ref(get<0>(p1)), std::ref(get<1>(p1)));
         
         static_assert(std::is_same_v<xme::Pair<std::string, std::string>, decltype(p1)>);
         static_assert(std::is_same_v<xme::Pair<std::string&, std::string&>, decltype(p2)>);
@@ -189,9 +189,9 @@ int testOperations() {
 
 int main() {
     int errors = 0;
-    testDeductionGuides();
-    errors += testAccess();
-    errors += testMoveCopy();
-    errors += testOperations();
+    test_deduction_guides();
+    errors += test_access();
+    errors += test_move_copy();
+    errors += test_operations();
     return errors;
 }

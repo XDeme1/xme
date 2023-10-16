@@ -4,7 +4,7 @@
 #include <array>
 #include <vector>
 
-int testAccess() {
+int test_access() {
     int errors = 0;
     {
         xme::Array<float> arr{5, 3, 2.5};
@@ -50,7 +50,7 @@ int testAccess() {
     return errors;
 }
 
-int testMoveCopy() {
+int test_move_copy() {
     int errors = 0;
     {
         xme::Array<int> arr1{5, 3};
@@ -80,7 +80,7 @@ int testMoveCopy() {
         xme::Array<int> arr1{3, 1};
         arr1.reserve(3);
         xme::Array<int> arr2{std::move(arr1)};
-        bool error = !arr1.isEmpty() || arr2.capacity() != 3 || arr2.size() != 2;
+        bool error = !arr1.is_empty() || arr2.capacity() != 3 || arr2.size() != 2;
         error |= arr2[0] != 3 || arr2[1] != 1;
         if(error) {
             std::cerr << "xme::Array move constructor error\n";
@@ -105,7 +105,7 @@ int testMoveCopy() {
         arr1.reserve(3);
         xme::Array<int> arr2{1};
         arr2 = std::move(arr1);
-        bool error = !arr1.isEmpty() || arr2.size() != 2 || arr2.capacity() != 3;
+        bool error = !arr1.is_empty() || arr2.size() != 2 || arr2.capacity() != 3;
         error |= arr2[0] != 5 || arr2[1] != 3;
         if(error) {
             std::cerr << "xme::Array move assignment error\n";
@@ -115,11 +115,11 @@ int testMoveCopy() {
     return errors;
 }
 
-int testInsertion() {
+int test_insertion() {
     int errors = 0;
     {
         xme::Array<float> arr(2, 0.5);
-        arr.pushBack(0.25);
+        arr.push_back(0.25);
         bool error = arr[0] != 0.5f || arr[1] != 0.5f || arr[2] != 0.25f;
         error |= arr.capacity() != 4 || arr.size() != 3;
         if(error) {
@@ -130,7 +130,7 @@ int testInsertion() {
     {
         std::array<int, 3> ar{1, 5, 3};
         xme::Array<float> arr;
-        arr.pushBack(ar.begin(), ar.end());
+        arr.push_back(ar.begin(), ar.end());
         bool error = arr[0] != 1 || arr[1] != 5 || arr[2] != 3;
         if(error) {
             std::cerr << "xme::Array::pushBack iterators error\n";
@@ -140,7 +140,7 @@ int testInsertion() {
     {
         std::array<float, 2> ar{-0.5, 9.25};
         xme::Array<float> arr;
-        arr.pushBack(ar);
+        arr.push_back(ar);
         bool error = arr[0] != -0.5 || arr[1] != 9.25;
         if(error) {
             std::cerr << "xme::Array::pushBack range error\n";
@@ -149,7 +149,7 @@ int testInsertion() {
     }
     {
         xme::Array<float> arr;
-        arr.emplaceBack(0.125);
+        arr.emplace_back(0.125);
         bool error = arr[0] != 0.125f;
         error |= arr.capacity() != 1 || arr.size() != 1;
         if(error) {
@@ -200,13 +200,13 @@ int testInsertion() {
     return errors;
 }
 
-int testDelete() {
+int test_delete() {
     int errors = 0;
     {
         xme::Array<float> arr{0.5, 0.25};
-        arr.popBack();
+        arr.pop_back();
         bool error = arr[0] != 0.5f || arr.size() != 1 || arr.capacity() != 2;
-        arr.popBack();
+        arr.pop_back();
         error |= arr.size() != 0 || arr.capacity() != 2;
         if(error) {
             std::cerr << "xme::Array::popBack error\n";
@@ -234,7 +234,7 @@ int testDelete() {
     return errors;
 }
 
-int testResize() {
+int test_resize() {
     int errors = 0;
     {
         xme::Array<float> arr{1, 2.5};
@@ -275,7 +275,7 @@ int testResize() {
     return errors;
 }
 
-int testInsertIterators() {
+int test_insert_iterators() {
     int errors = 0;
     {
         xme::Array<int> arr(2);
@@ -308,11 +308,11 @@ int testInsertIterators() {
 
 int main() {
     int errors = 0;
-    errors += testAccess();
-    errors += testMoveCopy();
-    errors += testInsertion();
-    errors += testDelete();
-    errors += testResize();
-    errors += testInsertIterators();
+    errors += test_access();
+    errors += test_move_copy();
+    errors += test_insertion();
+    errors += test_delete();
+    errors += test_resize();
+    errors += test_insert_iterators();
     return errors;
 }

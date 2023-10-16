@@ -139,7 +139,7 @@ private:
 } // namespace detail
 
 template<typename F, typename... Args>
-constexpr auto bindFront(F&& func, Args&&... args) {
+constexpr auto bind_front(F&& func, Args&&... args) {
     static_assert(std::is_constructible_v<std::decay_t<F>, F>);
     static_assert(std::is_move_constructible_v<std::decay<F>>);
     static_assert((std::is_constructible_v<std::decay_t<Args>, Args> && ...));
@@ -162,7 +162,7 @@ constexpr auto bindFront(Args&&...args) {
 #endif
 
 template<typename F, typename... Args>
-constexpr auto bindBack(F&& func, Args&&... args) {
+constexpr auto bind_back(F&& func, Args&&... args) {
     static_assert(std::is_constructible_v<std::decay_t<F>, F>);
     static_assert(std::is_move_constructible_v<std::decay<F>>);
     static_assert((std::is_constructible_v<std::decay_t<Args>, Args> && ...));

@@ -82,7 +82,7 @@ constexpr void swap(Pair<T, U>& lhs,
 }
 
 template<typename T, typename U>
-constexpr auto makePair(T&& t, U&& u) noexcept(
+constexpr auto make_pair(T&& t, U&& u) noexcept(
     std::is_nothrow_constructible_v<
         xme::Pair<std::unwrap_ref_decay_t<T>, std::unwrap_ref_decay_t<U>>, T, U>) {
     return Pair<std::unwrap_ref_decay_t<T>, std::unwrap_ref_decay_t<U>>{

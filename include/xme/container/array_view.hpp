@@ -170,12 +170,12 @@ public:
     constexpr auto size() const noexcept -> size_type { return m_size.size(); }
 
     //! Returns the size in bytes of the view
-    constexpr auto sizeBytes() const noexcept -> size_type {
+    constexpr auto size_bytes() const noexcept -> size_type {
         return m_size.size() * sizeof(T);
     }
 
     //! Returns true is the view is empty
-    constexpr bool isEmpty() const noexcept { return m_size.size() == 0; }
+    constexpr bool is_empty() const noexcept { return m_size.size() == 0; }
 
     //! Creates a new ArrayView containing a part of the view
     template<std::size_t Offset, std::size_t Count>
@@ -248,10 +248,10 @@ ArrayView(R&&) -> ArrayView<std::remove_reference_t<std::ranges::range_reference
 
 //! Creates a readonly byte ArrayView of any ArrayView
 template<typename T, std::size_t Size>
-constexpr auto asBytes(ArrayView<T, Size> view) noexcept
+constexpr auto as_bytes(ArrayView<T, Size> view) noexcept
     -> ArrayView<const std::byte, Size == -1 ? -1 : sizeof(T) * Size> {
     auto data = reinterpret_cast<const std::byte*>(view.data());
-    auto byteSize = view.sizeBytes();
+    auto byteSize = view.size_bytes();
     constexpr std::size_t size = Size == -1 ? -1 : sizeof(T) * Size;
     return ArrayView<const std::byte, size>(data, byteSize);
 }
@@ -259,10 +259,10 @@ constexpr auto asBytes(ArrayView<T, Size> view) noexcept
 //! Creates a writable byte ArrayView of any ArrayView
 template<typename T, std::size_t Size>
     requires(!std::is_const_v<T>)
-constexpr auto asWritableBytes(ArrayView<T, Size> view) noexcept
+constexpr auto as_writable_bytes(ArrayView<T, Size> view) noexcept
     -> ArrayView<std::byte, Size == -1 ? -1 : sizeof(T) * Size> {
     auto data = reinterpret_cast<std::byte*>(view.data());
-    auto byteSize = view.sizeBytes();
+    auto byteSize = view.size_bytes();
     constexpr std::size_t size = Size == -1 ? -1 : sizeof(T) * Size;
     return ArrayView<std::byte, size>(data, byteSize);
 }

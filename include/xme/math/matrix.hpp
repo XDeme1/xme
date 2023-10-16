@@ -245,7 +245,7 @@ Matrix(Vector<T, Rows>, Vector<Args, Rows>...)
     -> Matrix<std::common_type_t<T, Args...>, sizeof...(Args) + 1, Rows>;
 
 template<std::floating_point T>
-constexpr auto perspectiveRH(T fov, T aspect_ratio, T far, T near) -> Matrix<T, 4> {
+constexpr auto perspective_rh(T fov, T aspect_ratio, T far, T near) -> Matrix<T, 4> {
     const auto halfTan = std::tan(fov / 2);
 
     Matrix<T, 4> result{0};
@@ -259,6 +259,6 @@ constexpr auto perspectiveRH(T fov, T aspect_ratio, T far, T near) -> Matrix<T, 
 
 template<std::floating_point T>
 constexpr auto perspective(T fov, T aspect_ratio, T far, T near) -> Matrix<T, 4> {
-    return perspectiveRH(fov, aspect_ratio, far, near);
+    return perspective_rh(fov, aspect_ratio, far, near);
 }
 } // namespace xme

@@ -1,7 +1,7 @@
 #include <xme/container/heap.hpp>
 #include <iostream>
 
-int testPushPop() {
+int test_push_pop() {
     int errors = 0;
     {
         xme::Heap<int> a; // Max heap
@@ -36,12 +36,12 @@ int testPushPop() {
     return errors;
 }
 
-int testConstruction() {
+int test_construction() {
     int errors = 0;
     {
         xme::Array<int> arr(4);
         for(std::size_t i = 0; i < 4; ++i) {
-            arr.emplaceBack(i);
+            arr.emplace_back(i);
         }
     
         xme::Heap<int, std::greater<>> h1{arr.begin(), arr.end()-1};
@@ -57,7 +57,7 @@ int testConstruction() {
     {
         xme::Array<int> arr(4);
         for(std::size_t i = 0; i < 4; ++i) {
-            arr.emplaceBack(i);
+            arr.emplace_back(i);
         }
     
         xme::Heap<int, std::greater<>> h1{arr};
@@ -74,7 +74,7 @@ int testConstruction() {
 
 int main() {
     int errors = 0;
-    errors += testPushPop();
-    errors += testConstruction();
+    errors += test_push_pop();
+    errors += test_construction();
     return errors;
 }

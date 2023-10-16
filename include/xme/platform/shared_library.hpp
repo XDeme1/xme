@@ -32,7 +32,7 @@ public:
             close();
     }
 
-    constexpr bool isOpen() const noexcept { return m_library != nullptr; }
+    constexpr bool is_open() const noexcept { return m_library != nullptr; }
 
     constexpr void open(std::string_view lib_name) {
 #if XME_PLATFORM_WINDOWS
@@ -49,7 +49,7 @@ public:
     }
 
     template<typename T>
-    constexpr auto getProcAddress(std::string_view function) const noexcept {
+    constexpr auto get_proc_address(std::string_view function) const noexcept {
 #if XME_PLATFORM_WINDOWS
 #elif XME_PLATFORM_LINUX || XME_PLATFORM_MAC
         return (T)dlsym(m_library, function.data());

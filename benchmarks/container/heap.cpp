@@ -10,7 +10,7 @@ struct T {
 };
 
 template<typename T>
-void benchEmplaceXme(benchmark::State& state) {
+void bench_emplace_xme(benchmark::State& state) {
     xme::Heap<T> heap;
     for(auto&& _ : state) {
         heap.emplace(T());
@@ -19,7 +19,7 @@ void benchEmplaceXme(benchmark::State& state) {
 }
 
 template<typename T>
-void benchEmplaceStd(benchmark::State& state) {
+void bench_emplace_std(benchmark::State& state) {
     std::priority_queue<T> heap;
     for(auto&& _ : state) {
         heap.emplace(T());
@@ -27,9 +27,9 @@ void benchEmplaceStd(benchmark::State& state) {
     }
 }
 
-BENCHMARK(benchEmplaceXme<int64_t>);
-BENCHMARK(benchEmplaceStd<int64_t>);
+BENCHMARK(bench_emplace_xme<int64_t>);
+BENCHMARK(bench_emplace_std<int64_t>);
 
-BENCHMARK(benchEmplaceXme<T>);
-BENCHMARK(benchEmplaceStd<T>);
+BENCHMARK(bench_emplace_xme<T>);
+BENCHMARK(bench_emplace_std<T>);
 BENCHMARK_MAIN();

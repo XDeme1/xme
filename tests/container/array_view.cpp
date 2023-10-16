@@ -8,7 +8,7 @@ static_assert(sizeof(xme::ArrayView<int, 2>) == sizeof(int*));
 static_assert(std::ranges::view<xme::ArrayView<int>>);
 static_assert(std::ranges::borrowed_range<xme::ArrayView<int>>);
 
-void testDeductionGuides() {
+void test_deduction_guides() {
     {
         int a1[2]{};
         const int a2[2]{};
@@ -47,7 +47,7 @@ void testDeductionGuides() {
     }
 }
 
-int testAccess() {
+int test_access() {
     int errors = 0;
     {
         int arr[2]{-6, 3};
@@ -104,7 +104,7 @@ int testAccess() {
     return errors;
 }
 
-int testSubviews() {
+int test_subviews() {
     int errors = 0;
     {
         std::array<int, 2> arr{3, -1};
@@ -153,7 +153,7 @@ int testAsBytes() {
     {
         int a1[1]{0x12'43'12'05};
         xme::ArrayView v1{a1};
-        xme::ArrayView v2{xme::asBytes(v1)};
+        xme::ArrayView v2{xme::as_bytes(v1)};
         
         bool error = false;
         if constexpr(std::endian::native == std::endian::little) {
@@ -175,9 +175,9 @@ int testAsBytes() {
 
 int main() {
     int errors = 0;
-    testDeductionGuides();
-    errors += testAccess();
-    errors += testSubviews();
+    test_deduction_guides();
+    errors += test_access();
+    errors += test_subviews();
     errors += testAsBytes();
     return errors;
 }  

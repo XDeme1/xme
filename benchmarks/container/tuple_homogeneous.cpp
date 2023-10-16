@@ -11,7 +11,7 @@ static_assert(sizeof(std_homo) == 8);
 static_assert(sizeof(xme_homo) == 8);
 
 template<typename T>
-void benchCopy(benchmark::State& state, T value) {
+void bench_copy(benchmark::State& state, T value) {
     T dest;
     for(auto _ : state) {
         dest = value;
@@ -39,24 +39,24 @@ std::vector<xme_homo> xme_homo_256(256);
 std::vector<xme_homo> xme_homo_512(512);
 std::vector<xme_homo> xme_homo_1024(1024);
 
-BENCHMARK_CAPTURE(benchCopy, std_homo_4, std_homo_4);
-BENCHMARK_CAPTURE(benchCopy, std_homo_8, std_homo_8);
-BENCHMARK_CAPTURE(benchCopy, std_homo_16, std_homo_16);
-BENCHMARK_CAPTURE(benchCopy, std_homo_32, std_homo_32);
-BENCHMARK_CAPTURE(benchCopy, std_homo_64, std_homo_64);
-BENCHMARK_CAPTURE(benchCopy, std_homo_128, std_homo_128);
-BENCHMARK_CAPTURE(benchCopy, std_homo_256, std_homo_256);
-BENCHMARK_CAPTURE(benchCopy, std_homo_512, std_homo_512);
-BENCHMARK_CAPTURE(benchCopy, std_homo_1024, std_homo_1024);
+BENCHMARK_CAPTURE(bench_copy, std_homo_4, std_homo_4);
+BENCHMARK_CAPTURE(bench_copy, std_homo_8, std_homo_8);
+BENCHMARK_CAPTURE(bench_copy, std_homo_16, std_homo_16);
+BENCHMARK_CAPTURE(bench_copy, std_homo_32, std_homo_32);
+BENCHMARK_CAPTURE(bench_copy, std_homo_64, std_homo_64);
+BENCHMARK_CAPTURE(bench_copy, std_homo_128, std_homo_128);
+BENCHMARK_CAPTURE(bench_copy, std_homo_256, std_homo_256);
+BENCHMARK_CAPTURE(bench_copy, std_homo_512, std_homo_512);
+BENCHMARK_CAPTURE(bench_copy, std_homo_1024, std_homo_1024);
 
-BENCHMARK_CAPTURE(benchCopy, xme_homo_4, xme_homo_4);
-BENCHMARK_CAPTURE(benchCopy, xme_homo_8, xme_homo_8);
-BENCHMARK_CAPTURE(benchCopy, xme_homo_16, xme_homo_16);
-BENCHMARK_CAPTURE(benchCopy, xme_homo_32, xme_homo_32);
-BENCHMARK_CAPTURE(benchCopy, xme_homo_64, xme_homo_64);
-BENCHMARK_CAPTURE(benchCopy, xme_homo_128, xme_homo_128);
-BENCHMARK_CAPTURE(benchCopy, xme_homo_256, xme_homo_256);
-BENCHMARK_CAPTURE(benchCopy, xme_homo_512, xme_homo_512);
-BENCHMARK_CAPTURE(benchCopy, xme_homo_1024, xme_homo_1024);
+BENCHMARK_CAPTURE(bench_copy, xme_homo_4, xme_homo_4);
+BENCHMARK_CAPTURE(bench_copy, xme_homo_8, xme_homo_8);
+BENCHMARK_CAPTURE(bench_copy, xme_homo_16, xme_homo_16);
+BENCHMARK_CAPTURE(bench_copy, xme_homo_32, xme_homo_32);
+BENCHMARK_CAPTURE(bench_copy, xme_homo_64, xme_homo_64);
+BENCHMARK_CAPTURE(bench_copy, xme_homo_128, xme_homo_128);
+BENCHMARK_CAPTURE(bench_copy, xme_homo_256, xme_homo_256);
+BENCHMARK_CAPTURE(bench_copy, xme_homo_512, xme_homo_512);
+BENCHMARK_CAPTURE(bench_copy, xme_homo_1024, xme_homo_1024);
 
 BENCHMARK_MAIN();

@@ -6,7 +6,7 @@ void function1024(benchmark::State& state) {
     std::vector<std::function<void()>> v;
     v.reserve(1024);
     for(std::size_t i = 0; i < 1024; ++i)
-        v.emplace_back(xme::bindFront([](int a){}, 1));
+        v.emplace_back(xme::bind_front([](int a){}, 1));
     for(auto&& _ : state) {
         for(auto&& f : v) {
             f();
@@ -20,7 +20,7 @@ void delegate1024(benchmark::State& state) {
     std::vector<xme::Delegate<void()>> v;
     v.reserve(1024);
     for(std::size_t i = 0; i < 1024; ++i)
-        v.emplace_back(xme::bindFront([](int a){}, 1));
+        v.emplace_back(xme::bind_front([](int a){}, 1));
     for(auto&& _ : state) {
         for(auto&& f : v) {
             f();

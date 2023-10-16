@@ -1,8 +1,9 @@
 #include <xme/container/linked_list.hpp>
 #include <iostream>
 #include <vector>
+#include <forward_list>
 
-int testAccess() {
+int test_access() {
     int errors = 0;
     {
         xme::LinkedList<int> l{2, 5};
@@ -26,11 +27,11 @@ int testAccess() {
     return errors;
 }
 
-int testInsertion() {
+int test_insertion() {
     int errors = 0;
     {
         xme::LinkedList<int> l(2);
-        l.pushFront(3);
+        l.push_front(3);
         auto begin = l.cbegin();
         bool error = *(begin++) != 3 || *(begin++) != 0 || *(begin++) != 0;
         error |= begin != l.cend();
@@ -41,7 +42,7 @@ int testInsertion() {
     }
     {
         xme::LinkedList<int> l(2, 1);
-        l.emplaceFront(5);
+        l.emplace_front(5);
         auto begin = l.cbegin();
         bool error = *(begin++) != 5 || *(begin++) != 1 || *(begin++) != 1;
         error |= begin != l.cend();
@@ -53,7 +54,7 @@ int testInsertion() {
     {
         std::vector<int> a{5, 3};
         xme::LinkedList<int> l{a.begin(), a.end()};
-        l.emplaceAfter(l.cbegin(), -6);
+        l.emplace_after(l.cbegin(), -6);
         auto begin = l.begin();
         bool error = *(begin++) != 5 || *(begin++) != -6 || *(begin++) != 3;
         error |= begin != l.cend();
@@ -65,7 +66,7 @@ int testInsertion() {
     {
         std::vector<int> a{7, 1};
         xme::LinkedList<int> l{a};
-        l.insertAfter(l.begin(), 5);
+        l.insert_after(l.begin(), 5);
         auto begin = l.begin();
         bool error = *(begin++) != 7 || *(begin++) != 5 || *(begin++) != 1;
         error |= begin != l.end();
@@ -74,17 +75,18 @@ int testInsertion() {
             ++errors;
         } 
     }
+    std::forward_list<int> a;
     return errors;
 }
 
-int testErase() {
+int test_erase() {
     int errors = 0;
     {
         xme::LinkedList<int> l{5, 3, 1, 4};
-        l.eraseAfter(l.beforeBegin());
+        l.erase_after(l.before_begin());
         bool error = l.front() != 3;
         auto begin = l.begin();
-        l.eraseAfter(l.begin());
+        l.erase_after(l.begin());
         error |= *(begin++) != 3 || *(begin++) != 4 || begin != l.end();
         if(error) {
             std::cerr << "xme::LinkedList::eraseAfter 1 error\n";
@@ -95,7 +97,7 @@ int testErase() {
         xme::LinkedList<int> l{5, 3, 1, 7};
         auto begin = l.begin();
         auto end = ++(++(++l.begin()));
-        l.eraseAfter(begin, end);
+        l.erase_after(begin, end);
         bool error = *(begin++) != 5 || *(begin++) != 7 || begin != l.end();
         if(error) {
             std::cerr << "xme::LinkedList::eraseAfter 2 error\n";
@@ -104,7 +106,7 @@ int testErase() {
     }
     {
         xme::LinkedList<int> l{9, 3, 1};
-        l.popFront();
+        l.pop_front();
         auto begin = l.begin();
         bool error = *(begin++) != 3 || *(begin++) != 1 || begin != l.end();
         if(error) {
@@ -115,7 +117,7 @@ int testErase() {
     {
         xme::LinkedList<int> l{5, 3, 1};
         l.clear();
-        bool error = !l.isEmpty() || l.begin() != l.end();
+        bool error = !l.is_empty() || l.begin() != l.end();
         if(error) {
             std::cerr << "xme::LinkedList::clear error\n";
             ++errors;
@@ -124,13 +126,13 @@ int testErase() {
     return errors;
 }
 
-int testCopyMove() {
+int test_copy_move() {
     int errors = 0;
     {
         xme::LinkedList<int> tmp{1, 5};
         xme::LinkedList<int> l{std::move(tmp)};
         auto begin = l.begin();
-        bool error = !tmp.isEmpty() || *(begin++) != 1 || *(begin++) != 5;
+        bool error = !tmp.is_empty() || *(begin++) != 1 || *(begin++) != 5;
         error |= begin != l.end();
         if(error) {
             std::cerr << "xme::LinkedList move constructor error\n";
@@ -142,7 +144,7 @@ int testCopyMove() {
         xme::LinkedList<int> l{1};
         l = std::move(tmp);
         auto begin = l.begin();
-        bool error = !tmp.isEmpty() || *(begin++) != 5 || *(begin++) != 3;
+        bool error = !tmp.is_empty() || *(begin++) != 5 || *(begin++) != 3;
         error |= begin != l.end();
         if(error) {
             std::cerr << "xme::LinkedList move assignment error\n";
@@ -221,7 +223,7 @@ int testCopyMove() {
     return errors;
 }
 
-int testOperations() {
+int test_operations() {
     int errors = 0;
     {
         xme::LinkedList<int> l{2, 5, 1};
@@ -239,10 +241,10 @@ int testOperations() {
 
 int main() {
     int errors = 0;
-    errors += testAccess();
-    errors += testInsertion();
-    errors += testErase();
-    errors += testCopyMove();
-    errors += testOperations();
+    errors += test_access();
+    errors += test_insertion();
+    errors += test_erase();
+    errors += test_copy_move();
+    errors += test_operations();
     return errors;
 }
