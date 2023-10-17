@@ -1,11 +1,11 @@
 #pragma once
 #include "concepts.hpp"
 
+//! Made in its own file for future use.
 namespace xme {
-struct StaticAllocation {};
-
-template<CAllocator T>
-struct DynamicAllocation {
-    using allocator_type = T;
+//! Specifies the size of the container.
+template<std::size_t N>
+struct Capacity {
+    static constexpr std::size_t capacity = N; 
 };
 }; // namespace xme

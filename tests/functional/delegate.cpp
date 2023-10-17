@@ -1,8 +1,7 @@
-#include <vector>
 #include <xme/functional/delegate.hpp>
 #include <xme/functional/bind.hpp>
 
-void staticTest(const char*) {}
+void static_test(const char*) {}
 
 struct Test {
     Test() {
@@ -22,8 +21,8 @@ int main() {
     xme::Delegate<void(int)> fn3{xme::bind_front([](int, int){}, 1)};
     const xme::Delegate<void(int)> fn4{xme::bind_front([](int, int){}, 1)};
 
-    xme::Delegate<void(const char*)> fn5{&staticTest};
-    const xme::Delegate<void(const char*)> fn6{&staticTest};
+    xme::Delegate<void(const char*)> fn5{&static_test};
+    const xme::Delegate<void(const char*)> fn6{&static_test};
 
     Test t1;
 

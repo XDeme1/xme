@@ -1,6 +1,5 @@
 #pragma once
 
-#include "type_traits.hpp"
 #include "constants.hpp"
 #include "vector.hpp"
 #include "matrix.hpp"

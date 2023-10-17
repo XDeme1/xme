@@ -2,7 +2,7 @@
 #include "xme/math/glsl_mapping.hpp"
 #include <xme/math/vector.hpp>
 
-void testDeductionGuide() {
+void test_deduction_guide() {
     xme::Vector v1{1, 5, 1.5f};
     xme::Vector v2{2.5, 2.f};
     xme::Vector v3{2ul};
@@ -13,7 +13,7 @@ void testDeductionGuide() {
     static_assert(std::is_same_v<decltype(v4), decltype(v2)>);
 }
 
-int testAccess() {
+int test_access() {
     int errors = 0;
     {
         xme::Vector<float, 3> v{1, 5, 3};
@@ -44,7 +44,7 @@ int testAccess() {
     return errors;
 }
 
-int testUnary() {
+int test_unary() {
     int errors = 0;
     {
         auto v = -xme::Vector<float, 2>{1.5, 2.5};
@@ -57,7 +57,7 @@ int testUnary() {
     return errors;
 }
 
-int testArithmetic() {
+int test_arithmetic() {
     int errors = 0;
     {
         const xme::Vector<float, 2> v1{1, 5};
@@ -134,7 +134,7 @@ int testArithmetic() {
     return errors;
 }
 
-int testSelf() {
+int test_self() {
     int errors = 0;
     {
         xme::vec4 v{2, 5, 1, 2};
@@ -220,7 +220,7 @@ int testSelf() {
     return errors;
 }
 
-int testEquality() {
+int test_equality() {
     int errors = 0;
     {
         xme::Vector<float, 5> v1{5};
@@ -243,7 +243,7 @@ int testEquality() {
     return errors;
 }
 
-int testOperations() {
+int test_operations() {
     int errors = 0;
     {
         auto l1 = xme::vec3(3, 0, 0).lenght();
@@ -300,11 +300,11 @@ int testOperations() {
 
 int main() {
     int errors = 0;
-    testDeductionGuide();
-    errors += testAccess();
-    errors += testArithmetic();
-    errors += testSelf();
-    errors += testEquality();
-    errors += testOperations();
+    test_deduction_guide();
+    errors += test_access();
+    errors += test_arithmetic();
+    errors += test_self();
+    errors += test_equality();
+    errors += test_operations();
     return errors;
 }

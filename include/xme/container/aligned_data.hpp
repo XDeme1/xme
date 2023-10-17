@@ -1,6 +1,6 @@
 #pragma once
 #include <array>
-#include <xme/math/type_traits.hpp>
+#include <xme/bit/has_single_bit.hpp>
 
 namespace xme {
 //! Provides a wrapper for an aligned storage.
@@ -9,7 +9,7 @@ namespace xme {
 //! @param T the type of the aligned data
 //! @param Align must be a power of 2 non negative number
 template<typename T, std::size_t Align = alignof(T)>
-    requires(xme::is_power_of_2<Align>)
+    requires(xme::has_single_bit(Align))
 class AlignedData {
 public:
     static_assert(std::is_same_v<T, std::remove_cv_t<T>>,
