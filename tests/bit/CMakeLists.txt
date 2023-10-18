@@ -1,2 +1,3 @@
-CreateTest(rotate)
 CreateTest(byteswap)
+CreateTest(popcount)
+CreateTest(rotate)

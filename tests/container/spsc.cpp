@@ -10,7 +10,7 @@ struct ConcurrencyTest {
         worker.join();
         const std::size_t available = queue.read_available();
         for (std::size_t i = 0; i < available; ++i)
-            queue.consume([](int&& a) { std::cerr << a << ' '; });
+            queue.consume([](int&& a) { (void)a; });
     }
 
     void job() {
@@ -20,7 +20,7 @@ struct ConcurrencyTest {
 
             const std::size_t available = queue.read_available();
             for (std::size_t i = 0; i < available; ++i)
-                queue.consume([](int&& a) { std::cerr << a << ' '; });
+                queue.consume([](int&& a) { (void)a; });
 
             std::this_thread::yield();
             std::this_thread::sleep_until(end);
