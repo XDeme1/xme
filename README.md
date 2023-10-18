@@ -1,7 +1,7 @@
 # XME Library
 
 ## Requirements
-Minimum is c++17, but most of the library only works in c++20.
+Minimum is c++20.
 
 The following minimum versions are required:
 

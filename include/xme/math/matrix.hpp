@@ -1,6 +1,5 @@
 #pragma once
 #include "vector.hpp"
-#include <xme/algorithm/min_max.hpp>
 
 namespace xme {
 template<typename T, std::size_t Cols, std::size_t Rows>
@@ -18,7 +17,7 @@ public:
 
     template<CArithmetic U>
     constexpr Matrix(U s) noexcept {
-        constexpr std::size_t count = xme::min(Cols, Rows);
+        constexpr std::size_t count = std::min(Cols, Rows);
         for (std::size_t i = 0; i < count; ++i)
             m_data[i][i] = static_cast<T>(s);
     }

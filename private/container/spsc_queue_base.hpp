@@ -98,7 +98,7 @@ class StaticSPSCQueue : public SPSCQueueBase<T> {
 
     static constexpr std::size_t capacity = Size::capacity; 
 public:
-    static_assert(xme::has_single_bit(capacity), "The capacity must be a power of 2");
+    static_assert(std::has_single_bit(capacity), "The capacity must be a power of 2");
 
     constexpr ~StaticSPSCQueue()
         requires(std::is_trivially_destructible_v<T>)
