@@ -1,11 +1,13 @@
 #include "common.hpp"
 
+namespace math = xme::math;
+
 template<std::size_t Size>
-int testMat() {
+int test_mat() {
     int errors = 0;
     {
-        xme::Matrix<float, Size> m1;
-        xme::Matrix<float, Size> m2{6};
+        math::Matrix<float, Size> m1;
+        math::Matrix<float, Size> m2{6};
 
         std::vector<short> errorList;
         for (std::size_t i = 0; i < Size; ++i) {
@@ -26,9 +28,9 @@ int testMat() {
 
 int main() {
     int errors = 0;
-    errors += testMat<2>();
-    errors += testMat<3>();
-    errors += testMat<4>();
-    errors += testMat<5>();
+    errors += test_mat<2>();
+    errors += test_mat<3>();
+    errors += test_mat<4>();
+    errors += test_mat<5>();
     return errors;
 }

@@ -1,7 +1,7 @@
 #pragma once
 #include "forward.hpp"
 
-namespace xme {
+namespace xme::math {
 using bvec2 = Vector<bool, 2>;
 using bvec3 = Vector<bool, 3>;
 using bvec4 = Vector<bool, 4>;

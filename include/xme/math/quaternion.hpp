@@ -2,7 +2,7 @@
 #include "matrix.hpp"
 #include "trigonometric.hpp"
 
-namespace xme {
+namespace xme::math {
 template<typename T>
 class Quaternion {
 public:
@@ -14,9 +14,9 @@ public:
         : w(static_cast<T>(_w)), x(static_cast<T>(_x)), y(static_cast<T>(_y)),
           z(static_cast<T>(_z)) {}
 
-    constexpr Quaternion(const xme::Vector<T, 3>& euler) noexcept {
-        const auto c = xme::cos(euler * T(0.5));
-        const auto s = xme::sin(euler * T(0.5));
+    constexpr Quaternion(const Vector<T, 3>& euler) noexcept {
+        const auto c = cos(euler * T(0.5));
+        const auto s = sin(euler * T(0.5));
 
         w = c[0] * c[1] * c[2] + s[0] * s[1] * s[2];
         x = s[0] * c[1] * c[2] - c[0] * s[1] * s[2];

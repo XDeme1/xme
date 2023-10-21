@@ -1,17 +1,19 @@
 #include "common.hpp"
 
-int testPlus() {
+namespace math = xme::math;
+
+int test_plus() {
     int errors = 0;
 
-    xme::Matrix<float, 2, 3> m{xme::vec3{5}, xme::vec3{-3}};
+    math::Matrix<float, 2, 3> m{math::vec3{5}, math::vec3{-3}};
     auto r1 = m + 2;
-    auto r2 = m + xme::Matrix<float, 2, 3>{2};
+    auto r2 = m + math::Matrix<float, 2, 3>{2};
 
     std::array results{
-        r1[0] == xme::vec3{7},
-        r1[1] == xme::vec3{-1},
-        r2[0] == xme::vec3{7, 5, 5},
-        r2[1] == xme::vec3{-3, -1, -3},
+        r1[0] == math::vec3{7},
+        r1[1] == math::vec3{-1},
+        r2[0] == math::vec3{7, 5, 5},
+        r2[1] == math::vec3{-3, -1, -3},
     };
 
     bool error = std::ranges::any_of(results, isError);
@@ -22,18 +24,18 @@ int testPlus() {
     return errors;
 }
 
-int testMinus() {
+int test_minus() {
     int errors = 0;
 
-    xme::Matrix<float, 2, 3> m{xme::vec3{5}, xme::vec3{-3}};
+    math::Matrix<float, 2, 3> m{math::vec3{5}, math::vec3{-3}};
     auto r1 = m - 2;
-    auto r2 = m - xme::Matrix<float, 2, 3>{2};
+    auto r2 = m - math::Matrix<float, 2, 3>{2};
     
     std::array results{
-        r1[0] == xme::vec3{3},
-        r1[1] == xme::vec3{-5},
-        r2[0] == xme::vec3{3, 5, 5},
-        r2[1] == xme::vec3{-3, -5, -3},
+        r1[0] == math::vec3{3},
+        r1[1] == math::vec3{-5},
+        r2[0] == math::vec3{3, 5, 5},
+        r2[1] == math::vec3{-3, -5, -3},
     };
 
     bool error = std::ranges::any_of(results, isError);
@@ -44,15 +46,15 @@ int testMinus() {
     return errors;
 }
 
-int testMult() {
+int test_mult() {
     int errors = 0;
 
-    xme::Matrix<float, 2, 3> m{xme::vec3{5}, xme::vec3{-3}};
+    math::Matrix<float, 2, 3> m{math::vec3{5}, math::vec3{-3}};
     auto r = m * 4;
     
     std::array results{
-        r[0] == xme::vec3{20},
-        r[1] == xme::vec3{-12},
+        r[0] == math::vec3{20},
+        r[1] == math::vec3{-12},
     };
 
     bool error = std::ranges::any_of(results, isError);
@@ -63,15 +65,15 @@ int testMult() {
     return errors;
 }
 
-int testDiv() {
+int test_div() {
     int errors = 0;
 
-    xme::Matrix<float, 2, 3> m{xme::vec3{16}, xme::vec3{120}};
+    math::Matrix<float, 2, 3> m{math::vec3{16}, math::vec3{120}};
     auto r = m / 4;
     
     std::array results{
-        r[0] == xme::vec3{4},
-        r[1] == xme::vec3{30},
+        r[0] == math::vec3{4},
+        r[1] == math::vec3{30},
     };
 
     bool error = std::ranges::any_of(results, isError);
@@ -84,9 +86,9 @@ int testDiv() {
 
 int main() {
     int errors = 0;
-    errors += testPlus();
-    errors += testMinus();
-    errors += testMult();
-    errors += testDiv();
+    errors += test_plus();
+    errors += test_minus();
+    errors += test_mult();
+    errors += test_div();
     return errors;
 }

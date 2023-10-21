@@ -5,11 +5,11 @@
 #include <cmath>
 #include <type_traits>
 
-namespace xme {
+namespace xme::math {
 template<typename T, std::size_t Size>
 struct Vector {
 public:
-    static_assert(CArithmetic<T>, "T must be an arithmetic type");
+    static_assert(std::is_arithmetic_v<T>, "T must be an arithmetic type");
 
     static constexpr std::size_t size = Size;
 
@@ -20,47 +20,40 @@ public:
         m_data.fill(s);
     }
 
-    template<typename... Args>
-        requires((sizeof...(Args) == Size) && (CArithmetic<Args> && ...))
-    constexpr Vector(Args... args) noexcept : m_data({static_cast<T>(args)...}) {}
+    template<CArithmetic... Args>
+    constexpr Vector(Args... args) noexcept : m_data({static_cast<T>(args)...}) {
+        static_assert(sizeof...(Args) == Size);
+    }
 
     // Vector3 Conversion constructors
     template<typename U>
-        requires(Size == 3)
     constexpr Vector(auto s, const Vector<U, 2>& v) noexcept : Vector(s, v[0], v[1]) {}
 
     template<typename U>
-        requires(Size == 3)
     constexpr Vector(const Vector<U, 2>& v, auto s) noexcept : Vector(v[0], v[1], s) {}
 
     // Vector4 Conversion constructors
     template<typename U>
-        requires(Size == 4)
     constexpr Vector(auto s1, auto s2, const Vector<U, 2>& v) noexcept
         : Vector(s1, s2, v[0], v[1]) {}
 
     template<typename U>
-        requires(Size == 4)
     constexpr Vector(auto s1, const Vector<U, 2>& v, auto s2) noexcept
         : Vector(s1, v[0], v[1], s2) {}
 
     template<typename U>
-        requires(Size == 4)
     constexpr Vector(const Vector<U, 2>& v, auto s1, auto s2) noexcept
         : Vector(v[0], v[1], s1, s2) {}
 
     template<typename U1, typename U2>
-        requires(Size == 4)
     constexpr Vector(const Vector<U1, 2>& v1, const Vector<U2, 2>& v2) noexcept
         : Vector(v1[0], v1[1], v2[0], v2[1]) {}
 
     template<typename U>
-        requires(Size == 4)
     constexpr Vector(auto s, const Vector<U, 3>& v) noexcept
         : Vector(s, v[0], v[1], v[2]) {}
 
     template<typename U>
-        requires(Size == 4)
     constexpr Vector(const Vector<U, 3>& v, auto s) noexcept
         : Vector(v[0], v[1], v[2], s) {}
 
@@ -77,7 +70,7 @@ public:
         return result;
     }
 
-    template<CArithmetic U>
+    template<typename U>
     constexpr auto operator+(U s) const noexcept -> Vector {
         Vector result;
         for(std::size_t i = 0; i < Size; ++i)
@@ -85,7 +78,7 @@ public:
         return result;
     }
 
-    template<CArithmetic U>
+    template<typename U>
     constexpr auto operator+(const Vector<U, Size>& v) const noexcept -> Vector {
         Vector result;
         for(std::size_t i = 0; i < Size; ++i)
@@ -93,7 +86,7 @@ public:
         return result;
     }
 
-    template<CArithmetic U>
+    template<typename U>
     constexpr auto operator-(U s) const noexcept -> Vector {
         Vector result;
         for(std::size_t i = 0; i < Size; ++i)
@@ -101,7 +94,7 @@ public:
         return result;
     }
 
-    template<CArithmetic U>
+    template<typename U>
     constexpr auto operator-(const Vector<U, Size>& v) const noexcept -> Vector {
         Vector result;
         for(std::size_t i = 0; i < Size; ++i)
@@ -109,7 +102,7 @@ public:
         return result;
     }
 
-    template<CArithmetic U>
+    template<typename U>
     constexpr auto operator*(U s) const noexcept -> Vector {
         Vector result;
         for(std::size_t i = 0; i < Size; ++i)
@@ -117,7 +110,7 @@ public:
         return result;
     }
 
-    template<CArithmetic U>
+    template<typename U>
     constexpr auto operator*(const Vector<U, Size>& v) const noexcept -> Vector {
         Vector result;
         for(std::size_t i = 0; i < Size; ++i)
@@ -125,7 +118,7 @@ public:
         return result;
     }
 
-    template<CArithmetic U>
+    template<typename U>
     constexpr auto operator/(U s) const noexcept -> Vector {
         Vector result;
         for(std::size_t i = 0; i < Size; ++i)
@@ -133,7 +126,7 @@ public:
         return result;
     }
 
-    template<CArithmetic U>
+    template<typename U>
     constexpr auto operator/(const Vector<U, Size>& v) const noexcept -> Vector {
         Vector result;
         for(std::size_t i = 0; i < Size; ++i)
@@ -141,63 +134,63 @@ public:
         return result;
     }
 
-    template<CArithmetic U>
+    template<typename U>
     constexpr auto operator=(const Vector<U, Size>& v) noexcept -> Vector& {
         for (std::size_t i = 0; i < Size; ++i)
             m_data[i] = static_cast<T>(v[i]);
         return *this;
     }
 
-    template<CArithmetic U>
+    template<typename U>
     constexpr auto operator+=(U s) noexcept -> Vector& {
         for (std::size_t i = 0; i < Size; ++i)
                 m_data[i] += s;
         return *this;
     }
 
-    template<CArithmetic U>
+    template<typename U>
     constexpr auto operator+=(const Vector<U, Size>& v) noexcept -> Vector& {
         for (std::size_t i = 0; i < Size; ++i)
                 m_data[i] += v[i];
         return *this;
     }
 
-    template<CArithmetic U>
+    template<typename U>
     constexpr auto operator-=(U s) noexcept -> Vector& {
         for (std::size_t i = 0; i < Size; ++i)
                 m_data[i] -= s;
         return *this;
     }
 
-    template<CArithmetic U>
+    template<typename U>
     constexpr auto operator-=(const Vector<U, Size>& v) noexcept -> Vector& {
         for (std::size_t i = 0; i < Size; ++i)
                 m_data[i] -= v[i];
         return *this;
     }
 
-    template<CArithmetic U>
+    template<typename U>
     constexpr auto operator*=(U s) noexcept -> Vector& {
         for (std::size_t i = 0; i < Size; ++i)
                 m_data[i] *= s;
         return *this;
     }
 
-    template<CArithmetic U>
+    template<typename U>
     constexpr auto operator*=(const Vector<U, Size>& v) noexcept -> Vector& {
         for (std::size_t i = 0; i < Size; ++i)
                 m_data[i] *= v[i];
         return *this;
     }
 
-    template<CArithmetic U>
+    template<typename U>
     constexpr auto operator/=(U s) noexcept -> Vector& {
         for (std::size_t i = 0; i < Size; ++i)
                 m_data[i] /= s;
         return *this;
     }
 
-    template<CArithmetic U>
+    template<typename U>
     constexpr auto operator/=(const Vector<U, Size>& v) noexcept -> Vector& {
         for (std::size_t i = 0; i < Size; ++i)
                 m_data[i] /= v[i];
@@ -244,10 +237,10 @@ public:
         return (v - *this).lenght();
     }
 
-    template<CArithmetic U>
-        requires(std::floating_point<T>)
+    template<typename U>
     constexpr auto rotate_x(U angle) const noexcept -> Vector {
         static_assert(Size >= 3, "Vector size must be 3 or higher");
+        static_assert(std::is_floating_point_v<T>);
 
         const auto sin{std::sin(angle)};
         const auto cos(std::cos(angle));
@@ -258,10 +251,10 @@ public:
         return result;
     }
 
-    template<CArithmetic U>
-        requires(std::floating_point<T>)
+    template<typename U>
     constexpr auto rotate_y(U angle) const noexcept -> Vector {
         static_assert(Size >= 3, "Vector size must be 3 or higher");
+        static_assert(std::is_floating_point_v<T>);
 
         const auto sin{std::sin(angle)};
         const auto cos(std::cos(angle));
@@ -272,10 +265,10 @@ public:
         return result;
     }
 
-    template<CArithmetic U>
-        requires(std::floating_point<T>)
+    template<typename U>
     constexpr auto rotate_z(U angle) const noexcept -> Vector {
         static_assert(Size >= 3, "Vector size must be 3 or higher");
+        static_assert(std::is_floating_point_v<T>);
 
         const auto sin{std::sin(angle)};
         const auto cos(std::cos(angle));
@@ -326,10 +319,10 @@ constexpr auto end(const Vector<T, Size>& v) noexcept -> const T* {
 
 namespace std {
 template<typename T, std::size_t Size>
-struct tuple_size<xme::Vector<T, Size>> : integral_constant<std::size_t, Size> {};
+struct tuple_size<xme::math::Vector<T, Size>> : integral_constant<std::size_t, Size> {};
 
 template<std::size_t I, typename T, std::size_t Size>
-struct tuple_element<I, xme::Vector<T, Size>> {
+struct tuple_element<I, xme::math::Vector<T, Size>> {
     using type = T;
 };
 } // namespace std

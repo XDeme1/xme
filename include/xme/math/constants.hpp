@@ -1,7 +1,7 @@
 #pragma once
 #include <numbers>
 
-namespace xme {
+namespace xme::math {
 inline constexpr double pi = std::numbers::pi;
 inline constexpr double e = std::numbers::e;
 inline constexpr double phi = std::numbers::phi;

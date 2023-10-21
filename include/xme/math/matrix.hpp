@@ -1,7 +1,7 @@
 #pragma once
 #include "vector.hpp"
 
-namespace xme {
+namespace xme::math {
 template<typename T, std::size_t Cols, std::size_t Rows>
 class Matrix {
 public:
@@ -22,7 +22,7 @@ public:
             m_data[i][i] = static_cast<T>(s);
     }
 
-    template<CArithmetic... Args, std::size_t Size>
+    template<typename... Args, std::size_t Size>
         requires(sizeof...(Args) == Cols)
     constexpr Matrix(const Vector<Args, Size>&... args) noexcept : m_data({args...}) {}
 
@@ -45,7 +45,7 @@ public:
         return result;
     }
 
-    template<CArithmetic U>
+    template<typename U>
     constexpr auto operator+(U s) const noexcept -> Matrix {
         Matrix result{0};
         for (std::size_t i = 0; i < Cols; ++i)
@@ -60,7 +60,7 @@ public:
         return result;
     }
 
-    template<CArithmetic U>
+    template<typename U>
     constexpr auto operator-(U s) const noexcept -> Matrix {
         Matrix result{0};
         for (std::size_t i = 0; i < Cols; ++i)
@@ -75,7 +75,7 @@ public:
         return result;
     }
 
-    template<CArithmetic U>
+    template<typename U>
     constexpr auto operator*(U s) const noexcept -> Matrix {
         Matrix result{0};
         for (std::size_t i = 0; i < Cols; ++i)
@@ -102,7 +102,7 @@ public:
         return result;
     }
 
-    template<CArithmetic U>
+    template<typename U>
     constexpr auto operator/(U s) const noexcept -> Matrix {
         Matrix result{0};
         for (std::size_t i = 0; i < Cols; ++i)
@@ -117,7 +117,7 @@ public:
         return *this;
     }
 
-    template<CArithmetic U>
+    template<typename U>
     constexpr auto operator+=(U s) noexcept -> Matrix& {
         for (std::size_t i = 0; i < Cols; ++i)
             m_data[i] += s;
@@ -130,7 +130,7 @@ public:
         return *this;
     }
 
-    template<CArithmetic U>
+    template<typename U>
     constexpr auto operator-=(U s) noexcept -> Matrix& {
         for (std::size_t i = 0; i < Cols; ++i)
             m_data[i] -= s;
@@ -143,14 +143,14 @@ public:
         return *this;
     }
 
-    template<CArithmetic U>
+    template<typename U>
     constexpr auto operator*=(U s) noexcept -> Matrix& {
         for (std::size_t i = 0; i < Cols; ++i)
             m_data[i] *= s;
         return *this;
     }
 
-    template<CArithmetic U>
+    template<typename U>
     constexpr auto operator/=(U s) noexcept -> Matrix& {
         for (std::size_t i = 0; i < Cols; ++i)
             m_data[i] /= s;
@@ -186,7 +186,7 @@ public:
     }
 
     template<typename U>
-    constexpr auto translate(const xme::Vector<U, 3>& v) const noexcept -> Matrix {
+    constexpr auto translate(const Vector<U, 3>& v) const noexcept -> Matrix {
         return {
             m_data[0],
             m_data[1],
@@ -196,7 +196,7 @@ public:
     }
 
     template<typename U>
-    constexpr auto scale(const xme::Vector<U, 3>& v) const noexcept -> Matrix {
+    constexpr auto scale(const Vector<U, 3>& v) const noexcept -> Matrix {
         return {
             m_data[0] * v[0],
             m_data[1] * v[1],
@@ -205,8 +205,8 @@ public:
         };
     }
 
-    template<CArithmetic U1, typename U2>
-    constexpr auto rotate(U1 angle, const xme::Vector<U2, 3>& normal) const noexcept {
+    template<typename U1, typename U2>
+    constexpr auto rotate(U1 angle, const Vector<U2, 3>& normal) const noexcept {
         const auto s{std::sin(angle)};
         const auto c{std::cos(angle)};
 

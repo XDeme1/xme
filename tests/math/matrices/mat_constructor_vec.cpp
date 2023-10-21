@@ -1,16 +1,18 @@
 #include "common.hpp"
 
+namespace math = xme::math;
+
 template<typename...Args, std::size_t Size>
-int testMatVec(const xme::Vector<Args, Size>&...v) {
+int test_mat_vec(const math::Vector<Args, Size>&...v) {
     int errors = 0;
     constexpr std::size_t rows = Size;
     constexpr std::size_t cols = sizeof...(Args);
     using type = std::common_type_t<Args...>;
 
-    static_assert(std::is_same_v<decltype(xme::Matrix{v...}), xme::Matrix<type, cols, rows>>);
+    static_assert(std::is_same_v<decltype(math::Matrix{v...}), math::Matrix<type, cols, rows>>);
     {
-        xme::Matrix m{v...};
-        std::array<xme::Vector<type, rows>, cols> arr{v...};
+        math::Matrix m{v...};
+        std::array<math::Vector<type, rows>, cols> arr{v...};
 
         std::vector<short> errorList;
         for(auto i = 0u; i < cols; ++i)
@@ -27,10 +29,10 @@ int testMatVec(const xme::Vector<Args, Size>&...v) {
 
 int main() {
     int errors = 0;
-    errors += testMatVec(xme::vec2{1, 2}, xme::dvec2{5, 4});
-    errors += testMatVec(xme::vec3{3}, xme::vec3{-5}, xme::vec3{9});
-    errors += testMatVec(xme::vec4{0}, xme::vec4{2}, xme::vec4{4}, xme::vec4{2});
-    errors += testMatVec(xme::Vector<float, 5>{1}, xme::Vector<float, 5>{7});
-    errors += testMatVec(xme::Vector<float, 7>{2});
+    errors += test_mat_vec(math::vec2{1, 2}, math::dvec2{5, 4});
+    errors += test_mat_vec(math::vec3{3}, math::vec3{-5}, math::vec3{9});
+    errors += test_mat_vec(math::vec4{0}, math::vec4{2}, math::vec4{4}, math::vec4{2});
+    errors += test_mat_vec(math::Vector<float, 5>{1}, math::Vector<float, 5>{7});
+    errors += test_mat_vec(math::Vector<float, 7>{2});
     return errors;
 }

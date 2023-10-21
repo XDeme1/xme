@@ -2,7 +2,7 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace xme {
+namespace xme::math {
     template<typename T, std::size_t Size>
     struct Vector;
     
