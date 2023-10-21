@@ -26,7 +26,7 @@ public:
 
     constexpr SPSCQueue(std::size_t capacity)
         requires(CAllocator<Policy>)
-        : super(capacity) { assert(xme::has_single_bit(capacity) && "capacity must be a power of 2"); }
+        : super(capacity) { assert(std::has_single_bit(capacity) && "capacity must be a power of 2"); }
 
     constexpr auto read_available() const noexcept -> std::size_t {
         return super::read_available();
