@@ -2,6 +2,7 @@
 #include <xme/container/array.hpp>
 #include <iostream>
 #include <array>
+#include <bit>
 
 static_assert(sizeof(xme::ArrayView<int>) == sizeof(int*) + sizeof(std::size_t));
 static_assert(sizeof(xme::ArrayView<int, 2>) == sizeof(int*));
@@ -148,7 +149,8 @@ int test_subviews() {
     return errors;
 }
 
-int testAsBytes() {
+int test_as_bytes() {
+    
     int errors = 0;
     {
         int a1[1]{0x12'43'12'05};
@@ -178,6 +180,6 @@ int main() {
     test_deduction_guides();
     errors += test_access();
     errors += test_subviews();
-    errors += testAsBytes();
+    errors += test_as_bytes();
     return errors;
 }  

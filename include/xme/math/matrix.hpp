@@ -175,6 +175,38 @@ public:
         return m_data[column];
     };
 
+    constexpr auto determinant() const noexcept -> T
+        requires(CEqual<Cols, Rows>) && (CEqual<Cols, 2>)
+    {
+        return m_data[0][0] * m_data[1][1] - m_data[1][0] * m_data[0][1];
+    }
+
+    constexpr auto determinant() const noexcept -> T
+        requires(CEqual<Cols, Rows>) && (CEqual<Cols, 3>)
+    {
+        const auto cofactor01 = m_data[0][1] * m_data[1][2] - m_data[1][1] * m_data[0][2];
+        const auto cofactor12 = m_data[1][1] * m_data[2][2] - m_data[2][1] * m_data[1][2];
+        const auto cofactor02 = m_data[0][1] * m_data[2][2] - m_data[2][1] * m_data[0][2];
+        return m_data[0][0] * cofactor12 - (m_data[1][0] * cofactor02) + (m_data[2][0] * cofactor01);
+    }
+
+    constexpr auto determinant() const noexcept -> T 
+        requires(CEqual<Cols, Rows>) && (CEqual<Cols, 4>)
+    {
+        const auto cofactor01 = m_data[0][2] * m_data[1][3] - m_data[1][2] * m_data[0][3];
+        const auto cofactor12 = m_data[1][2] * m_data[2][3] - m_data[2][2] * m_data[1][3];
+        const auto cofactor23 = m_data[2][2] * m_data[3][3] - m_data[3][2] * m_data[2][3];
+        const auto cofactor02 = m_data[0][2] * m_data[2][3] - m_data[2][2] * m_data[0][3];
+        const auto cofactor03 = m_data[0][2] * m_data[3][3] - m_data[3][2] * m_data[0][3];
+        const auto cofactor13 = m_data[1][2] * m_data[3][3] - m_data[3][2] * m_data[1][3];
+
+        const auto factor0 = m_data[0][0] * ((m_data[1][1] * cofactor23) - (m_data[2][1] * cofactor13) + (m_data[3][1] * cofactor12));
+        const auto factor1 = m_data[1][0] * ((m_data[0][1] * cofactor23) - (m_data[2][1] * cofactor03) + (m_data[3][1] * cofactor02));
+        const auto factor2 = m_data[2][0] * ((m_data[0][1] * cofactor13) - (m_data[1][1] * cofactor03) + (m_data[3][1] * cofactor01));
+        const auto factor3 = m_data[3][0] * ((m_data[0][1] * cofactor12) - (m_data[1][1] * cofactor02) + (m_data[2][1] * cofactor01));
+        return factor0 - factor1 + factor2 - factor3;
+    }
+
     constexpr auto transpose() const noexcept -> Matrix<T, Rows, Cols> {
         Matrix<T, Rows, Cols> result{0};
         for (std::size_t i = 0; i < Cols; ++i) {
@@ -260,4 +292,4 @@ template<std::floating_point T>
 constexpr auto perspective(T fov, T aspect_ratio, T far, T near) -> Matrix<T, 4> {
     return perspective_rh(fov, aspect_ratio, far, near);
 }
-} // namespace xme
+} // namespace xme::math

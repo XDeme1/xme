@@ -3,6 +3,7 @@
 #include <cassert>
 #include <memory>
 #include <xme/container/aligned_data.hpp>
+#include <type_traits>
 
 namespace xme::detail {
 template<typename T>
