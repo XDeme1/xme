@@ -26,7 +26,31 @@ using mat2 = Matrix<float, 2, 2>;
 using mat3 = Matrix<float, 3, 3>;
 using mat4 = Matrix<float, 4, 4>;
 
+using mat2x2 = Matrix<float, 2, 2>;
+using mat2x3 = Matrix<float, 2, 3>;
+using mat2x4 = Matrix<float, 2, 4>;
+
+using mat3x2 = Matrix<float, 3, 2>;
+using mat3x3 = Matrix<float, 3, 3>;
+using mat3x4 = Matrix<float, 3, 4>;
+
+using mat4x2 = Matrix<float, 4, 2>;
+using mat4x3 = Matrix<float, 4, 3>;
+using mat4x4 = Matrix<float, 4, 4>;
+
 using dmat2 = Matrix<double, 2, 2>;
 using dmat3 = Matrix<double, 3, 3>;
 using dmat4 = Matrix<double, 4, 4>;
+
+using dmat2x2 = Matrix<double, 2, 2>;
+using dmat2x3 = Matrix<double, 2, 3>;
+using dmat2x4 = Matrix<double, 2, 4>;
+
+using dmat3x2 = Matrix<double, 3, 2>;
+using dmat3x3 = Matrix<double, 3, 3>;
+using dmat3x4 = Matrix<double, 3, 4>;
+
+using dmat4x2 = Matrix<double, 4, 2>;
+using dmat4x3 = Matrix<double, 4, 3>;
+using dmat4x4 = Matrix<double, 4, 4>;
 } // namespace xme
