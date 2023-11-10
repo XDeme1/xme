@@ -5,5 +5,6 @@ int main() {
     static_assert(std::is_same_v<decltype(xme::forward_like<int&>(a)), int&>);
     static_assert(std::is_same_v<decltype(xme::forward_like<int&&>(a)), int&&>);
     static_assert(std::is_same_v<decltype(xme::forward_like<const int&>(a)), const int&>);
-    static_assert(std::is_same_v<decltype(xme::forward_like<const int&&>(a)), const int&&>);
+    static_assert(
+        std::is_same_v<decltype(xme::forward_like<const int&&>(a)), const int&&>);
 }

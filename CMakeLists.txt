@@ -21,4 +21,3 @@ endif()
 if(${PROJECT_IS_TOP_LEVEL} OR ${XME_BUILD_BENCHMARK})
     add_subdirectory(benchmarks)
 endif()
-

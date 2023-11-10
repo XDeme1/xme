@@ -7,7 +7,7 @@ using iterator = xme::ContiguousIterator<T>;
 
 static_assert(std::contiguous_iterator<iterator<float>>);
 
-int testIncrement() {
+int test_increment() {
     int errors = 0;
     int arr[3]{4, 1, -2};
     iterator<int> begin{arr};
@@ -25,10 +25,10 @@ int testIncrement() {
     {
         iterator<const int> it1{begin};
         it1 += 2;
-        bool error = it1 != begin+2;
+        bool error = it1 != begin + 2;
         it1 += -2;
         error |= it1 != begin;
-        if(error) {
+        if (error) {
             std::cerr << "xme::ContiguousIterator increment 2 error\n";
             ++errors;
         }
@@ -36,7 +36,7 @@ int testIncrement() {
     return errors;
 }
 
-int testDecrement() {
+int test_decrement() {
     int errors = 0;
     int arr[3]{4, 1, -2};
     iterator<int> begin{arr};
@@ -54,10 +54,10 @@ int testDecrement() {
     {
         iterator<const int> it1{end};
         it1 -= 2;
-        bool error = it1 != begin+1;
+        bool error = it1 != begin + 1;
         it1 -= -2;
         error |= it1 != end;
-        if(error) {
+        if (error) {
             std::cerr << "xme::ContiguousIterator decrement 2 error\n";
             ++errors;
         }
@@ -65,7 +65,7 @@ int testDecrement() {
     return errors;
 }
 
-int testAccess() {
+int test_access() {
     int errors = 0;
     int arr[3]{4, 1, -2};
     iterator<int> begin{arr};
@@ -86,8 +86,8 @@ int testAccess() {
 
 int main() {
     int errors = 0;
-    errors += testIncrement();
-    errors += testDecrement();
-    errors += testAccess();
+    errors += test_increment();
+    errors += test_decrement();
+    errors += test_access();
     return errors;
 }
