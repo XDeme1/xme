@@ -17,7 +17,7 @@ int test_access() {
     {
         std::array<float, 2> a{5, 0.5};
         xme::Array<float> arr{a.begin(), a.end()};
-        auto b = arr.cbegin();
+        auto b     = arr.cbegin();
         bool error = (*(b++) != 5);
         error |= (*(b++) != 0.5f);
         error |= b != arr.cend();
@@ -29,7 +29,7 @@ int test_access() {
     {
         const xme::Array<float> a{5, 0.5};
         xme::Array<float> arr{a};
-        auto b = arr.rbegin();
+        auto b     = arr.rbegin();
         bool error = (*(b++) != 0.5);
         error |= (*(b++) != 5);
         error |= b != arr.rend();
@@ -63,7 +63,7 @@ int test_move_copy() {
         if(error) {
             std::cerr << "xme::Array *copy* Constructor error\n";
             ++errors;
-        }  
+        }
     }
     {
         const xme::Array<int> arr1{5, 3};
@@ -74,7 +74,7 @@ int test_move_copy() {
         if(error) {
             std::cerr << "xme::Array copy Constructor error\n";
             ++errors;
-        }  
+        }
     }
     {
         xme::Array<int> arr1{3, 1};
@@ -91,7 +91,7 @@ int test_move_copy() {
         xme::Array<int> arr1{8, 1};
         arr1.reserve(3);
         xme::Array<int> arr2{5};
-        arr2 = arr1;
+        arr2       = arr1;
         bool error = arr1.size() != 2 || arr1.capacity() != 3;
         error |= arr2.size() != 2 || arr2.capacity() != 2;
         error |= arr2[0] != 8 || arr2[1] != 1;
@@ -104,7 +104,7 @@ int test_move_copy() {
         xme::Array<int> arr1{5, 3};
         arr1.reserve(3);
         xme::Array<int> arr2{1};
-        arr2 = std::move(arr1);
+        arr2       = std::move(arr1);
         bool error = !arr1.is_empty() || arr2.size() != 2 || arr2.capacity() != 3;
         error |= arr2[0] != 5 || arr2[1] != 3;
         if(error) {
@@ -161,9 +161,9 @@ int test_insertion() {
         xme::Array<float> arr(3);
         arr.insert(arr.begin(), 0.25);
         arr.insert(arr.end(), 0.5f);
-        arr.insert(arr.begin()+1, 1);
+        arr.insert(arr.begin() + 1, 1);
         bool error = arr[0] != 0.25 || arr[1] != 1 || arr[2] != 0.5;
-        arr.insert(arr.begin()+1, 2.5);
+        arr.insert(arr.begin() + 1, 2.5);
         error |= arr[0] != 0.25 || arr[1] != 2.5 || arr[2] != 1 || arr[3] != 0.5;
         error |= arr.size() != 4 || arr.capacity() != 6;
         if(error) {
@@ -175,10 +175,10 @@ int test_insertion() {
         std::vector<int> v{5, 3};
         std::vector<int> v2{7, 1};
         xme::Array<float> arr(3);
-        auto it1 = arr.insert(arr.begin(), v.begin(), v.end());
+        auto it1   = arr.insert(arr.begin(), v.begin(), v.end());
         bool error = arr[0] != 5 || arr[1] != 3 || it1 != arr.begin();
-        arr.insert(arr.begin()+1, v2.begin(), v2.end());
-        error |= arr[0] != 5 || arr[1] != 7 || arr[2] != 1 || arr[3] != 3; 
+        arr.insert(arr.begin() + 1, v2.begin(), v2.end());
+        error |= arr[0] != 5 || arr[1] != 7 || arr[2] != 1 || arr[3] != 3;
         if(error) {
             std::cerr << "xme::Array::insert 2 error\n";
             ++errors;
@@ -188,10 +188,10 @@ int test_insertion() {
         std::vector<int> v{5, 3};
         std::list<int> v2{7, 1};
         xme::Array<float> arr(3);
-        auto it1 = arr.insert(arr.begin(), v);
+        auto it1   = arr.insert(arr.begin(), v);
         bool error = arr[0] != 5 || arr[1] != 3 || it1 != arr.begin();
         arr.insert(arr.end(), v2);
-        error |= arr[0] != 5 || arr[1] != 3 || arr[2] != 7 || arr[3] != 1; 
+        error |= arr[0] != 5 || arr[1] != 3 || arr[2] != 7 || arr[3] != 1;
         if(error) {
             std::cerr << "xme::Array::insert 3 error\n";
             ++errors;
@@ -215,7 +215,7 @@ int test_delete() {
     }
     {
         xme::Array<int> arr{2, 3, 1};
-        auto it = arr.erase(arr.begin());
+        auto it    = arr.erase(arr.begin());
         bool error = *(it++) != 3 || *(it++) != 1;
         if(error) {
             std::cerr << "xme::Array::erase 1 error\n";
@@ -224,7 +224,7 @@ int test_delete() {
     }
     {
         xme::Array<int> arr{2, 3, 1};
-        auto it = arr.erase(arr.begin(), arr.end()-1);
+        auto it    = arr.erase(arr.begin(), arr.end() - 1);
         bool error = *(it++) != 1 || it != arr.end();
         if(error) {
             std::cerr << "xme::Array::erase 2 error\n";
@@ -280,9 +280,9 @@ int test_insert_iterators() {
     {
         xme::Array<int> arr(2);
         std::back_insert_iterator<xme::Array<int>> it{arr};
-        it = 10;
-        it = -3;
-        it = 5;
+        it         = 10;
+        it         = -3;
+        it         = 5;
         bool error = arr.size() != 3 || arr.capacity() != 4;
         error |= arr[0] != 10 || arr[1] != -3 || arr[2] != 5;
         if(error) {
@@ -293,9 +293,9 @@ int test_insert_iterators() {
     {
         xme::Array<int> arr;
         std::insert_iterator<xme::Array<int>> it{arr, arr.begin()};
-        it = -3;
-        it = 2;
-        it = 7;
+        it         = -3;
+        it         = 2;
+        it         = 7;
         bool error = arr.size() != 3 || arr.capacity() != 4;
         error |= arr[0] != -3 || arr[1] != 2 || arr[2] != 7;
         if(error) {

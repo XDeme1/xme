@@ -17,7 +17,7 @@ int test_increment() {
         iterator<int*> it1{rbegin};
         error |= it1++ != rbegin;
         error |= ++it1 != rbegin + 2;
-        if (error) {
+        if(error) {
             std::cerr << "xme::ReverseIterator increment 1 error";
             ++errors;
         }
@@ -28,7 +28,7 @@ int test_increment() {
         bool error = it1 != rbegin + 2;
         it1 += -2;
         error |= it1 != rbegin;
-        if (error) {
+        if(error) {
             std::cerr << "xme::ReverseIterator increment 2 error\n";
             ++errors;
         }
@@ -46,7 +46,7 @@ int test_decrement() {
         iterator<const int*> it1{rend};
         error |= it1-- != rend;
         error |= --it1 != rend - 2;
-        if (error) {
+        if(error) {
             std::cerr << "xme::ReverseIterator decrement 1 error";
             ++errors;
         }
@@ -57,7 +57,7 @@ int test_decrement() {
         bool error = it1 != rbegin + 1;
         it1 -= -2;
         error |= it1 != rend;
-        if (error) {
+        if(error) {
             std::cerr << "xme::ReverseIterator decrement 2 error\n";
             ++errors;
         }
@@ -76,7 +76,7 @@ int test_access() {
         error |= *rbegin != -2 || *(rbegin + 1) != 1 || *(rbegin + 2) != 4;
         error |= *((rbegin).operator->()) != -2 || *((rbegin + 1).operator->()) != 1;
         error |= *((rbegin + 2).operator->()) != 4;
-        if (error) {
+        if(error) {
             std::cerr << "xme::ReverseIterator access error\n";
             ++errors;
         }

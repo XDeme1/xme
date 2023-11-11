@@ -27,8 +27,7 @@ static_assert(!std::is_trivially_default_constructible_v<xme::Tuple<std::string>
 
 static_assert(std::is_trivially_assignable_v<xme::Tuple<int>, xme::Tuple<int>>);
 static_assert(!std::is_trivially_assignable_v<xme::Tuple<int>, xme::Tuple<float>>);
-static_assert(
-    !std::is_trivially_assignable_v<xme::Tuple<std::string>, xme::Tuple<std::string>>);
+static_assert(!std::is_trivially_assignable_v<xme::Tuple<std::string>, xme::Tuple<std::string>>);
 
 static_assert(xme::CTupleLike<xme::Tuple<>>);
 static_assert(xme::CTupleLike<xme::Tuple<int, int, int&>>);
@@ -47,7 +46,7 @@ int test_access() {
         static_assert(std::is_same_v<decltype(get<1>(std::move(t1))), const float&>);
 
         bool error = get<0>(t1) != 5 || get<1>(t1) != 1.5;
-        if (error) {
+        if(error) {
             std::cerr << "xme::Tuple get error\n";
             ++errors;
         }
@@ -58,7 +57,7 @@ int test_access() {
         static_assert(std::is_same_v<decltype(a), int>);
         static_assert(std::is_same_v<decltype(b), float>);
         bool error = a != 3 || b != 2.5;
-        if (error) {
+        if(error) {
             std::cerr << "xme::Tuple structured binding error\n";
             ++errors;
         }
@@ -71,9 +70,9 @@ int test_assign() {
     {
         xme::Tuple<std::string> t1{"Hello"};
         xme::Tuple<std::string> t2;
-        t2 = t1;
+        t2         = t1;
         bool error = get<0>(t1) != "Hello" || get<0>(t2) != "Hello";
-        if (error) {
+        if(error) {
             std::cerr << "xme::Tuple copy assignment error\n";
             ++errors;
         }
@@ -81,9 +80,9 @@ int test_assign() {
     {
         xme::Tuple<std::string> t1{"C++"};
         xme::Tuple<std::string> t2;
-        t2 = std::move(t1);
+        t2         = std::move(t1);
         bool error = !get<0>(t1).empty() || get<0>(t2) != "C++";
-        if (error) {
+        if(error) {
             std::cerr << "xme::Tuple move assignment error\n";
             ++errors;
         }
@@ -91,10 +90,10 @@ int test_assign() {
 
     {
         xme::Tuple<int, int> t1{5, 1};
-        t1 = {1, 2};
+        t1         = {1, 2};
         bool error = get<0>(t1) != 1 || get<1>(t1) != 2;
 
-        if (error) {
+        if(error) {
             ++errors;
             std::cerr << "xme::Tuple::operator=(U&&) error\n";
         }
@@ -122,8 +121,10 @@ int test_operations() {
         const xme::Tuple t2{t1};
 
         auto str1 = xme::apply([](std::string& s1, std::string& s2) { return s1 + s2; }, t1);
-        auto str2 = xme::apply([](const std::string& s1, const std::string& s2){ return s1 + s2; }, t2);
-        auto&& str3 = xme::apply([](std::string&& s1, std::string&& s2) { return s1 + s2; }, std::move(t1));
+        auto str2 =
+            xme::apply([](const std::string& s1, const std::string& s2) { return s1 + s2; }, t2);
+        auto&& str3 =
+            xme::apply([](std::string&& s1, std::string&& s2) { return s1 + s2; }, std::move(t1));
 
         bool error = str1 != "HelloWorld" || str2 != "HelloWorld" || str3 != "HelloWorld";
 
@@ -141,7 +142,7 @@ int test_operations() {
 
         static_assert(std::is_same_v<xme::Tuple<std::string&, std::string&>, decltype(t1)>);
 
-        bool error = get<0>(t1) != "He" || get<1>(t1) != "23"; 
+        bool error = get<0>(t1) != "He" || get<1>(t1) != "23";
         error |= get<0>(t1).begin() != s1.begin();
         if(error) {
             ++errors;
@@ -152,7 +153,7 @@ int test_operations() {
     {
         auto t1 = xme::make_tuple(std::string{"World"}, std::string{"23"});
         auto t2 = xme::make_tuple(std::ref(get<0>(t1)), std::ref(get<1>(t1)));
-        
+
         static_assert(std::is_same_v<xme::Tuple<std::string, std::string>, decltype(t1)>);
         static_assert(std::is_same_v<xme::Tuple<std::string&, std::string&>, decltype(t2)>);
 
@@ -163,11 +164,11 @@ int test_operations() {
             std::cerr << "xme::Tuple makeTuple error\n";
         }
     }
-    
+
     {
-        int a1 = 2;
+        int a1       = 2;
         const int a2 = 3;
-        auto t1 = xme::forward_as_tuple(a1, a2);
+        auto t1      = xme::forward_as_tuple(a1, a2);
         static_assert(std::is_same_v<decltype(t1), xme::Tuple<int&, const int&>>);
 
         bool error = get<0>(t1) != 2 || get<1>(t1) != 3;

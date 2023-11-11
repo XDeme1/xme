@@ -73,7 +73,7 @@ int test_insertion() {
         if(error) {
             std::cerr << "xme::LinkedList::insertAfter error\n";
             ++errors;
-        } 
+        }
     }
     std::forward_list<int> a;
     return errors;
@@ -96,7 +96,7 @@ int test_erase() {
     {
         xme::LinkedList<int> l{5, 3, 1, 7};
         auto begin = l.begin();
-        auto end = ++(++(++l.begin()));
+        auto end   = ++(++(++l.begin()));
         l.erase_after(begin, end);
         bool error = *(begin++) != 5 || *(begin++) != 7 || begin != l.end();
         if(error) {
@@ -112,7 +112,7 @@ int test_erase() {
         if(error) {
             std::cerr << "xme::LinkedList::popFront error\n";
             ++errors;
-        }        
+        }
     }
     {
         xme::LinkedList<int> l{5, 3, 1};
@@ -142,7 +142,7 @@ int test_copy_move() {
     {
         xme::LinkedList<int> tmp{5, 3};
         xme::LinkedList<int> l{1};
-        l = std::move(tmp);
+        l          = std::move(tmp);
         auto begin = l.begin();
         bool error = !tmp.is_empty() || *(begin++) != 5 || *(begin++) != 3;
         error |= begin != l.end();
@@ -156,7 +156,7 @@ int test_copy_move() {
         xme::LinkedList<int> l2{l1};
         auto begin1 = l1.begin();
         auto begin2 = l2.begin();
-        bool error = *(begin2++) != 5 || *(begin2++) != 3 || begin2 != l2.end();
+        bool error  = *(begin2++) != 5 || *(begin2++) != 3 || begin2 != l2.end();
         error |= *(begin1++) != 5 || *(begin1++) != 3 || begin1 != l1.end();
         error |= l1.begin() == l2.end();
         if(error) {
@@ -167,10 +167,10 @@ int test_copy_move() {
     {
         const xme::LinkedList<int> l1{2, 7};
         xme::LinkedList<int> l2{5, 8, 1, -3, 2};
-        l2 = l1;
+        l2          = l1;
         auto begin1 = l1.begin();
         auto begin2 = l2.begin();
-        bool error = *(begin2++) != 2 || *(begin2++) != 7 || begin2 != l2.end();
+        bool error  = *(begin2++) != 2 || *(begin2++) != 7 || begin2 != l2.end();
         error |= *(begin1++) != 2 || *(begin1++) != 7 || begin1 != l1.end();
         error |= l1.begin() == l2.end();
         if(error) {
@@ -180,7 +180,7 @@ int test_copy_move() {
     }
     {
         xme::LinkedList<int> l{5, 1, 5};
-        l = {7, 3};
+        l          = {7, 3};
         auto begin = l.begin();
         bool error = *(begin++) != 7 || *(begin++) != 3 || begin != l.end();
         if(error) {

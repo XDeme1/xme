@@ -26,13 +26,14 @@ static_assert(!std::is_trivially_copy_constructible_v<xme::Pair<std::string, int
 
 static_assert(std::is_trivially_default_constructible_v<xme::Pair<int, float>>);
 static_assert(
-    !std::is_trivially_default_constructible_v<xme::Pair<int&&, float&>>); // Because of &
+    !std::is_trivially_default_constructible_v<xme::Pair<int&&, float&>>);  // Because of &
 static_assert(!std::is_trivially_default_constructible_v<xme::Pair<std::string, int>>);
 
 void test_deduction_guides() {
-    int a = 2;
-    const int ca = 1;;
-    int& ra = a;
+    int a        = 2;
+    const int ca = 1;
+
+    int& ra        = a;
     const int& rca = ca;
 
     xme::Pair p1{1, 5};
@@ -56,7 +57,7 @@ int test_access() {
         static_assert(std::is_same_v<decltype(get<1>(std::move(p))), const float&>);
 
         bool error = get<0>(p) != 5 || get<1>(p) != 1.5;
-        if (error) {
+        if(error) {
             std::cerr << "xme::Pair get error\n";
             ++errors;
         }
@@ -64,8 +65,8 @@ int test_access() {
     {
         xme::Pair p{3, 2.5f};
         auto&& [a, b] = p;
-        bool error = a != 3 || b != 2.5;
-        if (error) {
+        bool error    = a != 3 || b != 2.5;
+        if(error) {
             std::cerr << "xme::Pair structured binding error\n";
             ++errors;
         }
@@ -96,7 +97,7 @@ int test_move_copy() {
     {
         xme::Pair<std::string, int> p1{"C++", 5};
         xme::Pair<std::string, int> p2{"Test", 2};
-        p1 = p2; 
+        p1         = p2;
         bool error = p1.first != "Test" || p2.first != "Test";
         if(error) {
             std::cerr << "xme::Pair copy assignment error\n";
@@ -106,7 +107,7 @@ int test_move_copy() {
     {
         xme::Pair<std::string, int> p1{"C++", 5};
         xme::Pair<std::string, int> p2{"Test", 2};
-        p1 = std::move(p2); 
+        p1         = std::move(p2);
         bool error = p1.first != "Test" || !p2.first.empty();
         if(error) {
             std::cerr << "xme::Pair move assignment error\n";
@@ -115,7 +116,7 @@ int test_move_copy() {
     }
     {
         xme::Pair<std::string, int> p1{"C++", 5};
-        p1 = {"Hello", 1}; 
+        p1         = {"Hello", 1};
         bool error = p1.first != "Hello";
         if(error) {
             std::cerr << "xme::Pair assignment error\n";
@@ -125,7 +126,7 @@ int test_move_copy() {
     {
         xme::Pair<std::string, int> p1{"Te", 3};
         xme::Tuple<std::string, int> t{"Op", 1};
-        p1 = std::move(t);
+        p1         = std::move(t);
         bool error = p1.first != "Op" || !get<0>(t).empty();
         if(error) {
             std::cerr << "xme::Pair generic assignment error\n";
@@ -157,8 +158,10 @@ int test_operations() {
         const xme::Pair p2{p1};
 
         auto str1 = xme::apply([](std::string& s1, std::string& s2) { return s1 + s2; }, p1);
-        auto str2 = xme::apply([](const std::string& s1, const std::string& s2){ return s1 + s2; }, p2);
-        auto&& str3 = xme::apply([](std::string&& s1, std::string&& s2) { return s1 + s2; }, std::move(p1));
+        auto str2 =
+            xme::apply([](const std::string& s1, const std::string& s2) { return s1 + s2; }, p2);
+        auto&& str3 =
+            xme::apply([](std::string&& s1, std::string&& s2) { return s1 + s2; }, std::move(p1));
 
         std::string result{"HelloWorld"};
         bool error = str1 != result || str2 != result || str3 != result;
@@ -172,7 +175,7 @@ int test_operations() {
     {
         auto p1 = xme::make_pair(std::string{"Hello World"}, std::string{"C++ 23"});
         auto p2 = xme::make_pair(std::ref(get<0>(p1)), std::ref(get<1>(p1)));
-        
+
         static_assert(std::is_same_v<xme::Pair<std::string, std::string>, decltype(p1)>);
         static_assert(std::is_same_v<xme::Pair<std::string&, std::string&>, decltype(p2)>);
 

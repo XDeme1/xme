@@ -17,7 +17,7 @@ int test_increment() {
         iterator<int> it1{begin};
         error |= it1++ != begin;
         error |= ++it1 != begin + 2;
-        if (error) {
+        if(error) {
             std::cerr << "xme::ContiguousIterator increment 1 error\n";
             ++errors;
         }
@@ -28,7 +28,7 @@ int test_increment() {
         bool error = it1 != begin + 2;
         it1 += -2;
         error |= it1 != begin;
-        if (error) {
+        if(error) {
             std::cerr << "xme::ContiguousIterator increment 2 error\n";
             ++errors;
         }
@@ -46,7 +46,7 @@ int test_decrement() {
         iterator<const int> it1{end};
         error |= it1-- != end;
         error |= --it1 != end - 2;
-        if (error) {
+        if(error) {
             std::cerr << "xme::ContiguousIterator decrement 1 error";
             ++errors;
         }
@@ -57,7 +57,7 @@ int test_decrement() {
         bool error = it1 != begin + 1;
         it1 -= -2;
         error |= it1 != end;
-        if (error) {
+        if(error) {
             std::cerr << "xme::ContiguousIterator decrement 2 error\n";
             ++errors;
         }
@@ -76,7 +76,7 @@ int test_access() {
         error |= *begin != 4 || *(begin + 1) != 1 || *(begin + 2) != -2;
         error |= *(begin.operator->()) != 4 || *(begin.operator->() + 1) != 1;
         error |= *(begin.operator->() + 2) != -2;
-        if (error) {
+        if(error) {
             std::cerr << "xme::ContiguousIterator access error\n";
             ++errors;
         }

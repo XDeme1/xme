@@ -15,6 +15,6 @@ int main() {
         std::cerr << "xme::AlignedData error\n";
         ++errors;
     }
-    
+
     return errors;
 }

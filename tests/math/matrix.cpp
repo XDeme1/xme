@@ -13,15 +13,14 @@ int test_access() {
     {
         bool error = m.row(0) != math::vec2{2, 8} || m.row(1) != math::vec2{1, 7};
         error |= m.row(2) != math::vec2{3, 6};
-        if (error) {
+        if(error) {
             std::cerr << "xme::Matrix::row error\n";
             ++errors;
         }
     }
     {
-        bool error =
-            m.column(0) != math::vec3{2, 1, 3} || m.column(1) != math::vec3{8, 7, 6};
-        if (error) {
+        bool error = m.column(0) != math::vec3{2, 1, 3} || m.column(1) != math::vec3{8, 7, 6};
+        if(error) {
             std::cerr << "xme::Matrix::column error\n";
             ++errors;
         }
@@ -29,7 +28,7 @@ int test_access() {
     {
         math::Matrix<float, 2, 3> m1{1};
         bool error = m1[0] != math::vec3{1, 0, 0} || m1[1] != math::vec3{0, 1, 0};
-        if (error) {
+        if(error) {
             std::cerr << "xme::Matrix::operator[] error\n";
             ++errors;
         }
@@ -46,7 +45,7 @@ int test_operators() {
 
         bool error = r1[0] != math::vec3{7} || r1[1] != math::vec3{-1};
         error |= r2[0] != math::vec3{7, 5, 5} || r2[1] != math::vec3{-3, -1, -3};
-        if (error) {
+        if(error) {
             ++errors;
             std::cerr << "xme::Matrix + operator error\n";
         }
@@ -58,7 +57,7 @@ int test_operators() {
 
         bool error = r1[0] != math::vec3{3} || r1[1] != math::vec3{-5};
         error |= r2[0] != math::vec3{3, 5, 5} || r2[1] != math::vec3{-3, -5, -3};
-        if (error) {
+        if(error) {
             ++errors;
             std::cerr << "xme::Matrix - operator error\n";
         }
@@ -68,7 +67,7 @@ int test_operators() {
         auto r = m * 4;
 
         bool error = r[0] != math::vec3{20} || r[1] != math::vec3{-12};
-        if (error) {
+        if(error) {
             ++errors;
             std::cerr << "xme::Matrix * operator error\n";
         }
@@ -78,7 +77,7 @@ int test_operators() {
         auto r = m / 4;
 
         bool error = r[0] != math::vec3{4} || r[1] != math::vec3{30};
-        if (error) {
+        if(error) {
             ++errors;
             std::cerr << "xme::Matrix / operator error\n";
         }
@@ -88,7 +87,7 @@ int test_operators() {
         static_assert(std::is_same_v<decltype(-m), math::mat3>);
 
         bool error = -m != math::mat3{-5};
-        if (error) {
+        if(error) {
             std::cerr << "xme::Matrix unary operator error\n";
             ++errors;
         }
@@ -109,7 +108,7 @@ int test_self_operators() {
 
         error |= m[0] != math::vec3{7, 3, 3} || m[1] != math::vec3{3, 7, 3};
         error |= m[2] != math::vec3{3, 3, 7};
-        if (error) {
+        if(error) {
             std::cerr << "xme::Matrix += operator error\n";
             ++errors;
         }
@@ -125,7 +124,7 @@ int test_self_operators() {
 
         error |= m[0] != math::vec3{-5, -3, -3} || m[1] != math::vec3{-3, -5, -3};
         error |= m[2] != math::vec3{-3, -3, -5};
-        if (error) {
+        if(error) {
             std::cerr << "xme::Matrix -= operator error\n";
             ++errors;
         }
@@ -136,7 +135,7 @@ int test_self_operators() {
 
         bool error = m[0] != math::vec3{3, 0, 0} || m[1] != math::vec3{0, 3, 0};
         error |= m[2] != math::vec3{0, 0, 3};
-        if (error) {
+        if(error) {
             std::cerr << "xme::Matrix *= operator error\n";
             ++errors;
         }
@@ -146,7 +145,7 @@ int test_self_operators() {
         m /= 2;
 
         bool error = m[0] != math::vec2{0.5, 0} || m[1] != math::vec2{0, 0.5};
-        if (error) {
+        if(error) {
             ++errors;
             std::cerr << "xme::Matrix /= operator error\n";
         }
@@ -161,36 +160,42 @@ int test_matrix_multiplication() {
     static_assert(std::is_same_v<decltype(math::mat4{} * math::vec4{}), math::vec4>);
     static_assert(std::is_same_v<decltype(math::Matrix<float, 4, 1>{} * math::vec4{}),
                                  math::Vector<float, 1>>);
-    static_assert(
-        std::is_same_v<decltype(math::mat3x2{} * math::vec3{}), math::vec2>);
+    static_assert(std::is_same_v<decltype(math::mat3x2{} * math::vec3{}), math::vec2>);
     {
         math::mat4 m{2};
         auto v = m * math::vec4{5, 6, 7, 1};
 
         bool error = v != math::vec4{10, 12, 14, 2};
-        if (error) {
+        if(error) {
             std::cerr << "xme::Matrix multiplication 1 Error\n";
             ++errors;
         }
     }
     {
-        math::Matrix<float, 4, 2> m{math::vec2{1, 2}, math::vec2{9, 9}, math::vec2{1},
-                                    math::vec2{5}};
+        math::Matrix<float, 4, 2> m{
+            math::vec2{1, 2},
+            math::vec2{9, 9},
+            math::vec2{1},
+            math::vec2{5}
+        };
         auto v = m * math::vec4{2};
 
         bool error = v != math::vec2{32, 34};
-        if (error) {
+        if(error) {
             std::cerr << "xme::Matrix multiplication 2 error\n";
             ++errors;
         }
     }
 
     {
-        math::mat2 m{math::vec2{1, 3}, math::vec2{7, 4}};
+        math::mat2 m{
+            math::vec2{1, 3},
+            math::vec2{7, 4}
+        };
         auto r = m * m;
 
         bool error = r[0] != math::vec2{22, 15} || r[1] != math::vec2{35, 37};
-        if (error) {
+        if(error) {
             std::cerr << "xme::Matrix multiplication 3 Error";
             ++errors;
         }
@@ -201,27 +206,38 @@ int test_matrix_multiplication() {
 int test_basic_functions() {
     int errors = 0;
     {
-        math::mat2 m{math::vec2{3, 4}, math::vec2{1, 2}};
+        math::mat2 m{
+            math::vec2{3, 4},
+            math::vec2{1, 2}
+        };
         bool error = m.determinant() != 2;
 
-        if (error) {
+        if(error) {
             std::cerr << "xme::Matrix::determinant 2 error\n";
             ++errors;
         }
     }
     {
-        math::mat3 m{math::vec3{5, 3, 1}, math::vec3{7, 3, 4}, math::vec3{9, 7, 8}};
+        math::mat3 m{
+            math::vec3{5, 3, 1},
+            math::vec3{7, 3, 4},
+            math::vec3{9, 7, 8}
+        };
         bool error = m.determinant() != -58;
-        if (error) {
+        if(error) {
             std::cerr << "xme::Matrix::determinant 3 error\n";
             ++errors;
         }
     }
     {
-        math::mat4 m{math::vec4{5, 3, 1, 2}, math::vec4{6, 7, 3, 4},
-                     math::vec4{9, 7, -3, 8}, math::vec4{9, -8, -3, 1}};
+        math::mat4 m{
+            math::vec4{5, 3,  1,  2},
+            math::vec4{6, 7,  3,  4},
+            math::vec4{9, 7,  -3, 8},
+            math::vec4{9, -8, -3, 1}
+        };
         bool error = m.determinant() != -498;
-        if (error) {
+        if(error) {
             std::cerr << "xme::Matrix::determinant 4 error\n";
             ++errors;
         }

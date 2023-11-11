@@ -5,21 +5,20 @@ void static_test(const char*) {}
 
 struct Test {
     Test() {
-        fn1 = [this]{ test(); };
+        fn1 = [this] { test(); };
     }
 
-    void test() {
-    }
+    void test() {}
 
     xme::Delegate<void()> fn1;
 };
 
 int main() {
-    xme::Delegate<void()> fn1{[](){}};
-    const xme::Delegate<void()> fn2{[](){}};
+    xme::Delegate<void()> fn1{[]() {}};
+    const xme::Delegate<void()> fn2{[]() {}};
 
-    xme::Delegate<void(int)> fn3{xme::bind_front([](int, int){}, 1)};
-    const xme::Delegate<void(int)> fn4{xme::bind_front([](int, int){}, 1)};
+    xme::Delegate<void(int)> fn3{xme::bind_front([](int, int) {}, 1)};
+    const xme::Delegate<void(int)> fn4{xme::bind_front([](int, int) {}, 1)};
 
     xme::Delegate<void(const char*)> fn5{&static_test};
     const xme::Delegate<void(const char*)> fn6{&static_test};

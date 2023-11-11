@@ -4,10 +4,10 @@
 int test_push_pop() {
     int errors = 0;
     {
-        xme::Heap<int> a; // Max heap
+        xme::Heap<int> a;  // Max heap
         for(std::size_t i = 0; i < 10; ++i)
             a.push(i);
-        auto b = a.begin();
+        auto b     = a.begin();
         bool error = a.size() != 10 || *(b++) != 9 || *(b++) != 8;
         error |= *(b++) != 5 || *(b++) != 6 || *(b++) != 7;
         error |= *(b++) != 1 || *(b++) != 4 || *(b++) != 0;
@@ -18,7 +18,7 @@ int test_push_pop() {
         }
     }
     {
-        xme::Heap<int> a; // Max heap
+        xme::Heap<int> a;  // Max heap
         for(std::size_t i = 0; i < 10; ++i)
             a.push(i);
         a.pop();
@@ -43,9 +43,9 @@ int test_construction() {
         for(std::size_t i = 0; i < 4; ++i) {
             arr.emplace_back(i);
         }
-    
-        xme::Heap<int, xme::Array<int>, std::greater<>> h1{arr.begin(), arr.end()-1};
-        auto b = h1.begin();
+
+        xme::Heap<int, xme::Array<int>, std::greater<>> h1{arr.begin(), arr.end() - 1};
+        auto b     = h1.begin();
         bool error = h1.size() != 3 || *(b++) != 0 || *(b++) != 1;
         error |= *(b++) != 2 || b != h1.end();
 
@@ -59,9 +59,9 @@ int test_construction() {
         for(std::size_t i = 0; i < 4; ++i) {
             arr.emplace_back(i);
         }
-    
+
         xme::Heap<int, xme::Array<int>, std::greater<>> h1{arr};
-        auto b = h1.begin();
+        auto b     = h1.begin();
         bool error = h1.size() != 4 || *(b++) != 0 || *(b++) != 1;
         error |= *(b++) != 2 || *(b++) != 3 || b != h1.end();
         if(error) {

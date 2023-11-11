@@ -22,7 +22,6 @@ add_subdirectory(container)
 add_subdirectory(functional)
 add_subdirectory(iterators)
 add_subdirectory(math)
-add_subdirectory(platform)
 add_subdirectory(utility)
 
 if (${XME_BUILD_MODULES})

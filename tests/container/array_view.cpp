@@ -63,7 +63,7 @@ int test_access() {
         const int arr[2]{-3, 1};
         xme::ArrayView<const int, 2> view{arr};
         static_assert(std::is_same_v<decltype(view.data()), const int*>);
-        bool error = *view.data() != -3 || *(view.data()+1) != 1;
+        bool error = *view.data() != -3 || *(view.data() + 1) != 1;
         if(error) {
             std::cerr << "xme::ArrayView::data error\n";
             ++errors;
@@ -85,7 +85,7 @@ int test_access() {
         const std::array<int, 2> arr{3, 2};
         xme::ArrayView<const int, 2> view{arr};
         auto rbegin = view.rbegin();
-        bool error = *(rbegin++) != 2;
+        bool error  = *(rbegin++) != 2;
         error |= *(rbegin++) != 3;
         error |= rbegin != view.rend();
         if(error) {
@@ -113,10 +113,10 @@ int test_subviews() {
         const xme::ArrayView<int, 2> v2{arr};
         xme::ArrayView<int, 2> view1{v};
         void(xme::ArrayView<int, 2>{v2});
-        auto sub = view1.subview(1, 1);
-        auto sub2 = view1.subview<1, 1>();
-        bool error = view1.begin()+1 != sub.begin() || view1.end() != sub.end();
-        error |= view1.begin()+1 != sub2.begin() || view1.end() != sub2.end();
+        auto sub   = view1.subview(1, 1);
+        auto sub2  = view1.subview<1, 1>();
+        bool error = view1.begin() + 1 != sub.begin() || view1.end() != sub.end();
+        error |= view1.begin() + 1 != sub2.begin() || view1.end() != sub2.end();
         if(error) {
             std::cerr << "xme::ArrayView::subview error\n";
             ++errors;
@@ -125,10 +125,10 @@ int test_subviews() {
     {
         std::array<int, 3> arr{1, 8, 3};
         xme::ArrayView<int, 3> view{arr};
-        auto f1 = view.first(2);
-        auto f2 = view.first<2>();
-        bool error = f1.begin() != view.begin() || f1.end() != view.begin()+2;
-        error |= f2.begin() != view.begin() || f2.end() != view.begin()+2;
+        auto f1    = view.first(2);
+        auto f2    = view.first<2>();
+        bool error = f1.begin() != view.begin() || f1.end() != view.begin() + 2;
+        error |= f2.begin() != view.begin() || f2.end() != view.begin() + 2;
         if(error) {
             std::cerr << "xme::ArrayView::first error\n";
             ++errors;
@@ -136,11 +136,11 @@ int test_subviews() {
     }
     {
         const std::array<const int, 3> arr{1, 8, 3};
-        const  xme::ArrayView<const int, 3> view{arr};
-        auto f1 = view.last(2);
-        auto f2 = view.last<2>();
-        bool error = f1.begin() != view.begin()+1 || f1.end() != view.end();
-        error |= f2.begin() != view.begin()+1 || f2.end() != view.end();
+        const xme::ArrayView<const int, 3> view{arr};
+        auto f1    = view.last(2);
+        auto f2    = view.last<2>();
+        bool error = f1.begin() != view.begin() + 1 || f1.end() != view.end();
+        error |= f2.begin() != view.begin() + 1 || f2.end() != view.end();
         if(error) {
             std::cerr << "xme::ArrayView::last error\n";
             ++errors;
@@ -150,21 +150,21 @@ int test_subviews() {
 }
 
 int test_as_bytes() {
-    
+
     int errors = 0;
     {
         int a1[1]{0x12'43'12'05};
         xme::ArrayView v1{a1};
         xme::ArrayView v2{xme::as_bytes(v1)};
-        
+
         bool error = false;
         if constexpr(std::endian::native == std::endian::little) {
-            error |= *v2.data() != std::byte(0x5) || *(v2.data()+1) != std::byte(0x12);
-            error |= *(v2.data()+2) != std::byte(0x43) || *(v2.data()+3) != std::byte(0x12);
+            error |= *v2.data() != std::byte(0x5) || *(v2.data() + 1) != std::byte(0x12);
+            error |= *(v2.data() + 2) != std::byte(0x43) || *(v2.data() + 3) != std::byte(0x12);
         }
         else {
-            error |= *(v2.data()) != std::byte(0x12) || *(v2.data()+1) != std::byte(0x43);
-            error |= *(v2.data()+2) != std::byte(0x12) || *(v2.data()+3) != std::byte(0x05);
+            error |= *(v2.data()) != std::byte(0x12) || *(v2.data() + 1) != std::byte(0x43);
+            error |= *(v2.data() + 2) != std::byte(0x12) || *(v2.data() + 3) != std::byte(0x05);
         }
 
         if(error) {
@@ -182,4 +182,4 @@ int main() {
     errors += test_subviews();
     errors += test_as_bytes();
     return errors;
-}  
+}
