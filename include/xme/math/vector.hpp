@@ -34,38 +34,36 @@ public:
 
     // Vector4 Conversion constructors
     template<typename U>
-    constexpr Vector(auto s1, auto s2, const Vector<U, 2>& v) noexcept
-        : Vector(s1, s2, v[0], v[1]) {}
+    constexpr Vector(auto s1, auto s2, const Vector<U, 2>& v) noexcept :
+      Vector(s1, s2, v[0], v[1]) {}
 
     template<typename U>
-    constexpr Vector(auto s1, const Vector<U, 2>& v, auto s2) noexcept
-        : Vector(s1, v[0], v[1], s2) {}
+    constexpr Vector(auto s1, const Vector<U, 2>& v, auto s2) noexcept :
+      Vector(s1, v[0], v[1], s2) {}
 
     template<typename U>
-    constexpr Vector(const Vector<U, 2>& v, auto s1, auto s2) noexcept
-        : Vector(v[0], v[1], s1, s2) {}
+    constexpr Vector(const Vector<U, 2>& v, auto s1, auto s2) noexcept :
+      Vector(v[0], v[1], s1, s2) {}
 
     template<typename U1, typename U2>
-    constexpr Vector(const Vector<U1, 2>& v1, const Vector<U2, 2>& v2) noexcept
-        : Vector(v1[0], v1[1], v2[0], v2[1]) {}
+    constexpr Vector(const Vector<U1, 2>& v1, const Vector<U2, 2>& v2) noexcept :
+      Vector(v1[0], v1[1], v2[0], v2[1]) {}
 
     template<typename U>
-    constexpr Vector(auto s, const Vector<U, 3>& v) noexcept
-        : Vector(s, v[0], v[1], v[2]) {}
+    constexpr Vector(auto s, const Vector<U, 3>& v) noexcept : Vector(s, v[0], v[1], v[2]) {}
 
     template<typename U>
-    constexpr Vector(const Vector<U, 3>& v, auto s) noexcept
-        : Vector(v[0], v[1], v[2], s) {}
+    constexpr Vector(const Vector<U, 3>& v, auto s) noexcept : Vector(v[0], v[1], v[2], s) {}
 
     template<typename U>
     constexpr Vector(const Vector<U, Size>& v) noexcept {
-        for (std::size_t i = 0; i < Size; ++i)
+        for(std::size_t i = 0; i < Size; ++i)
             m_data[i] = static_cast<T>(v[i]);
     }
 
     constexpr auto operator-() const noexcept -> Vector {
         Vector result;
-        for (std::size_t i = 0; i < Size; ++i)
+        for(std::size_t i = 0; i < Size; ++i)
             result[i] = -m_data[i];
         return result;
     }
@@ -136,72 +134,70 @@ public:
 
     template<typename U>
     constexpr auto operator=(const Vector<U, Size>& v) noexcept -> Vector& {
-        for (std::size_t i = 0; i < Size; ++i)
+        for(std::size_t i = 0; i < Size; ++i)
             m_data[i] = static_cast<T>(v[i]);
         return *this;
     }
 
     template<typename U>
     constexpr auto operator+=(U s) noexcept -> Vector& {
-        for (std::size_t i = 0; i < Size; ++i)
-                m_data[i] += s;
+        for(std::size_t i = 0; i < Size; ++i)
+            m_data[i] += s;
         return *this;
     }
 
     template<typename U>
     constexpr auto operator+=(const Vector<U, Size>& v) noexcept -> Vector& {
-        for (std::size_t i = 0; i < Size; ++i)
-                m_data[i] += v[i];
+        for(std::size_t i = 0; i < Size; ++i)
+            m_data[i] += v[i];
         return *this;
     }
 
     template<typename U>
     constexpr auto operator-=(U s) noexcept -> Vector& {
-        for (std::size_t i = 0; i < Size; ++i)
-                m_data[i] -= s;
+        for(std::size_t i = 0; i < Size; ++i)
+            m_data[i] -= s;
         return *this;
     }
 
     template<typename U>
     constexpr auto operator-=(const Vector<U, Size>& v) noexcept -> Vector& {
-        for (std::size_t i = 0; i < Size; ++i)
-                m_data[i] -= v[i];
+        for(std::size_t i = 0; i < Size; ++i)
+            m_data[i] -= v[i];
         return *this;
     }
 
     template<typename U>
     constexpr auto operator*=(U s) noexcept -> Vector& {
-        for (std::size_t i = 0; i < Size; ++i)
-                m_data[i] *= s;
+        for(std::size_t i = 0; i < Size; ++i)
+            m_data[i] *= s;
         return *this;
     }
 
     template<typename U>
     constexpr auto operator*=(const Vector<U, Size>& v) noexcept -> Vector& {
-        for (std::size_t i = 0; i < Size; ++i)
-                m_data[i] *= v[i];
+        for(std::size_t i = 0; i < Size; ++i)
+            m_data[i] *= v[i];
         return *this;
     }
 
     template<typename U>
     constexpr auto operator/=(U s) noexcept -> Vector& {
-        for (std::size_t i = 0; i < Size; ++i)
-                m_data[i] /= s;
+        for(std::size_t i = 0; i < Size; ++i)
+            m_data[i] /= s;
         return *this;
     }
 
     template<typename U>
     constexpr auto operator/=(const Vector<U, Size>& v) noexcept -> Vector& {
-        for (std::size_t i = 0; i < Size; ++i)
-                m_data[i] /= v[i];
+        for(std::size_t i = 0; i < Size; ++i)
+            m_data[i] /= v[i];
         return *this;
     }
 
     constexpr auto operator[](std::size_t i) noexcept -> T& { return m_data[i]; }
 
-    constexpr auto operator[](std::size_t i) const noexcept -> const T& {
-        return m_data[i];
-    }
+    constexpr auto operator[](std::size_t i) const noexcept -> const T& { return m_data[i]; }
 
     constexpr auto operator<=>(const Vector&) const noexcept = default;
 
@@ -209,7 +205,7 @@ public:
 
     constexpr auto dot(const Vector& v) const noexcept -> T {
         T result = 0;
-        for (std::size_t i = 0; i < Size; ++i)
+        for(std::size_t i = 0; i < Size; ++i)
             result += (m_data[i] * v[i]);
         return result;
     }
@@ -225,17 +221,13 @@ public:
 
     constexpr auto lenght() const noexcept { return std::sqrt(dot(*this)); }
 
-    constexpr auto normalized() const noexcept -> Vector {
-        return *this * (1 / lenght());
-    }
+    constexpr auto normalized() const noexcept -> Vector { return *this * (1 / lenght()); }
 
     constexpr auto reflect(const Vector& n) const noexcept -> Vector {
         return *this - n * dot(n) * 2;
     }
 
-    constexpr auto distance(const Vector& v) const noexcept {
-        return (v - *this).lenght();
-    }
+    constexpr auto distance(const Vector& v) const noexcept { return (v - *this).lenght(); }
 
     template<typename U>
     constexpr auto rotate_x(U angle) const noexcept -> Vector {
@@ -315,7 +307,7 @@ template<typename T, std::size_t Size>
 constexpr auto end(const Vector<T, Size>& v) noexcept -> const T* {
     return std::addressof(get<Size>(v));
 }
-} // namespace xme
+}  // namespace xme::math
 
 namespace std {
 template<typename T, std::size_t Size>
@@ -325,4 +317,4 @@ template<std::size_t I, typename T, std::size_t Size>
 struct tuple_element<I, xme::math::Vector<T, Size>> {
     using type = T;
 };
-} // namespace std
+}  // namespace std

@@ -1,25 +1,12 @@
-Checks: 'modernize-avoid-*,
-modernize-deprecated-*,
-modernize-make-*,
-modernize-raw-string-literal,
-modernize-redundant-void-arg,
-modernize-replace-*,
-modernize-return-braced-init-list,
-modernize-type-traits,
-modernize-unary-static-assert,
-modernize-use-bool-literals,
-modernize-use-default-member-init,
-modernize-use-emplace,
-modernize-use-equals-*,
-modernize-use-nullptr,
-modernize-use-override,
-modernize-use-std-print,
-modernize-use-transparent-functors,
-modernize-use-using,
-modernize-use-transparent-functors,
+
+Checks: 'modernize-*, cppcoreguidlines-*, -modernize-use-trailing-return-type,
 readability-identifier-naming'
 CheckOptions:
   readability-identifier-naming.ClassCase: 'CamelCase'
+  readability-identifier-nameing.StructCase: 'CamelCase'
   readability-identifier-naming.EnumCase: 'CamelCase'
+  readability-identifier-naming.EnumPrefix: 'E'
   readability-identifier-naming.FunctionCase: 'lower_case'
+  readability-identifier-naming.PrivateMemberPrefix: 'm_'
   
+

@@ -7,10 +7,10 @@ class Matrix {
 public:
     static_assert(std::is_floating_point_v<T>, "T must be a floating type");
 
-    using row_type = Vector<T, Cols>;
+    using row_type    = Vector<T, Cols>;
     using column_type = Vector<T, Rows>;
 
-    static constexpr std::size_t rows = Rows;
+    static constexpr std::size_t rows    = Rows;
     static constexpr std::size_t columns = Cols;
 
     constexpr Matrix() noexcept : Matrix(1) {}
@@ -18,7 +18,7 @@ public:
     template<CArithmetic U>
     constexpr Matrix(U s) noexcept {
         constexpr std::size_t count = std::min(Cols, Rows);
-        for (std::size_t i = 0; i < count; ++i)
+        for(std::size_t i = 0; i < count; ++i)
             m_data[i][i] = static_cast<T>(s);
     }
 
@@ -28,19 +28,23 @@ public:
 
     template<typename U>
     constexpr Matrix(const Matrix<U, Cols, Rows>& m) noexcept {
-        for (std::size_t i = 0; i < Cols; ++i)
+        for(std::size_t i = 0; i < Cols; ++i)
             m_data[i] = m[i];
     }
 
     template<typename U>
         requires(Cols == Rows && Cols == 4)
-    constexpr Matrix(const Matrix<U, 3, 3>& m) noexcept
-        : m_data({column_type{m[0], 0}, column_type{m[1], 0}, column_type{m[2], 0},
-                  column_type{0, 0, 0, 1}}) {}
+    constexpr Matrix(const Matrix<U, 3, 3>& m) noexcept :
+      m_data({
+          column_type{m[0], 0},
+          column_type{m[1], 0},
+          column_type{m[2], 0},
+          column_type{0, 0, 0, 1}
+    }) {}
 
     constexpr auto operator-() const noexcept -> Matrix {
         Matrix result{0};
-        for (std::size_t i = 0; i < Cols; ++i)
+        for(std::size_t i = 0; i < Cols; ++i)
             result[i] = -m_data[i];
         return result;
     }
@@ -48,14 +52,14 @@ public:
     template<typename U>
     constexpr auto operator+(U s) const noexcept -> Matrix {
         Matrix result{0};
-        for (std::size_t i = 0; i < Cols; ++i)
+        for(std::size_t i = 0; i < Cols; ++i)
             result[i] = m_data[i] + s;
         return result;
     }
     template<typename U>
     constexpr auto operator+(const Matrix<U, Cols, Rows>& m) const noexcept -> Matrix {
         Matrix result{0};
-        for (std::size_t i = 0; i < Cols; ++i)
+        for(std::size_t i = 0; i < Cols; ++i)
             result[i] = m_data[i] + m[i];
         return result;
     }
@@ -63,14 +67,14 @@ public:
     template<typename U>
     constexpr auto operator-(U s) const noexcept -> Matrix {
         Matrix result{0};
-        for (std::size_t i = 0; i < Cols; ++i)
+        for(std::size_t i = 0; i < Cols; ++i)
             result[i] = m_data[i] - s;
         return result;
     }
     template<typename U>
     constexpr auto operator-(const Matrix<U, Cols, Rows>& m) const noexcept -> Matrix {
         Matrix result{0};
-        for (std::size_t i = 0; i < Cols; ++i)
+        for(std::size_t i = 0; i < Cols; ++i)
             result[i] = m_data[i] - m[i];
         return result;
     }
@@ -78,7 +82,7 @@ public:
     template<typename U>
     constexpr auto operator*(U s) const noexcept -> Matrix {
         Matrix result{0};
-        for (std::size_t i = 0; i < Cols; ++i)
+        for(std::size_t i = 0; i < Cols; ++i)
             result[i] = m_data[i] * s;
         return result;
     }
@@ -86,7 +90,7 @@ public:
     template<typename U>
     constexpr auto operator*(const Vector<U, Cols>& v) const noexcept -> column_type {
         column_type result;
-        for (std::size_t i = 0; i < Rows; ++i)
+        for(std::size_t i = 0; i < Rows; ++i)
             result[i] = this->row(i).dot(v);
         return result;
     }
@@ -94,9 +98,9 @@ public:
     constexpr auto operator*(const Matrix<U, Rows2, Cols>& m) const noexcept
         -> Matrix<T, Rows2, Rows> {
         Matrix<T, Rows2, Rows> result{0};
-        for (std::size_t rowIndex = 0; rowIndex < Rows; ++rowIndex) {
+        for(std::size_t rowIndex = 0; rowIndex < Rows; ++rowIndex) {
             const row_type row = this->row(rowIndex);
-            for (std::size_t columnIndex = 0; columnIndex < Rows2; ++columnIndex)
+            for(std::size_t columnIndex = 0; columnIndex < Rows2; ++columnIndex)
                 result[columnIndex][rowIndex] = row.dot(m[columnIndex]);
         }
         return result;
@@ -105,54 +109,54 @@ public:
     template<typename U>
     constexpr auto operator/(U s) const noexcept -> Matrix {
         Matrix result{0};
-        for (std::size_t i = 0; i < Cols; ++i)
+        for(std::size_t i = 0; i < Cols; ++i)
             result[i] = m_data[i] / s;
         return result;
     }
 
     template<typename U>
     constexpr auto operator=(const Matrix<U, Cols, Rows>& m) noexcept -> Matrix& {
-        for (std::size_t i = 0; i < Cols; ++i)
+        for(std::size_t i = 0; i < Cols; ++i)
             m_data[i] = m[i];
         return *this;
     }
 
     template<typename U>
     constexpr auto operator+=(U s) noexcept -> Matrix& {
-        for (std::size_t i = 0; i < Cols; ++i)
+        for(std::size_t i = 0; i < Cols; ++i)
             m_data[i] += s;
         return *this;
     }
     template<typename U>
     constexpr auto operator+=(const Matrix<U, Cols, Rows>& m) noexcept -> Matrix& {
-        for (std::size_t i = 0; i < Cols; ++i)
+        for(std::size_t i = 0; i < Cols; ++i)
             m_data[i] += m[i];
         return *this;
     }
 
     template<typename U>
     constexpr auto operator-=(U s) noexcept -> Matrix& {
-        for (std::size_t i = 0; i < Cols; ++i)
+        for(std::size_t i = 0; i < Cols; ++i)
             m_data[i] -= s;
         return *this;
     }
     template<typename U>
     constexpr auto operator-=(const Matrix<U, Cols, Rows>& m) noexcept -> Matrix& {
-        for (std::size_t i = 0; i < Cols; ++i)
+        for(std::size_t i = 0; i < Cols; ++i)
             m_data[i] -= m[i];
         return *this;
     }
 
     template<typename U>
     constexpr auto operator*=(U s) noexcept -> Matrix& {
-        for (std::size_t i = 0; i < Cols; ++i)
+        for(std::size_t i = 0; i < Cols; ++i)
             m_data[i] *= s;
         return *this;
     }
 
     template<typename U>
     constexpr auto operator/=(U s) noexcept -> Matrix& {
-        for (std::size_t i = 0; i < Cols; ++i)
+        for(std::size_t i = 0; i < Cols; ++i)
             m_data[i] /= s;
         return *this;
     }
@@ -166,7 +170,7 @@ public:
 
     constexpr auto row(std::size_t row) const noexcept -> row_type {
         row_type result;
-        for (std::size_t i = 0; i < row_type::size; ++i)
+        for(std::size_t i = 0; i < row_type::size; ++i)
             result[i] = m_data[i][row];
         return result;
     }
@@ -187,8 +191,8 @@ public:
         const auto cofactor01 = m_data[0][1] * m_data[1][2] - m_data[1][1] * m_data[0][2];
         const auto cofactor12 = m_data[1][1] * m_data[2][2] - m_data[2][1] * m_data[1][2];
         const auto cofactor02 = m_data[0][1] * m_data[2][2] - m_data[2][1] * m_data[0][2];
-        return m_data[0][0] * cofactor12 - (m_data[1][0] * cofactor02) +
-               (m_data[2][0] * cofactor01);
+        return m_data[0][0] * cofactor12 - (m_data[1][0] * cofactor02)
+               + (m_data[2][0] * cofactor01);
     }
 
     constexpr auto determinant() const noexcept -> T
@@ -201,25 +205,25 @@ public:
         const auto cofactor03 = m_data[0][2] * m_data[3][3] - m_data[3][2] * m_data[0][3];
         const auto cofactor13 = m_data[1][2] * m_data[3][3] - m_data[3][2] * m_data[1][3];
 
-        const auto factor0 =
-            m_data[0][0] * ((m_data[1][1] * cofactor23) - (m_data[2][1] * cofactor13) +
-                            (m_data[3][1] * cofactor12));
-        const auto factor1 =
-            m_data[1][0] * ((m_data[0][1] * cofactor23) - (m_data[2][1] * cofactor03) +
-                            (m_data[3][1] * cofactor02));
-        const auto factor2 =
-            m_data[2][0] * ((m_data[0][1] * cofactor13) - (m_data[1][1] * cofactor03) +
-                            (m_data[3][1] * cofactor01));
-        const auto factor3 =
-            m_data[3][0] * ((m_data[0][1] * cofactor12) - (m_data[1][1] * cofactor02) +
-                            (m_data[2][1] * cofactor01));
+        const auto factor0 = m_data[0][0]
+                             * ((m_data[1][1] * cofactor23) - (m_data[2][1] * cofactor13)
+                                + (m_data[3][1] * cofactor12));
+        const auto factor1 = m_data[1][0]
+                             * ((m_data[0][1] * cofactor23) - (m_data[2][1] * cofactor03)
+                                + (m_data[3][1] * cofactor02));
+        const auto factor2 = m_data[2][0]
+                             * ((m_data[0][1] * cofactor13) - (m_data[1][1] * cofactor03)
+                                + (m_data[3][1] * cofactor01));
+        const auto factor3 = m_data[3][0]
+                             * ((m_data[0][1] * cofactor12) - (m_data[1][1] * cofactor02)
+                                + (m_data[2][1] * cofactor01));
         return factor0 - factor1 + factor2 - factor3;
     }
 
     constexpr auto transpose() const noexcept -> Matrix<T, Rows, Cols> {
         Matrix<T, Rows, Cols> result{0};
-        for (std::size_t i = 0; i < Cols; ++i) {
-            for (std::size_t j = 0; j < Rows; ++j) {
+        for(std::size_t i = 0; i < Cols; ++i) {
+            for(std::size_t j = 0; j < Rows; ++j) {
                 result[j][i] = m_data[i][j];
             }
         }
@@ -268,9 +272,9 @@ public:
         rotation[2][2] = c + temp[2] * normal[2];
 
         Matrix<T, 4> result;
-        for (std::size_t i = 0; i < 3; ++i) {
-            result[i] = m_data[0] * rotation[i][0] + m_data[1] * rotation[i][1] +
-                        m_data[2] * rotation[i][2];
+        for(std::size_t i = 0; i < 3; ++i) {
+            result[i] = m_data[0] * rotation[i][0] + m_data[1] * rotation[i][1]
+                        + m_data[2] * rotation[i][2];
         }
         result[3] = m_data[3];
         return result;
@@ -301,4 +305,4 @@ template<std::floating_point T>
 constexpr auto perspective(T fov, T aspect_ratio, T far, T near) -> Matrix<T, 4> {
     return perspective_rh(fov, aspect_ratio, far, near);
 }
-} // namespace xme::math
+}  // namespace xme::math
