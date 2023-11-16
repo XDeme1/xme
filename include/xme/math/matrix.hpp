@@ -2,7 +2,7 @@
 #include "vector.hpp"
 
 namespace xme::math {
-template<typename T, std::size_t Cols, std::size_t Rows>
+template<typename T, std::size_t Cols, std::size_t Rows = Cols>
 class Matrix {
 public:
     static_assert(std::is_floating_point_v<T>, "T must be a floating type");

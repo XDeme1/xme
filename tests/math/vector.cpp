@@ -318,6 +318,7 @@ int test_operations() {
             ++errors;
         }
     }
+
     return errors;
 }
 

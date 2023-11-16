@@ -1,16 +1,13 @@
 #pragma once
-#include "forward.hpp"
 #include "concepts.hpp"
 #include <array>
 #include <cmath>
 #include <type_traits>
 
 namespace xme::math {
-template<typename T, std::size_t Size>
+template<CArithmetic T, std::size_t Size>
 struct Vector {
 public:
-    static_assert(std::is_arithmetic_v<T>, "T must be an arithmetic type");
-
     static constexpr std::size_t size = Size;
 
     constexpr Vector() noexcept = default;
@@ -21,9 +18,8 @@ public:
     }
 
     template<CArithmetic... Args>
-    constexpr Vector(Args... args) noexcept : m_data({static_cast<T>(args)...}) {
-        static_assert(sizeof...(Args) == Size);
-    }
+        requires(sizeof...(Args) == Size)
+    constexpr Vector(Args... args) noexcept : m_data({static_cast<T>(args)...}) {}
 
     // Vector3 Conversion constructors
     template<typename U>
@@ -223,53 +219,12 @@ public:
 
     constexpr auto normalized() const noexcept -> Vector { return *this * (1 / lenght()); }
 
+    //! @param n normalized vector
     constexpr auto reflect(const Vector& n) const noexcept -> Vector {
         return *this - n * dot(n) * 2;
     }
 
     constexpr auto distance(const Vector& v) const noexcept { return (v - *this).lenght(); }
-
-    template<typename U>
-    constexpr auto rotate_x(U angle) const noexcept -> Vector {
-        static_assert(Size >= 3, "Vector size must be 3 or higher");
-        static_assert(std::is_floating_point_v<T>);
-
-        const auto sin{std::sin(angle)};
-        const auto cos(std::cos(angle));
-
-        Vector result{*this};
-        result[1] = m_data[1] * cos - m_data[2] * sin;
-        result[2] = m_data[1] * sin + m_data[2] * cos;
-        return result;
-    }
-
-    template<typename U>
-    constexpr auto rotate_y(U angle) const noexcept -> Vector {
-        static_assert(Size >= 3, "Vector size must be 3 or higher");
-        static_assert(std::is_floating_point_v<T>);
-
-        const auto sin{std::sin(angle)};
-        const auto cos(std::cos(angle));
-
-        Vector result{*this};
-        result[0] = m_data[0] * cos + m_data[2] * sin;
-        result[2] = -m_data[0] * sin + m_data[2] * cos;
-        return result;
-    }
-
-    template<typename U>
-    constexpr auto rotate_z(U angle) const noexcept -> Vector {
-        static_assert(Size >= 3, "Vector size must be 3 or higher");
-        static_assert(std::is_floating_point_v<T>);
-
-        const auto sin{std::sin(angle)};
-        const auto cos(std::cos(angle));
-
-        Vector result{*this};
-        result[0] = m_data[0] * cos - m_data[1] * sin;
-        result[1] = m_data[0] * sin + m_data[1] * cos;
-        return result;
-    }
 
 private:
     std::array<T, Size> m_data{};

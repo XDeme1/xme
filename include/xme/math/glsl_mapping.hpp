@@ -1,5 +1,6 @@
 #pragma once
-#include "forward.hpp"
+#include "vector.hpp"
+#include "matrix.hpp"
 
 namespace xme::math {
 using bvec2 = Vector<bool, 2>;
@@ -53,4 +54,4 @@ using dmat3x4 = Matrix<double, 3, 4>;
 using dmat4x2 = Matrix<double, 4, 2>;
 using dmat4x3 = Matrix<double, 4, 3>;
 using dmat4x4 = Matrix<double, 4, 4>;
-} // namespace xme
+}  // namespace xme::math

@@ -3,16 +3,13 @@
 #include "trigonometric.hpp"
 
 namespace xme::math {
-template<typename T>
+template<std::floating_point T>
 class Quaternion {
 public:
-    static_assert(std::is_floating_point_v<T>, "T must be a floating point");
-
     constexpr Quaternion() noexcept = default;
 
-    constexpr Quaternion(auto _w, auto _x, auto _y, auto _z) noexcept
-        : w(static_cast<T>(_w)), x(static_cast<T>(_x)), y(static_cast<T>(_y)),
-          z(static_cast<T>(_z)) {}
+    constexpr Quaternion(auto _w, auto _x, auto _y, auto _z) noexcept :
+      w(static_cast<T>(_w)), x(static_cast<T>(_x)), y(static_cast<T>(_y)), z(static_cast<T>(_z)) {}
 
     constexpr Quaternion(const Vector<T, 3>& euler) noexcept {
         const auto c = cos(euler * T(0.5));
@@ -44,10 +41,9 @@ public:
 };
 
 template<typename T, typename... Args, typename Temp = std::common_type_t<T, Args...>>
-Quaternion(T, Args...)
-    -> Quaternion<std::conditional_t<std::is_integral_v<Temp>, float, Temp>>;
+Quaternion(T, Args...) -> Quaternion<std::conditional_t<std::is_integral_v<Temp>, float, Temp>>;
 
-template<typename T>
+template<std::floating_point T>
 constexpr Quaternion<T>::operator Matrix<T, 3>() const noexcept {
     Matrix<T, 3> result{1};
     result[0][0] = 1 - 2 * (y * y + z * z);
@@ -64,12 +60,12 @@ constexpr Quaternion<T>::operator Matrix<T, 3>() const noexcept {
     return result;
 }
 
-template<typename T>
+template<std::floating_point T>
 constexpr Quaternion<T>::operator Matrix<T, 4>() const noexcept {
     return Matrix<T, 4>{static_cast<Matrix<T, 3>>(*this)};
 }
 
-template<typename T>
+template<std::floating_point T>
 template<typename U>
 constexpr auto Quaternion<T>::operator+(const Quaternion<U>& q) const noexcept {
     return Quaternion{
@@ -80,7 +76,7 @@ constexpr auto Quaternion<T>::operator+(const Quaternion<U>& q) const noexcept {
     };
 }
 
-template<typename T>
+template<std::floating_point T>
 template<typename U>
 constexpr auto Quaternion<T>::operator-(const Quaternion<U>& q) const noexcept {
     return Quaternion{
@@ -90,4 +86,4 @@ constexpr auto Quaternion<T>::operator-(const Quaternion<U>& q) const noexcept {
         z - q.z,
     };
 }
-} // namespace xme
+}  // namespace xme::math
