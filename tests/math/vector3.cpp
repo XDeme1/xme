@@ -25,7 +25,7 @@ int test_access() {
         }
     }
     {
-        math::vec3 v{1, 5, 2};
+        math::vec3 v{1, math::vec2(5, 2)};
         auto b     = begin(v);
         bool error = *(b++) != 1 || *(b++) != 5 || *(b++) != 2;
         error |= b != end(v);
@@ -78,7 +78,7 @@ int test_arithmetic() {
     }
     {
         math::vec3 v{
-            fv3 - math::vec3{5, 1, 2}
+            fv3 - math::vec3{math::vec2(5, 1), 2}
         };
         bool error = v[0] != -3.5 || v[1] != 1 || v[2] != 1;
         if(error) {

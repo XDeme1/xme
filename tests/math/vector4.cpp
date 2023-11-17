@@ -9,7 +9,7 @@ math::vec4 fv4{1.5, 2, 3, 4};
 int test_access() {
     int errors = 0;
     {
-        math::vec4 v{1, 5, 3, 4};
+        math::vec4 v{math::vec2(1, 5), 3, 4};
         bool error = v[0] != 1 || v[1] != 5 || v[2] != 3 || v[3] != 4;
         if(error) {
             std::cerr << "xme::Vector::operator[] error\n";
@@ -25,7 +25,7 @@ int test_access() {
         }
     }
     {
-        math::vec4 v{1, 5, 2, 4};
+        math::vec4 v{1, 5, math::vec2(2, 4)};
         auto b     = begin(v);
         bool error = *(b++) != 1 || *(b++) != 5 || *(b++) != 2 || *(b++) != 4;
         error |= b != end(v);
@@ -78,7 +78,7 @@ int test_arithmetic() {
     }
     {
         math::vec4 v{
-            fv4 - math::vec4{5, 1, 2, 3}
+            fv4 - math::vec4{5, math::vec2(1, 2), 3}
         };
         bool error = v[0] != -3.5 || v[1] != 1 || v[2] != 1 || v[3] != 1;
         if(error) {
@@ -96,7 +96,7 @@ int test_arithmetic() {
     }
     {
         math::vec4 v{
-            fv4 * math::vec4{5, 3, 4, 3}
+            fv4 * math::vec4{math::vec2(5, 3), math::vec2(4, 3)}
         };
         bool error = v[0] != 7.5 || v[1] != 6 || v[2] != 12 || v[3] != 12;
         if(error) {
@@ -105,7 +105,7 @@ int test_arithmetic() {
         }
     }
     {
-        math::vec4 v1{5, 10, 20, 50};
+        math::vec4 v1{math::vec3(5, 10, 20), 50};
         math::vec4 v{v1 / 5};
         bool error = v[0] != 1 || v[1] != 2 || v[2] != 4 || v[3] != 10;
         if(error) {
@@ -115,7 +115,7 @@ int test_arithmetic() {
     }
     {
         math::vec4 v{
-            fv4 / math::vec4{1.5, 1, 3, 2}
+            fv4 / math::vec4{1.5, math::vec3(1, 3, 2)}
         };
         bool error = v[0] != 1 || v[1] != 2 || v[2] != 1 || v[3] != 2;
         if(error) {
