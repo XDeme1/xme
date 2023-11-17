@@ -27,7 +27,7 @@ constexpr auto normalize(const Vector<T, Size>& v) noexcept -> Vector<T, Size> {
 template<typename T, std::size_t Size>
 constexpr auto reflect(const Vector<T, Size>& v, const Vector<T, Size>& n) noexcept
     -> Vector<T, Size> {
-    return v - n * dot(n) * 2;
+    return v - n * dot(v, n) * 2;
 }
 
 template<typename T, std::size_t Size>

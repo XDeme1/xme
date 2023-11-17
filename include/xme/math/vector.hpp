@@ -195,32 +195,22 @@ public:
 
     constexpr auto operator[](std::size_t i) const noexcept -> const T& { return m_data[i]; }
 
-    constexpr auto operator<=>(const Vector&) const noexcept = default;
-
     constexpr bool operator==(const Vector&) const noexcept = default;
 
-    constexpr auto dot(const Vector& v) const noexcept -> T { return xme::math::dot(*this, v); }
+    constexpr auto operator<=>(const Vector&) const noexcept = default;
 
-    constexpr auto cross(const Vector& v) const noexcept -> Vector {
-        static_assert(Size == 3, "Vector size must be 3");
-        return {
-            m_data[1] * v[2] - m_data[2] * v[1],
-            m_data[2] * v[0] - m_data[0] * v[2],
-            m_data[0] * v[1] - m_data[1] * v[0],
-        };
-    }
+    constexpr auto dot(const Vector& v) const noexcept -> T { return xme::math::dot(*this, v); }
 
     constexpr auto length() const noexcept { return xme::math::length(*this); }
 
     constexpr auto normalize() const noexcept -> Vector { return xme::math::normalize(*this); }
 
-    //! @param n normalized vector
     constexpr auto reflect(const Vector& n) const noexcept -> Vector {
-        return *this - n * dot(n) * 2;
+        return xme::math::reflect(*this, n);
     }
 
     constexpr auto distance(const Vector& v) const noexcept -> Vector {
-        return (v - *this).length();
+        return xme::math::distance(*this, v);
     }
 
 private:
@@ -252,12 +242,12 @@ constexpr auto begin(const Vector<T, Size>& v) noexcept -> const T* {
 
 template<typename T, std::size_t Size>
 constexpr auto end(Vector<T, Size>& v) noexcept -> T* {
-    return std::addressof(get<Size>(v));
+    return std::addressof(get<Size - 1>(v)) + 1;
 }
 
 template<typename T, std::size_t Size>
 constexpr auto end(const Vector<T, Size>& v) noexcept -> const T* {
-    return std::addressof(get<Size>(v));
+    return std::addressof(get<Size - 1>(v)) + 1;
 }
 }  // namespace xme::math
 
@@ -272,3 +262,4 @@ struct tuple_element<I, xme::math::Vector<T, Size>> {
 }  // namespace std
 
 #include "../../../private/math/vectors/vector2.hpp"
+#include "../../../private/math/vectors/vector3.hpp"
