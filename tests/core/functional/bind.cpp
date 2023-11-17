@@ -1,5 +1,5 @@
-#include <xme/functional/bind.hpp>
-#include "common.hpp"
+#include <xme/core/functional/bind.hpp>
+#include <iostream>
 
 int main() {
     int errors = 0;

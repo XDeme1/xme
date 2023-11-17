@@ -9,6 +9,6 @@ function(CreateBench NAME)
     target_link_libraries(bench_${NAME} PRIVATE benchmark::benchmark xme)
 endfunction()
 
+add_subdirectory(core/functional)
 add_subdirectory(container)
 add_subdirectory(math)
-add_subdirectory(functional)

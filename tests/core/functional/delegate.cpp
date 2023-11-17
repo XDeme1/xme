@@ -1,5 +1,5 @@
-#include <xme/functional/delegate.hpp>
-#include <xme/functional/bind.hpp>
+#include <xme/core/functional/delegate.hpp>
+#include <xme/core/functional/bind.hpp>
 
 void static_test(const char*) {}
 

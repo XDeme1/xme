@@ -19,4 +19,4 @@ constexpr auto forward_like(T&& value) noexcept -> decltype(auto) {
             return std::move(value);
     }
 }
-}
+}  // namespace xme
