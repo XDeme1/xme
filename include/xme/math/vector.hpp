@@ -4,6 +4,34 @@
 #include <array>
 #include <type_traits>
 
+#define VEC_OP(op)                                                                  \
+    constexpr auto operator op(auto s) const noexcept -> Vector {                   \
+        Vector result{};                                                            \
+        for(size_t i = 0; i < Size; ++i)                                            \
+            result[i] = ((*this)[i] op s);                                          \
+        return result;                                                              \
+    }                                                                               \
+    template<typename U>                                                            \
+    constexpr auto operator op(const Vector<U, Size>& v) const noexcept -> Vector { \
+        Vector result{};                                                            \
+        for(size_t i = 0; i < Size; ++i)                                            \
+            result[i] = ((*this)[i] op v[i]);                                       \
+        return result;                                                              \
+    }
+
+#define VEC_SELF_OP(op)                                                        \
+    constexpr auto operator op(auto s) noexcept -> Vector& {                   \
+        for(size_t i = 0; i < Size; ++i)                                       \
+            (*this)[i] op s;                                                   \
+        return *this;                                                          \
+    }                                                                          \
+    template<typename U>                                                       \
+    constexpr auto operator op(const Vector<U, Size>& v) noexcept -> Vector& { \
+        for(size_t i = 0; i < Size; ++i)                                       \
+            (*this)[i] op v[i];                                                \
+        return *this;                                                          \
+    }
+
 namespace xme::math {
 template<CArithmetic T, std::size_t Size>
 struct Vector {
@@ -64,69 +92,10 @@ public:
         return result;
     }
 
-    template<typename U>
-    constexpr auto operator+(U s) const noexcept -> Vector {
-        Vector result;
-        for(std::size_t i = 0; i < Size; ++i)
-            result[i] = m_data[i] + s;
-        return result;
-    }
-
-    template<typename U>
-    constexpr auto operator+(const Vector<U, Size>& v) const noexcept -> Vector {
-        Vector result;
-        for(std::size_t i = 0; i < Size; ++i)
-            result[i] = m_data[i] + v[i];
-        return result;
-    }
-
-    template<typename U>
-    constexpr auto operator-(U s) const noexcept -> Vector {
-        Vector result;
-        for(std::size_t i = 0; i < Size; ++i)
-            result[i] = m_data[i] - s;
-        return result;
-    }
-
-    template<typename U>
-    constexpr auto operator-(const Vector<U, Size>& v) const noexcept -> Vector {
-        Vector result;
-        for(std::size_t i = 0; i < Size; ++i)
-            result[i] = m_data[i] - v[i];
-        return result;
-    }
-
-    template<typename U>
-    constexpr auto operator*(U s) const noexcept -> Vector {
-        Vector result;
-        for(std::size_t i = 0; i < Size; ++i)
-            result[i] = m_data[i] * s;
-        return result;
-    }
-
-    template<typename U>
-    constexpr auto operator*(const Vector<U, Size>& v) const noexcept -> Vector {
-        Vector result;
-        for(std::size_t i = 0; i < Size; ++i)
-            result[i] = m_data[i] * v[i];
-        return result;
-    }
-
-    template<typename U>
-    constexpr auto operator/(U s) const noexcept -> Vector {
-        Vector result;
-        for(std::size_t i = 0; i < Size; ++i)
-            result[i] = m_data[i] / s;
-        return result;
-    }
-
-    template<typename U>
-    constexpr auto operator/(const Vector<U, Size>& v) const noexcept -> Vector {
-        Vector result;
-        for(std::size_t i = 0; i < Size; ++i)
-            result[i] = m_data[i] / v[i];
-        return result;
-    }
+    VEC_OP(+);
+    VEC_OP(-);
+    VEC_OP(*);
+    VEC_OP(/);
 
     template<typename U>
     constexpr auto operator=(const Vector<U, Size>& v) noexcept -> Vector& {
@@ -135,61 +104,10 @@ public:
         return *this;
     }
 
-    template<typename U>
-    constexpr auto operator+=(U s) noexcept -> Vector& {
-        for(std::size_t i = 0; i < Size; ++i)
-            m_data[i] += s;
-        return *this;
-    }
-
-    template<typename U>
-    constexpr auto operator+=(const Vector<U, Size>& v) noexcept -> Vector& {
-        for(std::size_t i = 0; i < Size; ++i)
-            m_data[i] += v[i];
-        return *this;
-    }
-
-    template<typename U>
-    constexpr auto operator-=(U s) noexcept -> Vector& {
-        for(std::size_t i = 0; i < Size; ++i)
-            m_data[i] -= s;
-        return *this;
-    }
-
-    template<typename U>
-    constexpr auto operator-=(const Vector<U, Size>& v) noexcept -> Vector& {
-        for(std::size_t i = 0; i < Size; ++i)
-            m_data[i] -= v[i];
-        return *this;
-    }
-
-    template<typename U>
-    constexpr auto operator*=(U s) noexcept -> Vector& {
-        for(std::size_t i = 0; i < Size; ++i)
-            m_data[i] *= s;
-        return *this;
-    }
-
-    template<typename U>
-    constexpr auto operator*=(const Vector<U, Size>& v) noexcept -> Vector& {
-        for(std::size_t i = 0; i < Size; ++i)
-            m_data[i] *= v[i];
-        return *this;
-    }
-
-    template<typename U>
-    constexpr auto operator/=(U s) noexcept -> Vector& {
-        for(std::size_t i = 0; i < Size; ++i)
-            m_data[i] /= s;
-        return *this;
-    }
-
-    template<typename U>
-    constexpr auto operator/=(const Vector<U, Size>& v) noexcept -> Vector& {
-        for(std::size_t i = 0; i < Size; ++i)
-            m_data[i] /= v[i];
-        return *this;
-    }
+    VEC_SELF_OP(+=);
+    VEC_SELF_OP(-=);
+    VEC_SELF_OP(*=);
+    VEC_SELF_OP(/=);
 
     constexpr auto operator[](std::size_t i) noexcept -> T& { return m_data[i]; }
 
@@ -260,6 +178,9 @@ struct tuple_element<I, xme::math::Vector<T, Size>> {
     using type = T;
 };
 }  // namespace std
+
+#undef VEC_OP
+#undef VEC_SELF_OP
 
 #include "../../../private/math/vectors/vector2.hpp"
 #include "../../../private/math/vectors/vector3.hpp"
