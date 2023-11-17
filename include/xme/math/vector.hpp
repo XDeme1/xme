@@ -49,36 +49,6 @@ public:
         requires(sizeof...(Args) == Size)
     constexpr Vector(Args... args) noexcept : m_data({static_cast<T>(args)...}) {}
 
-    // Vector3 Conversion constructors
-    template<typename U>
-    constexpr Vector(auto s, const Vector<U, 2>& v) noexcept : Vector(s, v[0], v[1]) {}
-
-    template<typename U>
-    constexpr Vector(const Vector<U, 2>& v, auto s) noexcept : Vector(v[0], v[1], s) {}
-
-    // Vector4 Conversion constructors
-    template<typename U>
-    constexpr Vector(auto s1, auto s2, const Vector<U, 2>& v) noexcept :
-      Vector(s1, s2, v[0], v[1]) {}
-
-    template<typename U>
-    constexpr Vector(auto s1, const Vector<U, 2>& v, auto s2) noexcept :
-      Vector(s1, v[0], v[1], s2) {}
-
-    template<typename U>
-    constexpr Vector(const Vector<U, 2>& v, auto s1, auto s2) noexcept :
-      Vector(v[0], v[1], s1, s2) {}
-
-    template<typename U1, typename U2>
-    constexpr Vector(const Vector<U1, 2>& v1, const Vector<U2, 2>& v2) noexcept :
-      Vector(v1[0], v1[1], v2[0], v2[1]) {}
-
-    template<typename U>
-    constexpr Vector(auto s, const Vector<U, 3>& v) noexcept : Vector(s, v[0], v[1], v[2]) {}
-
-    template<typename U>
-    constexpr Vector(const Vector<U, 3>& v, auto s) noexcept : Vector(v[0], v[1], v[2], s) {}
-
     template<typename U>
     constexpr Vector(const Vector<U, Size>& v) noexcept {
         for(std::size_t i = 0; i < Size; ++i)
@@ -184,3 +154,4 @@ struct tuple_element<I, xme::math::Vector<T, Size>> {
 
 #include "../../../private/math/vectors/vector2.hpp"
 #include "../../../private/math/vectors/vector3.hpp"
+#include "../../../private/math/vectors/vector4.hpp"

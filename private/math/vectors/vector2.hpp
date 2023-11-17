@@ -35,7 +35,7 @@ struct Vector<T, 2> {
 
     constexpr Vector() noexcept = default;
 
-    constexpr Vector(auto s) noexcept : Vector(s, s) {}
+    explicit constexpr Vector(auto s) noexcept : Vector(s, s) {}
 
     constexpr Vector(auto _x, auto _y) noexcept : x{static_cast<T>(_x)}, y{static_cast<T>(_y)} {}
 

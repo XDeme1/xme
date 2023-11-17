@@ -37,10 +37,16 @@ struct Vector<T, 3> {
 
     constexpr Vector() noexcept = default;
 
-    constexpr Vector(auto s) noexcept : Vector(s, s, s) {}
+    explicit constexpr Vector(auto s) noexcept : Vector(s, s, s) {}
 
     constexpr Vector(auto _x, auto _y, auto _z) noexcept :
       x{static_cast<T>(_x)}, y{static_cast<T>(_y)}, z{static_cast<T>(_z)} {}
+
+    template<typename U>
+    constexpr Vector(auto s, const Vector<U, 2>& v) noexcept : Vector(s, v[0], v[1]) {}
+
+    template<typename U>
+    constexpr Vector(const Vector<U, 2>& v, auto s) noexcept : Vector(v[0], v[1], s) {}
 
     template<typename U>
     explicit constexpr Vector(const Vector<U, 3>& v) noexcept : Vector(v.x, v.y, v.z) {}
