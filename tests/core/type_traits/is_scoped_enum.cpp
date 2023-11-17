@@ -9,8 +9,8 @@ enum class E2 {
 };
 
 int main() {
-    static_assert(!xme::is_scoped_enum_v<int>);
-    static_assert(!xme::is_scoped_enum_v<E1>);
-    static_assert(xme::is_scoped_enum_v<E2>);
+    static_assert(!xme::is_scoped_enum<int>);
+    static_assert(!xme::is_scoped_enum<E1>);
+    static_assert(xme::is_scoped_enum<E2>);
     return 0;
 }
