@@ -1,9 +1,4 @@
 #pragma once
-#include "architecture_detect.hpp"
-
-#if !XME_ARCH_X86
-#error "This header is only meant to be used on x86 and x64 architecture" 
-#endif
 
 #ifdef __MMX__
 #define XME_SIMD_MMX true

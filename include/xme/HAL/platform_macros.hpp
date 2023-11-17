@@ -7,13 +7,19 @@
 #endif
 
 #if defined(__APPLE__)
-#define XME_PLATFORM_MAC true
+#define XME_PLATFORM_APPLE true
 #else
-#define XME_PLATFORM_MAC false
+#define XME_PLATFORM_APPLE false
 #endif
 
 #if defined(__linux__)
 #define XME_PLATFORM_LINUX true
 #else
 #define XME_PLATFORM_LINUX false
+#endif
+
+#if XME_PLATFORM_WINDOWS
+#include "./windows/platform_macros.hpp"
+#elif XME_PLATFORM_LINUX
+#include "./linux/platform_macros.hpp"
 #endif
