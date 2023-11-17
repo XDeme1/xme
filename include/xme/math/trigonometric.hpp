@@ -1,9 +1,13 @@
 #pragma once
-#include "vector.hpp"
+#include <cmath>
+#include "concepts.hpp"
 #include "constants.hpp"
 
 // For more information see: https://en.wikipedia.org/wiki/Inverse_trigonometric_functions
 namespace xme::math {
+template<CArithmetic T, std::size_t>
+struct Vector;
+
 template<std::floating_point T>
 constexpr auto radians(T deg) noexcept -> T {
     return deg * (static_cast<T>(xme::math::pi) / 180);
@@ -18,7 +22,7 @@ template<std::floating_point T, std::size_t Size>
 constexpr auto radians(const Vector<T, Size>& deg) noexcept -> Vector<T, Size> {
     Vector<T, Size> result;
     for(std::size_t i = 0; i < Size; ++i)
-        result[i] = deg[i] * (static_cast<T>(xme::math::pi) / 180);
+        result[i] = radians(deg[i]);
     return result;
 }
 
@@ -26,7 +30,7 @@ template<std::floating_point T, std::size_t Size>
 constexpr auto degrees(const Vector<T, Size>& rad) noexcept -> Vector<T, Size> {
     Vector<T, Size> result;
     for(std::size_t i = 0; i < Size; ++i)
-        result[i] = rad[i] * (180 / static_cast<T>(xme::math::pi));
+        result[i] = degrees(rad[i]);
     return result;
 }
 

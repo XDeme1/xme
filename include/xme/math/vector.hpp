@@ -1,7 +1,7 @@
 #pragma once
 #include "concepts.hpp"
+#include "geometric.hpp"
 #include <array>
-#include <cmath>
 #include <type_traits>
 
 namespace xme::math {
@@ -199,12 +199,7 @@ public:
 
     constexpr bool operator==(const Vector&) const noexcept = default;
 
-    constexpr auto dot(const Vector& v) const noexcept -> T {
-        T result = 0;
-        for(std::size_t i = 0; i < Size; ++i)
-            result += (m_data[i] * v[i]);
-        return result;
-    }
+    constexpr auto dot(const Vector& v) const noexcept -> T { return xme::math::dot(*this, v); }
 
     constexpr auto cross(const Vector& v) const noexcept -> Vector {
         static_assert(Size == 3, "Vector size must be 3");
@@ -215,16 +210,18 @@ public:
         };
     }
 
-    constexpr auto lenght() const noexcept { return std::sqrt(dot(*this)); }
+    constexpr auto length() const noexcept { return xme::math::length(*this); }
 
-    constexpr auto normalized() const noexcept -> Vector { return *this * (1 / lenght()); }
+    constexpr auto normalize() const noexcept -> Vector { return xme::math::normalize(*this); }
 
     //! @param n normalized vector
     constexpr auto reflect(const Vector& n) const noexcept -> Vector {
         return *this - n * dot(n) * 2;
     }
 
-    constexpr auto distance(const Vector& v) const noexcept { return (v - *this).lenght(); }
+    constexpr auto distance(const Vector& v) const noexcept -> Vector {
+        return (v - *this).length();
+    }
 
 private:
     std::array<T, Size> m_data{};
@@ -273,3 +270,5 @@ struct tuple_element<I, xme::math::Vector<T, Size>> {
     using type = T;
 };
 }  // namespace std
+
+#include "../../../private/math/vectors/vector2.hpp"
