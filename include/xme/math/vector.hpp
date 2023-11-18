@@ -7,27 +7,27 @@
 #define VEC_OP(op)                                                                  \
     constexpr auto operator op(auto s) const noexcept -> Vector {                   \
         Vector result{};                                                            \
-        for(size_t i = 0; i < Size; ++i)                                            \
+        for(std::size_t i = 0; i < Size; ++i)                                       \
             result[i] = ((*this)[i] op s);                                          \
         return result;                                                              \
     }                                                                               \
     template<typename U>                                                            \
     constexpr auto operator op(const Vector<U, Size>& v) const noexcept -> Vector { \
         Vector result{};                                                            \
-        for(size_t i = 0; i < Size; ++i)                                            \
+        for(std::size_t i = 0; i < Size; ++i)                                       \
             result[i] = ((*this)[i] op v[i]);                                       \
         return result;                                                              \
     }
 
 #define VEC_SELF_OP(op)                                                        \
     constexpr auto operator op(auto s) noexcept -> Vector& {                   \
-        for(size_t i = 0; i < Size; ++i)                                       \
+        for(std::size_t i = 0; i < Size; ++i)                                  \
             (*this)[i] op s;                                                   \
         return *this;                                                          \
     }                                                                          \
     template<typename U>                                                       \
     constexpr auto operator op(const Vector<U, Size>& v) noexcept -> Vector& { \
-        for(size_t i = 0; i < Size; ++i)                                       \
+        for(std::size_t i = 0; i < Size; ++i)                                  \
             (*this)[i] op v[i];                                                \
         return *this;                                                          \
     }
