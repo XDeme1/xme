@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.26)
+cmake_minimum_required(VERSION 3.24...3.28)
 project(xme)
 
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -9,8 +9,10 @@ option(XME_BUILD_MODULES "Enable modules" OFF)
 
 add_subdirectory(include/xme)
 
-if(${XME_BUILD_MODULES})
-    add_subdirectory(modules)
+if((${PROJECT_IS_TOP_LEVEL} OR ${XME_BUILD_MODULES}))
+    if(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang" AND ${CMAKE_CXX_COMPILER_VERSION} VERSION_GREATER_EQUAL "18.0.0")
+        add_subdirectory(modules)
+    endif()
 endif()
 
 if(${PROJECT_IS_TOP_LEVEL} OR ${XME_BUILD_TESTS})

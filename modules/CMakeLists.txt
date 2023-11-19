@@ -2,14 +2,12 @@ add_library(xme_modules)
 
 target_sources(xme_modules PUBLIC
     FILE_SET xme_modules TYPE CXX_MODULES FILES
-    xme.ixx 
-    algorithm/algorithm.ixx
-    bit/bit.ixx
-    container/container.ixx
-    functional/functional.ixx
-    iterators/iterators.ixx
-    math/math.ixx 
-    utility/utility.ixx)
+    xme.cppm
+    container/container.cppm
+    core/functional/functional.cppm
+    iterators/iterators.cppm
+    math/math.cppm
+    core/utility/utility.cppm)
 
 #Modules currently only builds with libc++, libstdc++ is broken
 target_link_options(xme_modules PRIVATE -lc++)
