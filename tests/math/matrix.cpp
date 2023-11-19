@@ -159,7 +159,7 @@ int test_matrix_multiplication() {
     static_assert(std::is_same_v<decltype(math::mat3{} * math::vec3{}), math::vec3>);
     static_assert(std::is_same_v<decltype(math::mat4{} * math::vec4{}), math::vec4>);
     static_assert(std::is_same_v<decltype(math::Matrix<float, 4, 1>{} * math::vec4{}),
-                                 math::Vector<float, 1>>);
+        math::Vector<float, 1>>);
     static_assert(std::is_same_v<decltype(math::mat3x2{} * math::vec3{}), math::vec2>);
     {
         math::mat4 m{2};

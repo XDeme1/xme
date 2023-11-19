@@ -1,7 +1,7 @@
 #pragma once
-#include <xme/math/concepts.hpp>
 #include <cassert>
 #include <cmath>
+#include <xme/math/concepts.hpp>
 
 #define VEC_OP(op)                                                               \
     constexpr auto operator op(auto s) const noexcept -> Vector {                \
@@ -44,10 +44,10 @@ struct Vector<T, 2> {
 
     constexpr auto operator-() const noexcept -> Vector { return {-x, -y}; }
 
-    VEC_OP(+);
-    VEC_OP(-);
-    VEC_OP(*);
-    VEC_OP(/);
+    VEC_OP(+)
+    VEC_OP(-)
+    VEC_OP(*)
+    VEC_OP(/)
 
     template<typename U>
     constexpr auto operator=(const Vector<U, 2>& v) noexcept -> Vector& {
@@ -56,10 +56,10 @@ struct Vector<T, 2> {
         return *this;
     }
 
-    VEC_SELF_OP(+=);
-    VEC_SELF_OP(-=);
-    VEC_SELF_OP(*=);
-    VEC_SELF_OP(/=);
+    VEC_SELF_OP(+=)
+    VEC_SELF_OP(-=)
+    VEC_SELF_OP(*=)
+    VEC_SELF_OP(/=)
 
     constexpr auto operator[](std::size_t i) noexcept -> T& {
         assert(i < 2 && "Index out of bound");

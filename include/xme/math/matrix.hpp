@@ -81,10 +81,10 @@ public:
         return result;
     }
 
-    MAT_OP2(+);
-    MAT_OP2(-);
-    MAT_OP1(*);
-    MAT_OP1(/);
+    MAT_OP2(+)
+    MAT_OP2(-)
+    MAT_OP1(*)
+    MAT_OP1(/)
 
     template<typename U>
     constexpr auto operator*(const Vector<U, Cols>& v) const noexcept -> column_type {
@@ -112,10 +112,10 @@ public:
         return *this;
     }
 
-    MAT_SELF_OP2(+=);
-    MAT_SELF_OP2(-=);
-    MAT_SELF_OP1(*=);
-    MAT_SELF_OP1(/=);
+    MAT_SELF_OP2(+=)
+    MAT_SELF_OP2(-=)
+    MAT_SELF_OP1(*=)
+    MAT_SELF_OP1(/=)
 
     constexpr auto operator[](std::size_t i) noexcept -> column_type& { return m_data[i]; }
 

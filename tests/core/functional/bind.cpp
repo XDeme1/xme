@@ -1,4 +1,5 @@
 #include <xme/core/functional/bind.hpp>
+#include <algorithm>
 #include <iostream>
 
 int main() {

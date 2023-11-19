@@ -62,10 +62,10 @@ public:
         return result;
     }
 
-    VEC_OP(+);
-    VEC_OP(-);
-    VEC_OP(*);
-    VEC_OP(/);
+    VEC_OP(+)
+    VEC_OP(-)
+    VEC_OP(*)
+    VEC_OP(/)
 
     template<typename U>
     constexpr auto operator=(const Vector<U, Size>& v) noexcept -> Vector& {
@@ -74,10 +74,10 @@ public:
         return *this;
     }
 
-    VEC_SELF_OP(+=);
-    VEC_SELF_OP(-=);
-    VEC_SELF_OP(*=);
-    VEC_SELF_OP(/=);
+    VEC_SELF_OP(+=)
+    VEC_SELF_OP(-=)
+    VEC_SELF_OP(*=)
+    VEC_SELF_OP(/=)
 
     constexpr auto operator[](std::size_t i) noexcept -> T& { return m_data[i]; }
 
