@@ -1,6 +1,7 @@
 #pragma once
 #include <xme/math/vector.hpp>
 #include <xme/math/matrices/matrix_functions.hpp>
+#include <xme/math/matrices/matrix_transformation.hpp>
 
 #define MAT_OP1(op)                                                                  \
     template<typename U>                                                             \
@@ -140,52 +141,17 @@ public:
 
     template<typename U>
     constexpr auto translate(const Vector<U, 3>& v) const noexcept -> Matrix {
-        return {
-            m_data[0],
-            m_data[1],
-            m_data[2],
-            m_data[0] * v[0] + m_data[1] * v[1] + m_data[2] * v[2] + m_data[3],
-        };
+        return math::translate(*this, v);
     }
 
     template<typename U>
     constexpr auto scale(const Vector<U, 3>& v) const noexcept -> Matrix {
-        return {
-            m_data[0] * v[0],
-            m_data[1] * v[1],
-            m_data[2] * v[2],
-            m_data[3],
-        };
+        return math::scale(*this, v);
     }
 
     template<typename U1, typename U2>
     constexpr auto rotate(U1 angle, const Vector<U2, 3>& n) const noexcept {
-        const auto s{std::sin(angle)};
-        const auto c{std::cos(angle)};
-
-        const Vector<T, 3> temp{n * (1 - c)};
-
-        Matrix rotation;
-
-        rotation[0][0] = c + temp[0] * n[0];
-        rotation[0][1] = temp[0] * n[1] + s * n[2];
-        rotation[0][2] = temp[0] * n[2] - s * n[1];
-
-        rotation[1][0] = temp[1] * n[0] - s * n[2];
-        rotation[1][1] = c + temp[1] * n[1];
-        rotation[1][2] = temp[1] * n[2] + s * n[0];
-
-        rotation[2][0] = temp[2] * n[0] + s * n[1];
-        rotation[2][1] = temp[2] * n[1] - s * n[0];
-        rotation[2][2] = c + temp[2] * n[2];
-
-        Matrix result;
-        for(std::size_t i = 0; i < 3; ++i) {
-            result[i] = m_data[0] * rotation[i][0] + m_data[1] * rotation[i][1]
-                        + m_data[2] * rotation[i][2];
-        }
-        result[3] = m_data[3];
-        return result;
+        return math::rotate(*this, angle, n);
     }
 
 private:

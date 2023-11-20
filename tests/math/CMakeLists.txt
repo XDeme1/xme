@@ -1,4 +1,5 @@
 CreateTest(matrix 11)
+CreateTest(matrix4x4 11)
 CreateTest(vector 11)
 CreateTest(vector2 11)
 CreateTest(vector3 11)

@@ -229,19 +229,6 @@ int test_basic_functions() {
             ++errors;
         }
     }
-    {
-        math::mat4 m{
-            math::vec4{5, 3,  1,  2},
-            math::vec4{6, 7,  3,  4},
-            math::vec4{9, 7,  -3, 8},
-            math::vec4{9, -8, -3, 1}
-        };
-        bool error = m.determinant() != -498;
-        if(error) {
-            std::cerr << "xme::Matrix::determinant 4 error\n";
-            ++errors;
-        }
-    }
     return errors;
 }
 
