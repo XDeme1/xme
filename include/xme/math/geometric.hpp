@@ -1,9 +1,13 @@
 #pragma once
 #include <cmath>
+#include <xme/setup.hpp>
+
+#if __cpp_concepts
 #include "concepts.hpp"
+#endif
 
 namespace xme::math {
-template<CArithmetic T, std::size_t Size>
+template<XME_CONCEPT(CArithmetic, T), std::size_t Size>
 struct Vector;
 
 template<typename T, std::size_t Size>

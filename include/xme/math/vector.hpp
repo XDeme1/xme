@@ -1,11 +1,16 @@
 #pragma once
-#include "concepts.hpp"
-#include "geometric.hpp"
 #include <array>
 #include <type_traits>
+#include <xme/setup.hpp>
+#include "geometric.hpp"
+
+#if __cpp_concepts
+#include "concepts.hpp"
+#endif
 
 #define VEC_OP(op)                                                                  \
-    constexpr auto operator op(auto s) const noexcept -> Vector {                   \
+    template<typename U>                                                            \
+    constexpr auto operator op(U s) const noexcept -> Vector {                      \
         Vector result{};                                                            \
         for(std::size_t i = 0; i < Size; ++i)                                       \
             result[i] = ((*this)[i] op s);                                          \
@@ -20,7 +25,8 @@
     }
 
 #define VEC_SELF_OP(op)                                                        \
-    constexpr auto operator op(auto s) noexcept -> Vector& {                   \
+    template<typename U>                                                       \
+    constexpr auto operator op(U s) noexcept -> Vector& {                      \
         for(std::size_t i = 0; i < Size; ++i)                                  \
             (*this)[i] op s;                                                   \
         return *this;                                                          \
@@ -33,21 +39,22 @@
     }
 
 namespace xme::math {
-template<CArithmetic T, std::size_t Size>
+template<XME_CONCEPT(CArithmetic, T), std::size_t Size>
 struct Vector {
 public:
     static constexpr std::size_t size = Size;
 
     constexpr Vector() noexcept = default;
 
-    template<CArithmetic U>
+    template<typename U>
     constexpr Vector(U s) noexcept {
         m_data.fill(s);
     }
 
-    template<CArithmetic... Args>
-        requires(sizeof...(Args) == Size)
-    constexpr Vector(Args... args) noexcept : m_data({static_cast<T>(args)...}) {}
+    template<XME_CONCEPT(CArithmetic, ... Args)>
+    constexpr Vector(Args... args) noexcept : m_data({static_cast<T>(args)...}) {
+        static_assert(sizeof...(Args) == Size);
+    }
 
     template<typename U>
     constexpr Vector(const Vector<U, Size>& v) noexcept {
@@ -83,22 +90,32 @@ public:
 
     constexpr auto operator[](std::size_t i) const noexcept -> const T& { return m_data[i]; }
 
+#if defined(__cpp_impl_three_way_comparison)
     constexpr bool operator==(const Vector&) const noexcept = default;
 
     constexpr auto operator<=>(const Vector&) const noexcept = default;
+#else
+    constexpr bool operator==(const Vector& v) const noexcept {
+        for(std::size_t i = 0; i < Size; ++i) {
+            if((*this)[i] != v[i]) return false;
+        }
+        return true;
+    }
+    constexpr bool operator!=(const Vector& v) const noexcept { return !operator==(v); }
+#endif
 
-    constexpr auto dot(const Vector& v) const noexcept -> T { return xme::math::dot(*this, v); }
+    constexpr auto dot(const Vector& v) const noexcept -> T { return math::dot(*this, v); }
 
-    constexpr auto length() const noexcept { return xme::math::length(*this); }
+    constexpr auto length() const noexcept { return math::length(*this); }
 
-    constexpr auto normalize() const noexcept -> Vector { return xme::math::normalize(*this); }
+    constexpr auto normalize() const noexcept -> Vector { return math::normalize(*this); }
 
     constexpr auto reflect(const Vector& n) const noexcept -> Vector {
-        return xme::math::reflect(*this, n);
+        return math::reflect(*this, n);
     }
 
     constexpr auto distance(const Vector& v) const noexcept -> Vector {
-        return xme::math::distance(*this, v);
+        return math::distance(*this, v);
     }
 
 private:
@@ -120,22 +137,22 @@ constexpr auto get(const Vector<T, Size>& v) noexcept -> decltype(auto) {
 
 template<typename T, std::size_t Size>
 constexpr auto begin(Vector<T, Size>& v) noexcept -> T* {
-    return std::addressof(get<0>(v));
+    return std::addressof(v[0]);
 }
 
 template<typename T, std::size_t Size>
 constexpr auto begin(const Vector<T, Size>& v) noexcept -> const T* {
-    return std::addressof(get<0>(v));
+    return std::addressof(v[0]);
 }
 
 template<typename T, std::size_t Size>
 constexpr auto end(Vector<T, Size>& v) noexcept -> T* {
-    return std::addressof(get<Size - 1>(v)) + 1;
+    return std::addressof(v[Size - 1]) + 1;
 }
 
 template<typename T, std::size_t Size>
 constexpr auto end(const Vector<T, Size>& v) noexcept -> const T* {
-    return std::addressof(get<Size - 1>(v)) + 1;
+    return std::addressof(v[Size - 1]) + 1;
 }
 }  // namespace xme::math
 

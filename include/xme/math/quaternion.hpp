@@ -2,8 +2,12 @@
 #include "matrix.hpp"
 #include "trigonometric.hpp"
 
+#if __cpp_concepts
+#include "concepts"
+#endif
+
 namespace xme::math {
-template<std::floating_point T>
+template<XME_CONCEPT(std::floating_point, T)>
 class Quaternion {
 public:
     constexpr Quaternion() noexcept = default;
@@ -43,7 +47,7 @@ public:
 template<typename T, typename... Args, typename Temp = std::common_type_t<T, Args...>>
 Quaternion(T, Args...) -> Quaternion<std::conditional_t<std::is_integral_v<Temp>, float, Temp>>;
 
-template<std::floating_point T>
+template<XME_CONCEPT(std::floating_point, T)>
 constexpr Quaternion<T>::operator Matrix<T, 3>() const noexcept {
     Matrix<T, 3> result{1};
     result[0][0] = 1 - 2 * (y * y + z * z);
@@ -58,32 +62,5 @@ constexpr Quaternion<T>::operator Matrix<T, 3>() const noexcept {
     result[2][1] = 2 * (y * z - w * x);
     result[2][2] = 1 - 2 * (x * x + y * y);
     return result;
-}
-
-template<std::floating_point T>
-constexpr Quaternion<T>::operator Matrix<T, 4>() const noexcept {
-    return Matrix<T, 4>{static_cast<Matrix<T, 3>>(*this)};
-}
-
-template<std::floating_point T>
-template<typename U>
-constexpr auto Quaternion<T>::operator+(const Quaternion<U>& q) const noexcept {
-    return Quaternion{
-        w + q.w,
-        x + q.x,
-        y + q.y,
-        z + q.z,
-    };
-}
-
-template<std::floating_point T>
-template<typename U>
-constexpr auto Quaternion<T>::operator-(const Quaternion<U>& q) const noexcept {
-    return Quaternion{
-        w - q.w,
-        x - q.x,
-        y - q.y,
-        z - q.z,
-    };
 }
 }  // namespace xme::math

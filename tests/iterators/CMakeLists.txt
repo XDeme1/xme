@@ -1,2 +1,2 @@
-CreateTest(contiguous_iterator)
-CreateTest(reverse_iterator)
+CreateTest(contiguous_iterator 20)
+CreateTest(reverse_iterator 20)

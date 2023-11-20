@@ -18,7 +18,8 @@ int test_access() {
     }
     {
         math::vec4 v{2};
-        bool error = get<0>(v) != 2 || get<1>(v) != 2 || get<2>(v) != 2 || get<3>(v) != 2;
+        bool error = math::get<0>(v) != 2 || math::get<1>(v) != 2 || math::get<2>(v) != 2
+                     || math::get<3>(v) != 2;
         if(error) {
             std::cerr << "xme::Vector get error\n";
             ++errors;

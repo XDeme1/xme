@@ -1,10 +1,16 @@
 #pragma once
 #include <cassert>
 #include <cmath>
+#include <type_traits>
+#include <xme/setup.hpp>
+
+#if __cpp_concepts
 #include <xme/math/concepts.hpp>
+#endif
 
 #define VEC_OP(op)                                                               \
-    constexpr auto operator op(auto s) const noexcept -> Vector {                \
+    template<typename U>                                                         \
+    constexpr auto operator op(U s) const noexcept -> Vector {                   \
         return {x op s, y op s};                                                 \
     }                                                                            \
     template<typename U>                                                         \
@@ -13,7 +19,8 @@
     }
 
 #define VEC_SELF_OP(op)                                                     \
-    constexpr auto operator op(auto s) noexcept -> Vector& {                \
+    template<typename U>                                                    \
+    constexpr auto operator op(U s) noexcept -> Vector& {                   \
         x op s;                                                             \
         y op s;                                                             \
         return *this;                                                       \
@@ -26,18 +33,20 @@
     }
 
 namespace xme::math {
-template<CArithmetic T, std::size_t Size>
+template<XME_CONCEPT(CArithmetic, T), std::size_t Size>
 struct Vector;
 
-template<CArithmetic T>
+template<XME_CONCEPT(CArithmetic, T)>
 struct Vector<T, 2> {
     static constexpr std::size_t size = 2;
 
     constexpr Vector() noexcept = default;
 
-    explicit constexpr Vector(auto s) noexcept : Vector(s, s) {}
+    template<typename U>
+    explicit constexpr Vector(U s) noexcept : Vector(s, s) {}
 
-    constexpr Vector(auto _x, auto _y) noexcept : x{static_cast<T>(_x)}, y{static_cast<T>(_y)} {}
+    template<typename U1, typename U2>
+    constexpr Vector(U1 _x, U2 _y) noexcept : x{static_cast<T>(_x)}, y{static_cast<T>(_y)} {}
 
     template<typename U>
     explicit constexpr Vector(const Vector<U, 2>& v) noexcept : Vector(v.x, v.y) {}
@@ -71,9 +80,17 @@ struct Vector<T, 2> {
         return (&x)[i];
     }
 
+#if defined(__cpp_impl_three_way_comparison)
     constexpr bool operator==(const Vector&) const noexcept = default;
 
     constexpr auto operator<=>(const Vector&) const noexcept = default;
+#else
+    constexpr bool operator==(const Vector& v) const noexcept {
+        return (*this)[0] == v[0] && (*this)[1] == v[1];
+    }
+
+    constexpr bool operator!=(const Vector& v) const noexcept { return !operator==(v); }
+#endif
 
     constexpr auto dot(const Vector& v) const noexcept -> T { return {x * v.x + y * v.y}; }
 
