@@ -137,7 +137,7 @@ public:
 
     constexpr auto determinant() const noexcept -> T { return math::determinant(*this); }
 
-    constexpr auto transpose() const noexcept -> Matrix<T, 4, 4> { return math::transpose(*this); }
+    constexpr auto transpose() const noexcept -> Matrix { return math::transpose(*this); }
 
     template<typename U>
     constexpr auto translate(const Vector<U, 3>& v) const noexcept -> Matrix {
@@ -150,7 +150,7 @@ public:
     }
 
     template<typename U1, typename U2>
-    constexpr auto rotate(U1 angle, const Vector<U2, 3>& n) const noexcept {
+    constexpr auto rotate(U1 angle, const Vector<U2, 3>& n) const noexcept -> Matrix {
         return math::rotate(*this, angle, n);
     }
 

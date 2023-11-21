@@ -12,7 +12,8 @@ class Quaternion {
 public:
     constexpr Quaternion() noexcept = default;
 
-    constexpr Quaternion(auto _w, auto _x, auto _y, auto _z) noexcept :
+    template<typename U1, typename U2, typename U3, typename U4>
+    constexpr Quaternion(U1 _w, U2 _x, U3 _y, U4 _z) noexcept :
       w(static_cast<T>(_w)), x(static_cast<T>(_x)), y(static_cast<T>(_y)), z(static_cast<T>(_z)) {}
 
     constexpr Quaternion(const Vector<T, 3>& euler) noexcept {
@@ -35,8 +36,8 @@ public:
     template<typename U>
     constexpr auto operator*(const Quaternion<U>& q) const noexcept;
 
-    constexpr auto& operator[](std::size_t i) noexcept { return (&w)[i]; }
-    constexpr auto& operator[](std::size_t i) const noexcept { return (&w)[i]; }
+    constexpr auto operator[](std::size_t i) noexcept -> T& { return (&w)[i]; }
+    constexpr auto operator[](std::size_t i) const noexcept -> const T& { return (&w)[i]; }
 
     T w{1};
     T x{0};

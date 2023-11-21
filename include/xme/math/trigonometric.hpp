@@ -14,16 +14,19 @@ struct Vector;
 
 template<XME_CONCEPT(std::floating_point, T)>
 constexpr auto radians(T deg) noexcept -> T {
-    return deg * (static_cast<T>(xme::math::pi) / 180);
+    static_assert(std::is_floating_point<T>::value, "T must be a floating point");
+    return deg * (math::pi_v<T> / 180);
 }
 
 template<XME_CONCEPT(std::floating_point, T)>
 constexpr auto degrees(T rad) noexcept -> T {
-    return rad * (180 / static_cast<T>(xme::math::pi));
+    static_assert(std::is_floating_point<T>::value, "T must be a floating point");
+    return rad * (180 / math::pi_v<T>);
 }
 
 template<XME_CONCEPT(std::floating_point, T), std::size_t Size>
 constexpr auto radians(const Vector<T, Size>& deg) noexcept -> Vector<T, Size> {
+    static_assert(std::is_floating_point<T>::value, "T must be a floating point");
     Vector<T, Size> result;
     for(std::size_t i = 0; i < Size; ++i)
         result[i] = radians(deg[i]);
@@ -32,6 +35,7 @@ constexpr auto radians(const Vector<T, Size>& deg) noexcept -> Vector<T, Size> {
 
 template<XME_CONCEPT(std::floating_point, T), std::size_t Size>
 constexpr auto degrees(const Vector<T, Size>& rad) noexcept -> Vector<T, Size> {
+    static_assert(std::is_floating_point<T>::value, "T must be a floating point");
     Vector<T, Size> result;
     for(std::size_t i = 0; i < Size; ++i)
         result[i] = degrees(rad[i]);

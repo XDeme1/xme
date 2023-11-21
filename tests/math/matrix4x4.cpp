@@ -1,6 +1,7 @@
 #include <iostream>
 #include <xme/math/glsl_mapping.hpp>
 #include <xme/math/matrix.hpp>
+#include <xme/math/constants.hpp>
 
 namespace math = xme::math;
 
@@ -235,6 +236,48 @@ int test_basic_functions() {
     return errors;
 }
 
+int test_transformations() {
+    int errors = 0;
+    {
+        math::mat4 m{2};
+        m          = m.translate(math::vec3{5, 3, 1});
+        bool error = m[0] != math::vec4{2, 0, 0, 0} || m[1] != math::vec4{0, 2, 0, 0}
+                     || m[2] != math::vec4{0, 0, 2, 0} || m[3] != math::vec4{10, 6, 2, 2};
+
+        if(error) {
+            std::cerr << "xme::math::translate error\n";
+            ++errors;
+        }
+    }
+    {
+        math::mat4 m{1};
+        m          = m.scale(math::vec3{5, 3, 2});
+        bool error = m[0] != math::vec4{5, 0, 0, 0} || m[1] != math::vec4{0, 3, 0, 0}
+                     || m[2] != math::vec4{0, 0, 2, 0} || m[3] != math::vec4{0, 0, 0, 1};
+        if(error) {
+            std::cerr << "xme::math::Matrix::scale error\n";
+            ++errors;
+        }
+    }
+    {
+        auto equal = [](float a, float b) {
+            return !(std::abs(a - b) <= std::numeric_limits<float>::epsilon());
+        };
+        math::mat4 m{};
+        m = m.rotate(math::pi / 2, math::vec3{0, 1, 0});
+        bool error =
+            equal(m[0][0], 0) || equal(m[0][1], 0) || equal(m[0][2], -1) || equal(m[0][3], 0);
+        error |= equal(m[1][0], 0) || equal(m[1][1], 1) || equal(m[1][2], 0) || equal(m[1][3], 0);
+        error |= equal(m[2][0], 1) || equal(m[2][1], 0) || equal(m[2][2], 0) || equal(m[2][3], 0);
+        error |= equal(m[3][0], 0) || equal(m[3][1], 0) || equal(m[3][2], 0) || equal(m[3][3], 1);
+        if(error) {
+            std::cerr << "xme::math::Matrix::rotate error\n";
+            ++errors;
+        }
+    }
+    return errors;
+}
+
 int main() {
     int errors = 0;
     errors += test_access();
@@ -242,5 +285,6 @@ int main() {
     errors += test_self_operators();
     errors += test_matrix_multiplication();
     errors += test_basic_functions();
+    errors += test_transformations();
     return errors;
 }
