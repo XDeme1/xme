@@ -81,6 +81,7 @@ IncludeBlocks: Preserve
 
 IndentWidth: 4
 IndentRequiresClause: true
+IndentPPDirectives: AfterHash
 
 NamespaceIndentation: None
 

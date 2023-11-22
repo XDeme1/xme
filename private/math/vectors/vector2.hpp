@@ -1,7 +1,6 @@
 #pragma once
 #include <cassert>
 #include <cmath>
-#include <type_traits>
 #include <xme/setup.hpp>
 
 #if __cpp_concepts

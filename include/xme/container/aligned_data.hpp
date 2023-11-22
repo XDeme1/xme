@@ -1,6 +1,8 @@
 #pragma once
 #include <array>
-#include <bit>
+
+#include <xme/setup.hpp>
+#include <xme/core/bit/has_single_bit.hpp>
 
 namespace xme {
 //! Provides a wrapper for an aligned storage.
@@ -9,27 +11,25 @@ namespace xme {
 //! @param T the type of the aligned data
 //! @param Align must be a power of 2 non negative number
 template<typename T, std::size_t Align = alignof(T)>
-    requires(std::has_single_bit(Align))
 class AlignedData {
 public:
+    static_assert(xme::has_single_bit(Align), "Align must be a power of 2");
     static_assert(std::is_same_v<T, std::remove_cv_t<T>>,
-                  "xme::AlignedData must have a non-const and non-volatile T");
+        "xme::AlignedData must have a non-const and non-volatile T");
     static_assert(alignof(T) <= Align,
-                  "The provided align must be higher or equal to the default align of T");
+        "The provided align must be higher or equal to the default align of T");
 
-    using value_type = T;
-    using reference = T&;
+    using value_type      = T;
+    using reference       = T&;
     using const_reference = const T&;
-    using pointer = T*;
-    using const_pointer = const T*;
+    using pointer         = T*;
+    using const_pointer   = const T*;
 
     //! Returns a void pointer to the address of the object
     constexpr auto address() noexcept { return static_cast<void*>(m_data.data()); }
 
     //! Returns a void pointer to the address of the object
-    constexpr auto address() const noexcept {
-        return static_cast<const void*>(m_data.data());
-    }
+    constexpr auto address() const noexcept { return static_cast<const void*>(m_data.data()); }
 
     //! Returns a pointer to the object
     constexpr auto data() noexcept { return static_cast<T*>(address()); }
@@ -40,4 +40,4 @@ public:
 private:
     alignas(Align) std::array<std::byte, sizeof(T)> m_data{};
 };
-} // namespace xme
+}  // namespace xme

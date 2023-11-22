@@ -1,12 +1,16 @@
 #pragma once
 #include <utility>
+#include <xme/setup.hpp>
+
+#if defined(__cpp_concepts)
 #include <concepts>
+#endif
 
 namespace xme {
 //! @brief Calls a function at the end of this object scope
 //!
 //! The function called must not throw an exception and cannot have parameters
-template<std::invocable F>
+template<XME_CONCEPT(std::invocable, F)>
 class ScopedDelegate {
 public:
     constexpr ScopedDelegate(F& func) noexcept : m_callable(func) {}

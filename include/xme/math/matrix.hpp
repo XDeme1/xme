@@ -156,7 +156,7 @@ private:
 
 template<typename T, typename... Args, std::size_t Rows>
 Matrix(Vector<T, Rows>, Vector<Args, Rows>...)
-    -> Matrix<typename std::common_type<T, Args...>::type, sizeof...(Args) + 1, Rows>;
+    -> Matrix<std::common_type_t<T, Args...>, sizeof...(Args) + 1, Rows>;
 
 template<XME_CONCEPT(std::floating_point, T)>
 constexpr auto perspective_rh(T fov, T aspect_ratio, T far, T near) -> Matrix<T, 4> {

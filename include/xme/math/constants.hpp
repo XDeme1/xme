@@ -4,7 +4,7 @@
 namespace xme::math {
 namespace detail {
 template<typename T>
-using enable_float = typename std::enable_if<std::is_floating_point<T>::value, T>::type;
+using enable_float = std::enable_if_t<std::is_floating_point_v<T>, T>;
 }
 
 template<typename T>

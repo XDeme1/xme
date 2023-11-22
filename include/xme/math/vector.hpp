@@ -123,7 +123,7 @@ private:
 };
 
 template<typename T, typename... Args>
-Vector(T, Args...) -> Vector<typename std::common_type<T, Args...>::type, sizeof...(Args) + 1>;
+Vector(T, Args...) -> Vector<std::common_type_t<T, Args...>, sizeof...(Args) + 1>;
 
 template<std::size_t I, typename T, std::size_t Size>
 constexpr auto get(Vector<T, Size>& v) noexcept -> decltype(auto) {
