@@ -1,0 +1,8 @@
+function(find_or_fetch package url tag)
+    find_package(${package})
+    if(NOT ${${package}_FOUND})
+        include(FetchContent)
+        FetchContent_Declare(${package} GIT_REPOSITORY ${url} GIT_TAG ${tag})
+        FetchContent_MakeAvailable(${package})
+    endif()
+endfunction()

@@ -1,7 +1,5 @@
-find_package(benchmark)
-
-if(${benchmark_FOUND})
-endif()
+set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "" FORCE)
+find_or_fetch(benchmark https://github.com/google/benchmark.git main)
 
 function(CreateBench NAME)
     add_executable(bench_${NAME} ${NAME}.cpp)
