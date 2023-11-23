@@ -4,7 +4,7 @@
 #    define GCC_VERSION (__GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__)
 #endif
 
-#if __cpp_concepts
+#if defined(__cpp_concepts)
 #    define XME_CONCEPT(Concept, T) Concept T
 #    define XME_REQUIRES(Requires)  requires Requires
 #else

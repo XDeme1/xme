@@ -3,7 +3,7 @@
 #include <xme/setup.hpp>
 
 #if __cpp_concepts
-#include "concepts.hpp"
+#    include "concepts.hpp"
 #endif
 
 namespace xme::math {

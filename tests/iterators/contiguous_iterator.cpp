@@ -47,7 +47,7 @@ int test_decrement() {
         error |= it1-- != end;
         error |= --it1 != end - 2;
         if(error) {
-            std::cerr << "xme::ContiguousIterator decrement 1 error";
+            std::cerr << "xme::ContiguousIterator decrement 1 error\n";
             ++errors;
         }
     }
