@@ -15,13 +15,17 @@ public:
     using iterator_category = std::random_access_iterator_tag;
     using iterator_concept  = std::contiguous_iterator_tag;
 
+    template<typename>
+    friend struct ContiguousIterator;
+
     constexpr ContiguousIterator() noexcept = default;
 
     constexpr ContiguousIterator(pointer p) noexcept : m_current(p) {}
 
     template<std::convertible_to<T> U>
+        requires(std::is_const_v<T>)
     constexpr ContiguousIterator(const ContiguousIterator<U>& it) noexcept :
-      m_current(it.operator->()) {}
+      m_current(it.m_current) {}
 
     constexpr auto operator->() const noexcept -> pointer { return m_current; }
 
@@ -58,7 +62,7 @@ public:
     }
 
     constexpr auto operator-(const ContiguousIterator& it) const noexcept -> difference_type {
-        return m_current - it.operator->();
+        return m_current - it.m_current;
     }
 
     constexpr auto operator+=(difference_type n) noexcept -> self& {
@@ -78,18 +82,6 @@ public:
     constexpr bool operator==(const self& rhs) const noexcept = default;
 
     constexpr auto operator<=>(const self& rhs) const noexcept = default;
-
-    template<typename U>
-    friend constexpr bool operator==(
-        const ContiguousIterator<T>& lhs, const ContiguousIterator<U>& rhs) noexcept {
-        return lhs.operator->() == rhs.operator->();
-    }
-
-    template<typename U>
-    friend constexpr auto operator<=>(
-        const ContiguousIterator<T>& lhs, const ContiguousIterator<U>& rhs) noexcept {
-        return lhs.operator->() <=> rhs.operator->();
-    }
 
 private:
     pointer m_current = nullptr;
