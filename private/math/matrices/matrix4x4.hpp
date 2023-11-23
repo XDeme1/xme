@@ -34,10 +34,10 @@
     }
 
 namespace xme::math {
-template<XME_CONCEPT(std::floating_point, T), std::size_t Cols, std::size_t Rows>
+template<std::floating_point T, std::size_t Cols, std::size_t Rows>
 class Matrix;
 
-template<XME_CONCEPT(std::floating_point, T)>
+template<std::floating_point T>
 class Matrix<T, 4, 4> {
 public:
     using row_type    = Vector<T, 4>;
@@ -115,17 +115,9 @@ public:
         return m_data[i];
     }
 
-#if defined(__cpp_impl_three_way_comparison)
     constexpr bool operator==(const Matrix&) const noexcept = default;
 
     constexpr auto operator<=>(const Matrix&) const noexcept = default;
-#else
-    constexpr bool operator==(const Matrix& m) const noexcept {
-        return (*this)[0] == m[0] && (*this)[1] == m[1] && (*this)[2] == m[2] && (*this)[3] == m[3];
-    }
-
-    constexpr bool operator!=(const Matrix& m) const noexcept { return !operator==(m); }
-#endif
 
     constexpr auto row(std::size_t row) const noexcept -> row_type {
         return {(*this)[0][row], (*this)[1][row], (*this)[2][row], (*this)[3][row]};

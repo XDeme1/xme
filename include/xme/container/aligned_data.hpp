@@ -1,8 +1,8 @@
 #pragma once
 #include <array>
+#include <bit>
 
 #include <xme/setup.hpp>
-#include <xme/core/bit/has_single_bit.hpp>
 
 namespace xme {
 //! Provides a wrapper for an aligned storage.
@@ -13,7 +13,7 @@ namespace xme {
 template<typename T, std::size_t Align = alignof(T)>
 class AlignedData {
 public:
-    static_assert(xme::has_single_bit(Align), "Align must be a power of 2");
+    static_assert(std::has_single_bit(Align), "Align must be a power of 2");
     static_assert(std::is_same_v<T, std::remove_cv_t<T>>,
         "xme::AlignedData must have a non-const and non-volatile T");
     static_assert(alignof(T) <= Align,

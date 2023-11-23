@@ -2,10 +2,7 @@
 #include <cassert>
 #include <cmath>
 #include <xme/setup.hpp>
-
-#if __cpp_concepts
 #include <xme/math/concepts.hpp>
-#endif
 
 #define VEC_OP(op)                                                               \
     template<typename U>                                                         \
@@ -32,10 +29,10 @@
     }
 
 namespace xme::math {
-template<XME_CONCEPT(CArithmetic, T), std::size_t Size>
+template<CArithmetic T, std::size_t Size>
 struct Vector;
 
-template<XME_CONCEPT(CArithmetic, T)>
+template<CArithmetic T>
 struct Vector<T, 2> {
     static constexpr std::size_t size = 2;
 
@@ -79,17 +76,9 @@ struct Vector<T, 2> {
         return (&x)[i];
     }
 
-#if defined(__cpp_impl_three_way_comparison)
     constexpr bool operator==(const Vector&) const noexcept = default;
 
     constexpr auto operator<=>(const Vector&) const noexcept = default;
-#else
-    constexpr bool operator==(const Vector& v) const noexcept {
-        return (*this)[0] == v[0] && (*this)[1] == v[1];
-    }
-
-    constexpr bool operator!=(const Vector& v) const noexcept { return !operator==(v); }
-#endif
 
     constexpr auto dot(const Vector& v) const noexcept -> T { return {x * v.x + y * v.y}; }
 

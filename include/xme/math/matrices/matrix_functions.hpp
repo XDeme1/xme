@@ -1,13 +1,10 @@
 #pragma once
 #include <cstddef>
 #include <xme/setup.hpp>
-
-#if defined(__cpp_concepts)
 #include <xme/math/concepts.hpp>
-#endif
 
 namespace xme::math {
-template<XME_CONCEPT(std::floating_point, T), std::size_t Cols, std::size_t Rows>
+template<std::floating_point T, std::size_t Cols, std::size_t Rows>
 class Matrix;
 
 template<typename T>

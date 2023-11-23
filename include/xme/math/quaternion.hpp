@@ -1,13 +1,10 @@
 #pragma once
 #include "matrix.hpp"
 #include "trigonometric.hpp"
-
-#if __cpp_concepts
 #include "concepts"
-#endif
 
 namespace xme::math {
-template<XME_CONCEPT(std::floating_point, T)>
+template<std::floating_point T>
 class Quaternion {
 public:
     constexpr Quaternion() noexcept = default;
@@ -48,7 +45,7 @@ public:
 template<typename T, typename... Args, typename Temp = std::common_type_t<T, Args...>>
 Quaternion(T, Args...) -> Quaternion<std::conditional_t<std::is_integral_v<Temp>, float, Temp>>;
 
-template<XME_CONCEPT(std::floating_point, T)>
+template<std::floating_point T>
 constexpr Quaternion<T>::operator Matrix<T, 3>() const noexcept {
     Matrix<T, 3> result{1};
     result[0][0] = 1 - 2 * (y * y + z * z);

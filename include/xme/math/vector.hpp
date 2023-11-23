@@ -4,10 +4,6 @@
 #include <xme/setup.hpp>
 #include "geometric.hpp"
 
-#if __cpp_concepts
-#include "concepts.hpp"
-#endif
-
 #define VEC_OP(op)                                                                  \
     template<typename U>                                                            \
     constexpr auto operator op(U s) const noexcept -> Vector {                      \
@@ -39,7 +35,7 @@
     }
 
 namespace xme::math {
-template<XME_CONCEPT(CArithmetic, T), std::size_t Size>
+template<CArithmetic T, std::size_t Size>
 struct Vector {
 public:
     static constexpr std::size_t size = Size;
@@ -51,7 +47,7 @@ public:
         m_data.fill(s);
     }
 
-    template<XME_CONCEPT(CArithmetic, ... Args)>
+    template<CArithmetic... Args>
     constexpr Vector(Args... args) noexcept : m_data({static_cast<T>(args)...}) {
         static_assert(sizeof...(Args) == Size);
     }
@@ -90,19 +86,9 @@ public:
 
     constexpr auto operator[](std::size_t i) const noexcept -> const T& { return m_data[i]; }
 
-#if defined(__cpp_impl_three_way_comparison)
     constexpr bool operator==(const Vector&) const noexcept = default;
 
     constexpr auto operator<=>(const Vector&) const noexcept = default;
-#else
-    constexpr bool operator==(const Vector& v) const noexcept {
-        for(std::size_t i = 0; i < Size; ++i) {
-            if((*this)[i] != v[i]) return false;
-        }
-        return true;
-    }
-    constexpr bool operator!=(const Vector& v) const noexcept { return !operator==(v); }
-#endif
 
     constexpr auto dot(const Vector& v) const noexcept -> T { return math::dot(*this, v); }
 

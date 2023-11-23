@@ -2,12 +2,10 @@
 #include <cmath>
 #include <xme/setup.hpp>
 
-#if __cpp_concepts
-#    include "concepts.hpp"
-#endif
+#include "concepts.hpp"
 
 namespace xme::math {
-template<XME_CONCEPT(CArithmetic, T), std::size_t Size>
+template<CArithmetic T, std::size_t Size>
 struct Vector;
 
 template<typename T, std::size_t Size>

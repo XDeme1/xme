@@ -40,7 +40,7 @@
     }
 
 namespace xme::math {
-template<XME_CONCEPT(std::floating_point, T), std::size_t Cols, std::size_t Rows = Cols>
+template<std::floating_point T, std::size_t Cols, std::size_t Rows = Cols>
 class Matrix {
 public:
     using row_type    = Vector<T, Cols>;
@@ -51,7 +51,7 @@ public:
 
     constexpr Matrix() noexcept : Matrix(1) {}
 
-    template<XME_CONCEPT(CArithmetic, U)>
+    template<CArithmetic U>
     explicit constexpr Matrix(U s) noexcept {
         constexpr std::size_t count = std::min(Cols, Rows);
         for(std::size_t i = 0; i < count; ++i)
@@ -118,20 +118,9 @@ public:
         return m_data[i];
     }
 
-#if defined(__cpp_impl_three_way_comparison)
     constexpr bool operator==(const Matrix&) const noexcept = default;
 
     constexpr auto operator<=>(const Matrix&) const noexcept = default;
-#else
-    constexpr bool operator==(const Matrix& m) const noexcept {
-        for(std::size_t i = 0; i < Cols; ++i) {
-            if((*this)[i] != m[i]) return false;
-        }
-        return true;
-    }
-
-    constexpr bool operator!=(const Matrix& m) const noexcept { return !operator==(m); }
-#endif
 
     constexpr auto row(std::size_t row) const noexcept -> row_type {
         row_type result;
@@ -158,7 +147,7 @@ template<typename T, typename... Args, std::size_t Rows>
 Matrix(Vector<T, Rows>, Vector<Args, Rows>...)
     -> Matrix<std::common_type_t<T, Args...>, sizeof...(Args) + 1, Rows>;
 
-template<XME_CONCEPT(std::floating_point, T)>
+template<std::floating_point T>
 constexpr auto perspective_rh(T fov, T aspect_ratio, T far, T near) -> Matrix<T, 4> {
     const auto halfTan = std::tan(fov / 2);
 
@@ -171,7 +160,7 @@ constexpr auto perspective_rh(T fov, T aspect_ratio, T far, T near) -> Matrix<T,
     return result;
 }
 
-template<XME_CONCEPT(std::floating_point, T)>
+template<std::floating_point T>
 constexpr auto perspective(T fov, T aspect_ratio, T far, T near) -> Matrix<T, 4> {
     return perspective_rh(fov, aspect_ratio, far, near);
 }

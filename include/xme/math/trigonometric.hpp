@@ -3,28 +3,26 @@
 #include <xme/setup.hpp>
 #include "constants.hpp"
 
-#if __cpp_concepts
 #include "concepts.hpp"
-#endif
 
 // For more information see: https://en.wikipedia.org/wiki/Inverse_trigonometric_functions
 namespace xme::math {
-template<XME_CONCEPT(CArithmetic, T), std::size_t>
+template<CArithmetic T, std::size_t>
 struct Vector;
 
-template<XME_CONCEPT(std::floating_point, T)>
+template<std::floating_point T>
 constexpr auto radians(T deg) noexcept -> T {
     static_assert(std::is_floating_point_v<T>, "T must be a floating point");
     return deg * (math::pi_v<T> / 180);
 }
 
-template<XME_CONCEPT(std::floating_point, T)>
+template<std::floating_point T>
 constexpr auto degrees(T rad) noexcept -> T {
     static_assert(std::is_floating_point_v<T>, "T must be a floating point");
     return rad * (180 / math::pi_v<T>);
 }
 
-template<XME_CONCEPT(std::floating_point, T), std::size_t Size>
+template<std::floating_point T, std::size_t Size>
 constexpr auto radians(const Vector<T, Size>& deg) noexcept -> Vector<T, Size> {
     static_assert(std::is_floating_point_v<T>, "T must be a floating point");
     Vector<T, Size> result;
@@ -33,7 +31,7 @@ constexpr auto radians(const Vector<T, Size>& deg) noexcept -> Vector<T, Size> {
     return result;
 }
 
-template<XME_CONCEPT(std::floating_point, T), std::size_t Size>
+template<std::floating_point T, std::size_t Size>
 constexpr auto degrees(const Vector<T, Size>& rad) noexcept -> Vector<T, Size> {
     static_assert(std::is_floating_point_v<T>, "T must be a floating point");
     Vector<T, Size> result;
