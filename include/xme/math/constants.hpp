@@ -47,11 +47,6 @@ template<std::floating_point T>
 inline constexpr T inv_pi_v =
     0.318309886'1837906715'3776752674'5028724068'9192914809'1289749533'4688117793'5952684530L;
 
-//! 1/sqrt(π)
-template<std::floating_point T>
-inline constexpr T inv_sqrt_pi_v =
-    0.564189583'5477562869'4807945156'0772585844'0506293289'9885684408'5721710642'4684414934L;
-
 //! τ
 template<std::floating_point T>
 inline constexpr T tau_v = math::two_pi_v<T>;
@@ -96,6 +91,11 @@ template<std::floating_point T>
 inline constexpr T sqrt_e_v =
     1.648721270'7001281468'4865078781'4163571653'7761007101'4801157507'9311640661'0211942156L;
 
+//! sqrt(pi)
+template<std::floating_point T>
+inline constexpr T sqrt_pi_v =
+    1.772453850'9055160272'9816748334'1145182797'5494561223'8712821380'7789852911'2845910321L;
+
 //! sqrt(2π)
 template<std::floating_point T>
 inline constexpr T sqrt_two_pi_v =
@@ -105,6 +105,11 @@ inline constexpr T sqrt_two_pi_v =
 template<std::floating_point T>
 inline constexpr T sqrt_two_pi_e_v =
     4.132731354'1224929384'6939188429'9852649445'5219169913'0845155665'1253797957'9285134170L;
+
+//! 1/sqrt(π)
+template<std::floating_point T>
+inline constexpr T inv_sqrt_pi_v =
+    0.564189583'5477562869'4807945156'0772585844'0506293289'9885684408'5721710642'4684414934L;
 
 //! cbrt(2)
 template<std::floating_point T>
@@ -121,6 +126,11 @@ template<std::floating_point T>
 inline constexpr T phi_v =
     1.618033988'7498948482'0458683436'5638117720'3091798057'6286213544'8622705260'4628189024L;
 
+//! Catalan's constant
+template<std::floating_point T>
+inline constexpr T catalan_v =
+    0.915965594'1772190150'5460351493'2384110774'1493742816'7213426649'8119621763'0197762547L;
+
 //! γ (Euler-Mascheroni constant)
 template<std::floating_point T>
 inline constexpr T euler_v =
@@ -136,6 +146,21 @@ template<std::floating_point T>
 inline constexpr T plastic_v =
     1.324717957'2447460259'6090885447'8097340734'4040569017'3336453401'5050302827'8512455475L;
 
+//! ζ(2)
+template<std::floating_point T>
+inline constexpr T zeta_two_v =
+    1.644934066'8482264364'7241516664'6025189218'9499012067'9843773555'8229370007'4704032008L;
+
+//! ζ(3)
+template<std::floating_point T>
+inline constexpr T zeta_three_v =
+    1.202056903'1595942853'9973816151'1449990764'9862923404'9888179227'1555341838'2057863130L;
+
+//! ζ(4)
+template<std::floating_point T>
+inline constexpr T zeta_four_v =
+    1.082323233'7111381915'1600369654'1167902774'7509519187'2690768297'6215444120'6161869688L;
+
 inline constexpr double e        = e_v<double>;
 inline constexpr double e_sqr    = e_sqr_v<double>;
 inline constexpr double e_pow_pi = e_pow_pi_v<double>;
@@ -146,7 +171,6 @@ inline constexpr double two_over_pi = two_over_pi_v<double>;
 inline constexpr double pi_over_two = pi_over_two_v<double>;
 inline constexpr double pi_sqr      = pi_sqr_v<double>;
 inline constexpr double inv_pi      = inv_pi_v<double>;
-inline constexpr double inv_sqrt_pi = inv_sqrt_pi_v<double>;
 
 inline constexpr double tau = tau_v<double>;
 
@@ -159,14 +183,20 @@ inline constexpr double sqrt_two      = sqrt_two_v<double>;
 inline constexpr double sqrt_three    = sqrt_three_v<double>;
 inline constexpr double sqrt_five     = sqrt_five_v<double>;
 inline constexpr double sqrt_e        = sqrt_e_v<double>;
+inline constexpr double sqrt_pi       = sqrt_pi_v<double>;
 inline constexpr double sqrt_two_pi   = sqrt_two_pi_v<double>;
 inline constexpr double sqrt_two_pi_e = sqrt_two_pi_e_v<double>;
+inline constexpr double inv_sqrt_pi   = inv_sqrt_pi_v<double>;
 
 inline constexpr double cbrt_two = cbrt_two_v<double>;
 
 inline constexpr double inv_fibonacci = inv_fibonacci_v<double>;
 inline constexpr double phi           = phi_v<double>;
+inline constexpr double catalan       = catalan_v<double>;
 inline constexpr double euler         = euler_v<double>;
 inline constexpr double gauss         = gauss_v<double>;
 inline constexpr double plastic       = plastic_v<double>;
+inline constexpr double zeta_two      = zeta_two_v<double>;
+inline constexpr double zeta_three    = zeta_three_v<double>;
+inline constexpr double zeta_four     = zeta_four_v<double>;
 }  // namespace xme::math
