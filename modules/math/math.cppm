@@ -8,10 +8,10 @@ export namespace xme::math {
     using math::pi;
     using math::e;
     using math::phi;
-    using math::ln10;
-    using math::ln2;
-    using math::sqrt2;
-    using math::sqrt3;
+    using math::ln_ten;
+    using math::ln_two;
+    using math::sqrt_two;
+    using math::sqrt_three;
 
     using math::Vector;
     using math::get;

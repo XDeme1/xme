@@ -4,43 +4,53 @@
 namespace xme::math {
 //! e
 template<std::floating_point T>
-inline constexpr T e_v = 2.718281828459045235360287471352662498L;
+inline constexpr T e_v =
+    2.718281828'4590452353'6028747135'2662497757'2470936999'5957496696'7627724076'6303535475L;
 
 //! e^2
 template<std::floating_point T>
-inline constexpr T e_sqr_v = 7.389056098930650227230427460575007813L;
+inline constexpr T e_sqr_v =
+    7.389056098'9306502272'3042746057'5007813180'3155705518'4732408712'7822522573'7960790577L;
 
 //! e^π
 template<std::floating_point T>
-inline constexpr T e_pow_pi_v = 23.14069263277926900572908636794854738L;
+inline constexpr T e_pow_pi_v =
+    23.14069263'2779269005'7290863679'4854738026'6106242600'2119934450'4640952434'2350690452L;
 
 //! π
 template<std::floating_point T>
-inline constexpr T pi_v = 3.141592653589793238462643383279502884L;
+inline constexpr T pi_v =
+    3.141592653'5897932384'6264338327'9502884197'1693993751'0582097494'4592307816'4062862089L;
 
 //! 2π
 template<std::floating_point T>
-inline constexpr T two_pi_v = 6.283185307179586476925286766559005768L;
+inline constexpr T two_pi_v =
+    6.283185307'1795864769'2528676655'9005768394'3387987502'1164194988'9184615632'8125724179L;
 
 //! 2/π
 template<std::floating_point T>
-inline constexpr T two_over_pi_v = 0.636619772367581343075535053490057448L;
+inline constexpr T two_over_pi_v =
+    0.636619772'3675813430'7553505349'0057448137'8385829618'2579499066'9376235587'1905369061L;
 
 //! π/2
 template<std::floating_point T>
-inline constexpr T pi_over_two_v = 1.570796326794896619231321691639751442L;
+inline constexpr T pi_over_two_v =
+    1.570796326'7948966192'3132169163'9751442098'5846996875'5291048747'2296153908'2031431044L;
 
 //! π^2
 template<std::floating_point T>
-inline constexpr T pi_sqr_v = 9.869604401089358618834490999876151135L;
+inline constexpr T pi_sqr_v =
+    9.869604401'0893586188'3449099987'6151135313'6994072407'9062641334'9376220044'8224192052L;
 
 //! 1/π
 template<std::floating_point T>
-inline constexpr T inv_pi_v = 0.318309886183790671537767526745028724L;
+inline constexpr T inv_pi_v =
+    0.318309886'1837906715'3776752674'5028724068'9192914809'1289749533'4688117793'5952684530L;
 
 //! 1/sqrt(π)
 template<std::floating_point T>
-inline constexpr T inv_sqrt_pi_v = 0.5641895835477562869480794515607725858L;
+inline constexpr T inv_sqrt_pi_v =
+    0.564189583'5477562869'4807945156'0772585844'0506293289'9885684408'5721710642'4684414934L;
 
 //! τ
 template<std::floating_point T>
@@ -48,67 +58,83 @@ inline constexpr T tau_v = math::two_pi_v<T>;
 
 //! log2(e)
 template<std::floating_point T>
-inline constexpr T log2_e_v = 1.442695040888963407359924681001892137L;
+inline constexpr T log2_e_v =
+    1.442695040'8889634073'5992468100'1892137426'6459541529'8593413544'9406931109'2191811850L;
 
 //! log10(e)
 template<std::floating_point T>
-inline constexpr T log10_e_v = 0.434294481903251827651128918916605082L;
+inline constexpr T log10_e_v =
+    0.434294481'9032518276'5112891891'6605082294'3970058036'6656611445'3783165864'6492088707L;
 
 //! ln(2)
 template<std::floating_point T>
-inline constexpr T ln_two_v = 0.693147180559945309417232121458176568L;
+inline constexpr T ln_two_v =
+    0.693147180'5599453094'1723212145'8176568075'5001343602'5525412068'0009493393'6219696947L;
 
 //! ln(10)
 template<std::floating_point T>
-inline constexpr T ln_ten_v = 2.302585092994045684017991454684364208L;
+inline constexpr T ln_ten_v =
+    2.302585092'9940456840'1799145468'4364207601'1014886287'7297603332'7900967572'6096773524L;
 
 //! sqrt(2)
 template<std::floating_point T>
-inline constexpr T sqrt_two_v = 1.414213562373095048801688724209698079L;
+inline constexpr T sqrt_two_v =
+    1.414213562'3730950488'0168872420'9698078569'6718753769'4807317667'9737990732'4784621070L;
 
 //! sqrt(3)
 template<std::floating_point T>
-inline constexpr T sqrt_three_v = 1.732050807568877293527446341505872367L;
+inline constexpr T sqrt_three_v =
+    1.732050807'5688772935'2744634150'5872366942'8052538103'8062805580'6979451933'0169088000L;
 
 //! sqrt(5)
 template<std::floating_point T>
-inline constexpr T sqrt_five_v = 2.236067977499789696409173668731276235L;
+inline constexpr T sqrt_five_v =
+    2.236067977'4997896964'0917366873'1276235440'6183596115'2572427089'7245410520'9256378048L;
 
 //! sqrt(e)
 template<std::floating_point T>
-inline constexpr T sqrt_e_v = 1.648721270700128146848650787814163571L;
+inline constexpr T sqrt_e_v =
+    1.648721270'7001281468'4865078781'4163571653'7761007101'4801157507'9311640661'0211942156L;
 
-//! sqrt(2pi)
+//! sqrt(2π)
 template<std::floating_point T>
-inline constexpr T sqrt_two_pi_v = 2.506628274631000502415765284811045253L;
+inline constexpr T sqrt_two_pi_v =
+    2.506628274'6310005024'1576528481'1045253006'9867406099'3831662992'3576342293'6546078419L;
 
-//! sqrt(2epi)
+//! sqrt(2πe)
 template<std::floating_point T>
-inline constexpr T sqrt_two_e_pi_v = 4.132731354122492938469391884299852649L;
+inline constexpr T sqrt_two_pi_e_v =
+    4.132731354'1224929384'6939188429'9852649445'5219169913'0845155665'1253797957'9285134170L;
 
 //! cbrt(2)
 template<std::floating_point T>
-inline constexpr T cbrt_two_v = 1.259921049894873164767210607278228350L;
+inline constexpr T cbrt_two_v =
+    1.259921049'8948731647'6721060727'8228350570'2514647015'0798008197'5112155299'6765139594L;
 
 //! Reciprocal fibonacci constant
 template<std::floating_point T>
-inline constexpr T inv_fibonacci_v = 3.359885666243177553172011302918927179L;
+inline constexpr T inv_fibonacci_v =
+    3.359885666'2431775531'7201130291'8927179688'9051337319'6848649555'3815325130'3189966833L;
 
 //! ϕ (Golden ratio)
 template<std::floating_point T>
-inline constexpr T phi_v = 1.618033988749894848204586834365638118L;
+inline constexpr T phi_v =
+    1.618033988'7498948482'0458683436'5638117720'3091798057'6286213544'8622705260'4628189024L;
 
 //! γ (Euler-Mascheroni constant)
 template<std::floating_point T>
-inline constexpr T euler_v = 0.577215664901532860606512090082402431L;
+inline constexpr T euler_v =
+    0.577215664'9015328606'0651209008'2402431042'1593359399'2359880576'7234884867'7267776646L;
 
 //! G (Gauss constant)
 template<std::floating_point T>
-inline constexpr T gauss_v = 0.834626841674073186281429732799046808L;
+inline constexpr T gauss_v =
+    0.834626841'6740731862'8142973279'9046808993'9930134903'4700244982'7370103681'9927095264L;
 
 //! ρ (Plastic number)
 template<std::floating_point T>
-inline constexpr T plastic_v = 1.324717957244746025960908854478097340L;
+inline constexpr T plastic_v =
+    1.324717957'2447460259'6090885447'8097340734'4040569017'3336453401'5050302827'8512455475L;
 
 inline constexpr double e        = e_v<double>;
 inline constexpr double e_sqr    = e_sqr_v<double>;
@@ -134,7 +160,7 @@ inline constexpr double sqrt_three    = sqrt_three_v<double>;
 inline constexpr double sqrt_five     = sqrt_five_v<double>;
 inline constexpr double sqrt_e        = sqrt_e_v<double>;
 inline constexpr double sqrt_two_pi   = sqrt_two_pi_v<double>;
-inline constexpr double sqrt_two_e_pi = sqrt_two_e_pi_v<double>;
+inline constexpr double sqrt_two_pi_e = sqrt_two_pi_e_v<double>;
 
 inline constexpr double cbrt_two = cbrt_two_v<double>;
 
