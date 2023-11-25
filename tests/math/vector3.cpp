@@ -276,7 +276,7 @@ int test_operations() {
         math::vec3 v1{1, 1, 1};
         auto r1    = math::faceforward(v1, math::vec3{1, -1, 0}, math::vec3{0, 1, 0});
         bool error = r1 != math::vec3{1, 1, 1};
-        r1         = math::faceforward(v1, math::vec3{1, 1, 0}, math::vec3{0, 1, 0});
+        r1         = v1.faceforward(math::vec3{1, 1, 0}, math::vec3{0, 1, 0});
         error      = r1 != math::vec3{-1, -1, -1};
         if(error) {
             std::cerr << "xme::Vector::faceforward error\n";

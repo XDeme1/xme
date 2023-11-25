@@ -267,7 +267,7 @@ int test_operations() {
         math::vec2 v1{1, 1};
         auto r1    = math::faceforward(v1, math::vec2{1, -1}, math::vec2{0, 1});
         bool error = r1 != math::vec2{1, 1};
-        r1         = math::faceforward(v1, math::vec2{1, 1}, math::vec2{0, 1});
+        r1         = v1.faceforward(math::vec2{1, 1}, math::vec2{0, 1});
         error      = r1 != math::vec2{-1, -1};
         if(error) {
             std::cerr << "xme::Vector::faceforward error\n";

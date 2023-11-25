@@ -1,5 +1,7 @@
 #include <iostream>
 #include <xme/math/vector.hpp>
+#include <xme/math/normal.hpp>
+#include <xme/math/glsl_mapping.hpp>
 
 namespace math = xme::math;
 
@@ -290,6 +292,21 @@ int test_operations() {
     return errors;
 }
 
+int test_normal() {
+    int errors = 0;
+    {
+        auto r1    = math::lerp(math::vec3{3}, math::vec3{2}, 0.5L);
+        auto r2    = math::lerp(math::vec3{5}, math::vec3{1}, math::Vector<bool, 3>{1, 0, 1});
+        bool error = r2 != math::vec3{1, 5, 1};
+        error |= r1 != math::vec3{2.5};
+        if(error) {
+            std::cerr << "xme::math::lerp error\n";
+            ++errors;
+        }
+    }
+    return errors;
+}
+
 int main() {
     int errors = 0;
     test_deduction_guide();
@@ -298,5 +315,6 @@ int main() {
     errors += test_self();
     errors += test_equality();
     errors += test_operations();
+    errors += test_normal();
     return errors;
 }
