@@ -28,8 +28,8 @@ constexpr auto scale(const Matrix<T, 4, 4>& m, const Vector<U, 3>& v) noexcept -
     };
 }
 
-template<typename T, typename U1, typename U2>
-constexpr auto rotate(const Matrix<T, 4, 4>& m, U1 angle, const Vector<U2, 3>& n) noexcept
+template<typename T, typename U>
+constexpr auto rotate(const Matrix<T, 4, 4>& m, auto angle, const Vector<U, 3>& n) noexcept
     -> Matrix<T, 4, 4> {
     const auto s{std::sin(static_cast<T>(angle))};
     const auto c{std::cos(static_cast<T>(angle))};

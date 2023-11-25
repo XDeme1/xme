@@ -1,8 +1,7 @@
 #pragma once
 #include <cassert>
 #include <cmath>
-#include <xme/setup.hpp>
-#include <xme/math/concepts.hpp>
+#include <xme/math/geometric.hpp>
 
 #define VEC_OP(op)                                                               \
     template<typename U>                                                         \
@@ -82,15 +81,19 @@ struct Vector<T, 2> {
 
     constexpr auto dot(const Vector& v) const noexcept -> T { return {x * v.x + y * v.y}; }
 
-    constexpr auto length() const noexcept { return std::sqrt(dot(*this)); }
+    constexpr auto length() const noexcept { return math::length(*this); }
 
-    constexpr auto normalized() const noexcept -> Vector { return *this * (1 / length()); }
+    constexpr auto distance(const Vector& v) const noexcept { return math::distance(*this, v); }
+
+    constexpr auto normalize() const noexcept -> Vector { return math::normalize(*this); }
+
+    constexpr auto faceforward(const Vector& i, const Vector& n) const noexcept -> Vector {
+        return math::faceforward(*this, i, n);
+    };
 
     constexpr auto reflect(const Vector& n) const noexcept -> Vector {
-        return *this - n * dot(n) * 2;
+        return math::reflect(*this, n);
     }
-
-    constexpr auto distance(const Vector& v) const noexcept { return (v - *this).length(); }
 
     T x{};
     T y{};

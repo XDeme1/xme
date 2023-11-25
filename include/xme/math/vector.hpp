@@ -92,9 +92,13 @@ public:
 
     constexpr auto dot(const Vector& v) const noexcept -> T { return math::dot(*this, v); }
 
-    constexpr auto length() const noexcept { return math::length(*this); }
+    constexpr auto length() const noexcept -> T { return math::length(*this); }
 
     constexpr auto normalize() const noexcept -> Vector { return math::normalize(*this); }
+
+    constexpr auto faceforward(const Vector& i, const Vector& n) const noexcept -> Vector {
+        return math::faceforward(*this, i, n);
+    };
 
     constexpr auto reflect(const Vector& n) const noexcept -> Vector {
         return math::reflect(*this, n);
