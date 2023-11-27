@@ -240,7 +240,7 @@ int test_transformations() {
     int errors = 0;
     {
         math::mat4 m{2};
-        m          = m.translate(math::vec3{5, 3, 1});
+        m          = math::translate(m, math::vec3{5, 3, 1});
         bool error = m[0] != math::vec4{2, 0, 0, 0} || m[1] != math::vec4{0, 2, 0, 0}
                      || m[2] != math::vec4{0, 0, 2, 0} || m[3] != math::vec4{10, 6, 2, 2};
 
@@ -251,7 +251,7 @@ int test_transformations() {
     }
     {
         math::mat4 m{1};
-        m          = m.scale(math::vec3{5, 3, 2});
+        m          = math::scale(m, math::vec3{5, 3, 2});
         bool error = m[0] != math::vec4{5, 0, 0, 0} || m[1] != math::vec4{0, 3, 0, 0}
                      || m[2] != math::vec4{0, 0, 2, 0} || m[3] != math::vec4{0, 0, 0, 1};
         if(error) {
@@ -264,7 +264,7 @@ int test_transformations() {
             return !(std::abs(a - b) <= std::numeric_limits<float>::epsilon());
         };
         math::mat4 m{};
-        m = m.rotate(math::pi / 2, math::vec3{0, 1, 0});
+        m = math::rotate(m, math::pi / 2, math::vec3{0, 1, 0});
         bool error =
             equal(m[0][0], 0) || equal(m[0][1], 0) || equal(m[0][2], -1) || equal(m[0][3], 0);
         error |= equal(m[1][0], 0) || equal(m[1][1], 1) || equal(m[1][2], 0) || equal(m[1][3], 0);

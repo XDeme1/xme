@@ -1,7 +1,7 @@
 #pragma once
+#include <cassert>
 #include <array>
 #include <type_traits>
-#include <xme/setup.hpp>
 #include "geometric.hpp"
 
 #define VEC_OP(op)                                                                  \
@@ -82,31 +82,23 @@ public:
     VEC_SELF_OP(*=)
     VEC_SELF_OP(/=)
 
-    constexpr auto operator[](std::size_t i) noexcept -> T& { return m_data[i]; }
+    constexpr auto operator[](std::size_t i) noexcept -> T& {
+        assert(i < Size && "Index out of bound");
+        return m_data[i];
+    }
 
-    constexpr auto operator[](std::size_t i) const noexcept -> const T& { return m_data[i]; }
+    constexpr auto operator[](std::size_t i) const noexcept -> const T& {
+        assert(i < Size && "Index out of bound");
+        return m_data[i];
+    }
 
     constexpr bool operator==(const Vector&) const noexcept = default;
 
     constexpr auto operator<=>(const Vector&) const noexcept = default;
 
-    constexpr auto dot(const Vector& v) const noexcept -> T { return math::dot(*this, v); }
-
     constexpr auto length() const noexcept -> T { return math::length(*this); }
 
     constexpr auto normalize() const noexcept -> Vector { return math::normalize(*this); }
-
-    constexpr auto faceforward(const Vector& i, const Vector& n) const noexcept -> Vector {
-        return math::faceforward(*this, i, n);
-    };
-
-    constexpr auto reflect(const Vector& n) const noexcept -> Vector {
-        return math::reflect(*this, n);
-    }
-
-    constexpr auto distance(const Vector& v) const noexcept -> Vector {
-        return math::distance(*this, v);
-    }
 
 private:
     std::array<T, Size> m_data{};

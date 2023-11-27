@@ -79,21 +79,9 @@ struct Vector<T, 2> {
 
     constexpr auto operator<=>(const Vector&) const noexcept = default;
 
-    constexpr auto dot(const Vector& v) const noexcept -> T { return {x * v.x + y * v.y}; }
-
     constexpr auto length() const noexcept { return math::length(*this); }
 
-    constexpr auto distance(const Vector& v) const noexcept { return math::distance(*this, v); }
-
     constexpr auto normalize() const noexcept -> Vector { return math::normalize(*this); }
-
-    constexpr auto faceforward(const Vector& i, const Vector& n) const noexcept -> Vector {
-        return math::faceforward(*this, i, n);
-    };
-
-    constexpr auto reflect(const Vector& n) const noexcept -> Vector {
-        return math::reflect(*this, n);
-    }
 
     T x{};
     T y{};

@@ -257,7 +257,8 @@ int test_operations() {
         }
     }
     {
-        auto d = math::Vector<float, 5>{3, 3, 1, 1, 2}.dot(math::Vector<float, 5>{2, 8, 1, 2, 1});
+        auto d =
+            math::dot(math::Vector<float, 5>{3, 3, 1, 1, 2}, math::Vector<float, 5>{2, 8, 1, 2, 1});
 
         bool error = d != 35;
         if(error) {
@@ -266,8 +267,8 @@ int test_operations() {
         }
     }
     {
-        auto d1    = math::Vector<float, 5>{}.distance(math::Vector<float, 5>{4, 3, 0, 1, 2});
-        auto d2    = math::Vector<float, 5>{4, 3, 0, 1, 2}.distance(math::Vector<float, 5>{});
+        auto d1 = math::distance(math::Vector<float, 5>{}, math::Vector<float, 5>{4, 3, 0, 1, 2});
+        auto d2 = math::distance(math::Vector<float, 5>{4, 3, 0, 1, 2}, math::Vector<float, 5>{});
         bool error = d1 != std::sqrt(30.f) || d2 != std::sqrt(30.f);
         if(error) {
             std::cerr << "xme::Vector::distance error\n";
@@ -276,9 +277,9 @@ int test_operations() {
     }
     {
         math::Vector<float, 5> v1{1, 1, 1, 1, 1};
-        auto r1 = v1.reflect(math::Vector<float, 5>{0, 1, 0, 0, 0});
-        auto r2 = v1.reflect(math::Vector<float, 5>{1, 0, 0, 0, 0});
-        auto r3 = v1.reflect(math::Vector<float, 5>{0, 0, 1, 0, 0});
+        auto r1 = math::reflect(v1, math::Vector<float, 5>{0, 1, 0, 0, 0});
+        auto r2 = math::reflect(v1, math::Vector<float, 5>{1, 0, 0, 0, 0});
+        auto r3 = math::reflect(v1, math::Vector<float, 5>{0, 0, 1, 0, 0});
 
         bool error = r1 != math::Vector<float, 5>{1, -1, 1, 1, 1}
                      || r2 != math::Vector<float, 5>{-1, 1, 1, 1, 1};

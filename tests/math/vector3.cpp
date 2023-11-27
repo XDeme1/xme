@@ -246,7 +246,7 @@ int test_operations() {
         }
     }
     {
-        auto d = math::vec3{3, 3, 2}.dot(math::vec3{2, 8, 1});
+        auto d = math::dot(math::vec3{3, 3, 2}, math::vec3{2, 8, 1});
 
         bool error = d != 32;
         if(error) {
@@ -255,8 +255,8 @@ int test_operations() {
         }
     }
     {
-        auto c1    = math::vec3{1, 0, 0}.cross(math::vec3{0, 5, 0});
-        auto c2    = math::vec3{-3, 7, 0}.cross(math::vec3{2, 5, 0});
+        auto c1    = math::cross(math::vec3{1, 0, 0}, math::vec3{0, 5, 0});
+        auto c2    = math::cross(math::vec3{-3, 7, 0}, math::vec3{2, 5, 0});
         bool error = c1 != math::vec3{0, 0, 5} || c2 != math::vec3{0, 0, -29};
         if(error) {
             std::cerr << "xme::Vector::cross error\n";
@@ -264,8 +264,8 @@ int test_operations() {
         }
     }
     {
-        auto d1    = math::vec3{}.distance(math::vec3{4, 3, 7});
-        auto d2    = math::vec3{4, 3, 7}.distance(math::vec3{});
+        auto d1    = math::distance(math::vec3{}, math::vec3{4, 3, 7});
+        auto d2    = math::distance(math::vec3{4, 3, 7}, math::vec3{});
         bool error = d1 != std::sqrt(74.f) || d2 != std::sqrt(74.f);
         if(error) {
             std::cerr << "xme::Vector::distance error\n";
@@ -276,8 +276,9 @@ int test_operations() {
         math::vec3 v1{1, 1, 1};
         auto r1    = math::faceforward(v1, math::vec3{1, -1, 0}, math::vec3{0, 1, 0});
         bool error = r1 != math::vec3{1, 1, 1};
-        r1         = v1.faceforward(math::vec3{1, 1, 0}, math::vec3{0, 1, 0});
-        error      = r1 != math::vec3{-1, -1, -1};
+
+        r1    = faceforward(v1, math::vec3{1, 1, 0}, math::vec3{0, 1, 0});
+        error = r1 != math::vec3{-1, -1, -1};
         if(error) {
             std::cerr << "xme::Vector::faceforward error\n";
             ++errors;
@@ -285,9 +286,9 @@ int test_operations() {
     }
     {
         math::vec3 v1{1, 1, 1};
-        auto r1 = v1.reflect(math::vec3{0, 1, 0});
-        auto r2 = v1.reflect(math::vec3{1, 0, 0});
-        auto r3 = v1.reflect(math::vec3{0, 0, 1});
+        auto r1 = math::reflect(v1, math::vec3{0, 1, 0});
+        auto r2 = math::reflect(v1, math::vec3{1, 0, 0});
+        auto r3 = math::reflect(v1, math::vec3{0, 0, 1});
 
         bool error =
             r1 != math::vec3{1, -1, 1} || r2 != math::vec3{-1, 1, 1} || r3 != math::vec3{1, 1, -1};

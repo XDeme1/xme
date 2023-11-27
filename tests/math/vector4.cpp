@@ -247,7 +247,7 @@ int test_operations() {
         }
     }
     {
-        auto d = math::vec4{3, 3, 2, 5}.dot(math::vec4{2, 8, 1, 2});
+        auto d = math::dot(math::vec4{3, 3, 2, 5}, math::vec4{2, 8, 1, 2});
 
         bool error = d != 42;
         if(error) {
@@ -256,8 +256,8 @@ int test_operations() {
         }
     }
     {
-        auto d1    = math::vec4{}.distance(math::vec4{4, 3, 7, 3});
-        auto d2    = math::vec4{4, 3, 7, 3}.distance(math::vec4{});
+        auto d1    = math::distance(math::vec4{}, math::vec4{4, 3, 7, 3});
+        auto d2    = math::distance(math::vec4{4, 3, 7, 3}, math::vec4{});
         bool error = d1 != std::sqrt(83.f) || d2 != std::sqrt(83.f);
         if(error) {
             std::cerr << "xme::Vector::distance error\n";
@@ -268,8 +268,9 @@ int test_operations() {
         math::vec4 v1{1, 1, 1, 1};
         auto r1    = math::faceforward(v1, math::vec4{1, -1, 0, 0}, math::vec4{0, 1, 0, 0});
         bool error = r1 != math::vec4{1, 1, 1, 1};
-        r1         = v1.faceforward(math::vec4{1, 1, 0, 0}, math::vec4{0, 1, 0, 0});
-        error      = r1 != math::vec4{-1, -1, -1, -1};
+
+        r1    = math::faceforward(v1, math::vec4{1, 1, 0, 0}, math::vec4{0, 1, 0, 0});
+        error = r1 != math::vec4{-1, -1, -1, -1};
         if(error) {
             std::cerr << "xme::Vector::faceforward error\n";
             ++errors;
@@ -277,9 +278,9 @@ int test_operations() {
     }
     {
         math::vec4 v1{1, 1, 1, 1};
-        auto r1 = v1.reflect(math::vec4{0, 1, 0, 0});
-        auto r2 = v1.reflect(math::vec4{1, 0, 0, 0});
-        auto r3 = v1.reflect(math::vec4{0, 0, 1, 0});
+        auto r1 = math::reflect(v1, math::vec4{0, 1, 0, 0});
+        auto r2 = math::reflect(v1, math::vec4{1, 0, 0, 0});
+        auto r3 = math::reflect(v1, math::vec4{0, 0, 1, 0});
 
         bool error = r1 != math::vec4{1, -1, 1, 1} || r2 != math::vec4{-1, 1, 1, 1}
                      || r3 != math::vec4{1, 1, -1, 1};

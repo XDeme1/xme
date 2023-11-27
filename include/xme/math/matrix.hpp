@@ -85,7 +85,7 @@ public:
     constexpr auto operator*(const Vector<U, Cols>& v) const noexcept -> column_type {
         column_type result;
         for(std::size_t i = 0; i < Rows; ++i)
-            result[i] = this->row(i).dot(v);
+            result[i] = math::dot(this->row(i), v);
         return result;
     }
     template<typename U, std::size_t Rows2>
@@ -95,7 +95,7 @@ public:
         for(std::size_t rowIndex = 0; rowIndex < Rows; ++rowIndex) {
             const row_type row = this->row(rowIndex);
             for(std::size_t columnIndex = 0; columnIndex < Rows2; ++columnIndex)
-                result[columnIndex][rowIndex] = row.dot(m[columnIndex]);
+                result[columnIndex][rowIndex] = math::dot(row, m[columnIndex]);
         }
         return result;
     }

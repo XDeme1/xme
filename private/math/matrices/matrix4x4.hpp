@@ -83,7 +83,12 @@ public:
 
     template<typename U>
     constexpr auto operator*(const Vector<U, 4>& v) const noexcept -> column_type {
-        return {this->row(0).dot(v), this->row(1).dot(v), this->row(2).dot(v), this->row(3).dot(v)};
+        return {
+            math::dot(row(0), v),
+            math::dot(row(1), v),
+            math::dot(row(2), v),
+            math::dot(row(3), v),
+        };
     }
 
     template<typename U, std::size_t Rows2>
@@ -92,7 +97,7 @@ public:
         for(std::size_t rowIndex = 0; rowIndex < 4; ++rowIndex) {
             const row_type row = this->row(rowIndex);
             for(std::size_t columnIndex = 0; columnIndex < Rows2; ++columnIndex)
-                result[columnIndex][rowIndex] = row.dot(m[columnIndex]);
+                result[columnIndex][rowIndex] = dot(row, m[columnIndex]);
         }
         return result;
     }
@@ -130,21 +135,6 @@ public:
     constexpr auto determinant() const noexcept -> T { return math::determinant(*this); }
 
     constexpr auto transpose() const noexcept -> Matrix { return math::transpose(*this); }
-
-    template<typename U>
-    constexpr auto translate(const Vector<U, 3>& v) const noexcept -> Matrix {
-        return math::translate(*this, v);
-    }
-
-    template<typename U>
-    constexpr auto scale(const Vector<U, 3>& v) const noexcept -> Matrix {
-        return math::scale(*this, v);
-    }
-
-    template<typename U1, typename U2>
-    constexpr auto rotate(U1 angle, const Vector<U2, 3>& n) const noexcept -> Matrix {
-        return math::rotate(*this, angle, n);
-    }
 
 private:
     std::array<column_type, 4> m_data{};
