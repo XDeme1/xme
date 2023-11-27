@@ -304,7 +304,15 @@ int test_normal() {
             ++errors;
         }
     }
-    return errors;
+    {
+        auto r     = math::sign(math::vec4{1, 0, -1, INFINITY});
+        bool error = r != math::vec4{1, 0, -1, 1};
+        if(error) {
+            std::cerr << "xme::math::sign error\n";
+            ++errors;
+        }
+        return errors;
+    }
 }
 
 int main() {
