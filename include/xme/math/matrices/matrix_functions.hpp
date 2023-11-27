@@ -1,9 +1,10 @@
 #pragma once
 #include <cstddef>
-#include <xme/setup.hpp>
 #include <xme/math/concepts.hpp>
 
 namespace xme::math {
+template<CArithmetic T, std::size_t Size>
+class Vector;
 template<std::floating_point T, std::size_t Cols, std::size_t Rows>
 class Matrix;
 
@@ -44,6 +45,14 @@ constexpr auto transpose(const Matrix<T, Cols, Rows>& m) noexcept -> Matrix<T, R
             result[j][i] = m[i][j];
         }
     }
+    return result;
+}
+
+template<typename T, std::size_t N1, std::size_t N2>
+constexpr auto outer_product(const Vector<T, N1>& v1, const Vector<T, N2>& v2) noexcept {
+    Matrix<T, N2, N1> result{0};
+    for(std::size_t i = 0; i < N2; ++i)
+        result[i] = v1 * v2[i];
     return result;
 }
 }  // namespace xme::math

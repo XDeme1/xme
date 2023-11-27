@@ -213,7 +213,7 @@ int test_basic_functions() {
         bool error = m.determinant() != 2;
 
         if(error) {
-            std::cerr << "xme::Matrix::determinant 2 error\n";
+            std::cerr << "xme::math::Matrix::determinant 2 error\n";
             ++errors;
         }
     }
@@ -225,7 +225,16 @@ int test_basic_functions() {
         };
         bool error = m.determinant() != -58;
         if(error) {
-            std::cerr << "xme::Matrix::determinant 3 error\n";
+            std::cerr << "xme::math::Matrix::determinant 3 error\n";
+            ++errors;
+        }
+    }
+
+    {
+        auto m     = math::outer_product(math::vec3{1, 5, 2}, math::vec2{5, 3});
+        bool error = m[0] != math::vec3{5, 25, 10} || m[1] != math::vec3{3, 15, 6};
+        if(error) {
+            std::cerr << "xme::math::outer_product error\n";
             ++errors;
         }
     }
