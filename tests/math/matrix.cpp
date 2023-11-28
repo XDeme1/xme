@@ -238,6 +238,23 @@ int test_basic_functions() {
             ++errors;
         }
     }
+
+    {
+        math::mat2 m1{
+            math::vec2{1, 5},
+            math::vec2{5, 3},
+        };
+        math::mat2 m2{
+            math::vec2{6},
+            math::vec2{3, 5},
+        };
+        auto r     = math::hadamard_product(m1, m2);
+        bool error = r[0] != math::vec2{6, 30} || r[1] != math::vec2{15};
+        if(error) {
+            std::cerr << "xme::Matrix::hadamard_product error\n";
+            ++errors;
+        }
+    }
     return errors;
 }
 
