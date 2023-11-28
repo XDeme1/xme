@@ -9,7 +9,7 @@ target_sources(xme_modules PUBLIC
     math/math.cppm
     core/utility/utility.cppm)
 
-#Modules currently only builds with libc++, libstdc++ is broken
+# Modules currently only builds with libc++, libstdc++ is broken
 target_link_options(xme_modules PRIVATE -lc++)
 target_compile_options(xme_modules PRIVATE -stdlib=libc++)
 target_link_libraries(xme_modules PUBLIC xme)

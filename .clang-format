@@ -20,7 +20,7 @@ AlignOperands: Align
 AlignTrailingComments: Always
 
 AllowAllArgumentsOnNextLine: true
-AllowAllParametersOfDeclarationOnNextLine: true
+AllowAllParametersOfDeclarationOnNextLine: false
 AllowBreakBeforeNoexceptSpecifier: OnlyWithParen
 
 AllowShortBlocksOnASingleLine: Empty

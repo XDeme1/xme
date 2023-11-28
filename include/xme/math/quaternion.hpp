@@ -1,19 +1,18 @@
 #pragma once
+#include <xme/setup.hpp>
 #include "matrix.hpp"
-#include "trigonometric.hpp"
 #include "concepts"
 
 namespace xme::math {
 template<std::floating_point T>
 class Quaternion {
 public:
-    constexpr Quaternion() noexcept = default;
+    XME_INLINE constexpr Quaternion() noexcept = default;
 
-    template<typename U1, typename U2, typename U3, typename U4>
-    constexpr Quaternion(U1 _w, U2 _x, U3 _y, U4 _z) noexcept :
+    XME_INLINE constexpr Quaternion(auto _w, auto _x, auto _y, auto _z) noexcept :
       w(static_cast<T>(_w)), x(static_cast<T>(_x)), y(static_cast<T>(_y)), z(static_cast<T>(_z)) {}
 
-    constexpr Quaternion(const Vector<T, 3>& euler) noexcept {
+    XME_INLINE constexpr Quaternion(const Vector<T, 3>& euler) noexcept {
         const auto c = cos(euler * T(0.5));
         const auto s = sin(euler * T(0.5));
 
@@ -23,18 +22,20 @@ public:
         z = c[0] * c[1] * s[2] - s[0] * s[1] * c[2];
     }
 
-    constexpr operator Matrix<T, 3>() const noexcept;
-    constexpr operator Matrix<T, 4>() const noexcept;
+    XME_INLINE constexpr operator Matrix<T, 3>() const noexcept;
+    XME_INLINE constexpr operator Matrix<T, 4>() const noexcept;
 
     template<typename U>
-    constexpr auto operator+(const Quaternion<U>& q) const noexcept;
+    XME_INLINE constexpr auto operator+(const Quaternion<U>& q) const noexcept;
     template<typename U>
-    constexpr auto operator-(const Quaternion<U>& q) const noexcept;
+    XME_INLINE constexpr auto operator-(const Quaternion<U>& q) const noexcept;
     template<typename U>
-    constexpr auto operator*(const Quaternion<U>& q) const noexcept;
+    XME_INLINE constexpr auto operator*(const Quaternion<U>& q) const noexcept;
 
-    constexpr auto operator[](std::size_t i) noexcept -> T& { return (&w)[i]; }
-    constexpr auto operator[](std::size_t i) const noexcept -> const T& { return (&w)[i]; }
+    XME_INLINE constexpr auto operator[](std::size_t i) noexcept -> T& { return (&w)[i]; }
+    XME_INLINE constexpr auto operator[](std::size_t i) const noexcept -> const T& {
+        return (&w)[i];
+    }
 
     T w{1};
     T x{0};
@@ -46,7 +47,7 @@ template<typename T, typename... Args, typename Temp = std::common_type_t<T, Arg
 Quaternion(T, Args...) -> Quaternion<std::conditional_t<std::is_integral_v<Temp>, float, Temp>>;
 
 template<std::floating_point T>
-constexpr Quaternion<T>::operator Matrix<T, 3>() const noexcept {
+XME_INLINE constexpr Quaternion<T>::operator Matrix<T, 3>() const noexcept {
     Matrix<T, 3> result{1};
     result[0][0] = 1 - 2 * (y * y + z * z);
     result[0][1] = 2 * (x * y + w * z);
