@@ -1,1 +1,1 @@
-CreateTest(forward_like 17)
+CreateTest(forward_like 20)

@@ -8,6 +8,7 @@ namespace xme::math {
 template<CArithmetic T, std::size_t Size>
 struct Vector;
 
+//! Dot product.
 template<typename T, std::size_t Size>
 XME_INLINE constexpr auto dot(const Vector<T, Size>& v1, const Vector<T, Size>& v2) noexcept -> T {
     T result = 0;
@@ -16,6 +17,8 @@ XME_INLINE constexpr auto dot(const Vector<T, Size>& v1, const Vector<T, Size>& 
     return result;
 }
 
+//! Cross product.
+// Returns a vector orthogonal to both `v1` and `v2`
 template<typename T>
 XME_INLINE constexpr auto cross(const Vector<T, 3>& v1, const Vector<T, 3>& v2) noexcept
     -> Vector<T, 3> {
@@ -26,17 +29,23 @@ XME_INLINE constexpr auto cross(const Vector<T, 3>& v1, const Vector<T, 3>& v2) 
     };
 }
 
+//! Return the length of `v`
 template<std::floating_point T, std::size_t Size>
 XME_INLINE constexpr auto length(const Vector<T, Size>& v) noexcept -> T {
     return std::sqrt(dot(v, v));
 }
 
+//! Returns the distance from `v1` to `v2`
+//! `v1` Start vector
+//! `v2` End vector
 template<std::floating_point T, std::size_t Size>
 XME_INLINE constexpr auto distance(const Vector<T, Size>& v1, const Vector<T, Size>& v2) noexcept
     -> T {
     return (v2 - v1).length();
 }
 
+//! Returns a vector with a length of 1
+//! `v` Vector to normalize
 template<std::floating_point T, std::size_t Size>
 XME_INLINE constexpr auto normalize(const Vector<T, Size>& v) noexcept -> Vector<T, Size> {
     return v * (1 / length(v));

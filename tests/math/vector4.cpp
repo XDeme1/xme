@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 #include <xme/math/glsl_mapping.hpp>
 #include <xme/math/vector.hpp>
 

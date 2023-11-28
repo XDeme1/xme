@@ -15,7 +15,6 @@ XME_INLINE constexpr auto determinant(const Matrix<T, 2, 2>& m) noexcept -> T {
 }
 template<typename T>
 XME_INLINE constexpr auto determinant(const Matrix<T, 3, 3>& m) noexcept -> T {
-
     const auto cofactor01 = m[0][1] * m[1][2] - m[1][1] * m[0][2];
     const auto cofactor12 = m[1][1] * m[2][2] - m[2][1] * m[1][2];
     const auto cofactor02 = m[0][1] * m[2][2] - m[2][1] * m[0][2];
@@ -38,6 +37,8 @@ XME_INLINE constexpr auto determinant(const Matrix<T, 4, 4>& m) noexcept -> T {
     return factor0 - factor1 + factor2 - factor3;
 }
 
+//! Creates a NxM matrix from a MxN Matrix.
+//! Swaps the columns and rows indexes.
 template<typename T, std::size_t Cols, std::size_t Rows>
 XME_INLINE constexpr auto transpose(const Matrix<T, Cols, Rows>& m) noexcept
     -> Matrix<T, Rows, Cols> {
@@ -51,10 +52,23 @@ XME_INLINE constexpr auto transpose(const Matrix<T, Cols, Rows>& m) noexcept
 }
 
 template<typename T, std::size_t N1, std::size_t N2>
-XME_INLINE constexpr auto outer_product(const Vector<T, N1>& v1, const Vector<T, N2>& v2) noexcept {
+XME_INLINE constexpr auto outer_product(const Vector<T, N1>& v1, const Vector<T, N2>& v2) noexcept
+    -> Matrix<T, N2, N1> {
     Matrix<T, N2, N1> result{0};
     for(std::size_t i = 0; i < N2; ++i)
         result[i] = v1 * v2[i];
+    return result;
+}
+
+//! Hadamard product.
+//! Component-wise multiplication.
+template<typename T, std::size_t Cols, std::size_t Rows>
+XME_INLINE constexpr auto hadamard_product(const Matrix<T, Cols, Rows>& m1,
+    const Matrix<T, Cols, Rows>& m2) noexcept -> Matrix<T, Cols, Rows> {
+    Matrix<T, Cols, Rows> result;
+    for(std::size_t i = 0; i < Cols; i++) {
+        result[i] = m1[i] * m2[i];
+    }
     return result;
 }
 }  // namespace xme::math
