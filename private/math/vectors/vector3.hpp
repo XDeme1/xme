@@ -3,29 +3,37 @@
 #include <cmath>
 #include <xme/math/geometric.hpp>
 
-#define VEC_OP(op)                                                                             \
-    template<typename U>                                                                       \
-    constexpr auto operator op(U s) const noexcept -> Vector {                                 \
-        return {x op s, y op s, z op s};                                                       \
-    }                                                                                          \
-    template<typename U>                                                                       \
-    constexpr auto operator op(const Vector<U, 3>& v) const noexcept -> Vector {               \
-        return {x op static_cast<T>(v.x), y op static_cast<T>(v.y), z op static_cast<T>(v.z)}; \
+#define VEC_OP(op)                                                               \
+    template<typename U>                                                         \
+    constexpr auto operator op(U s) const noexcept -> Vector {                   \
+        return {                                                                 \
+            x op static_cast<T>(s),                                              \
+            y op static_cast<T>(s),                                              \
+            z op static_cast<T>(s),                                              \
+        };                                                                       \
+    }                                                                            \
+    template<typename U>                                                         \
+    constexpr auto operator op(const Vector<U, 3>& v) const noexcept -> Vector { \
+        return {                                                                 \
+            x op static_cast<T>(v[0]),                                           \
+            y op static_cast<T>(v[1]),                                           \
+            z op static_cast<T>(v[2]),                                           \
+        };                                                                       \
     }
 
 #define VEC_SELF_OP(op)                                                     \
     template<typename U>                                                    \
     constexpr auto operator op(U s) noexcept -> Vector& {                   \
-        x op s;                                                             \
-        y op s;                                                             \
-        z op s;                                                             \
+        x op static_cast<T>(s);                                             \
+        y op static_cast<T>(s);                                             \
+        z op static_cast<T>(s);                                             \
         return *this;                                                       \
     }                                                                       \
     template<typename U>                                                    \
     constexpr auto operator op(const Vector<U, 3>& v) noexcept -> Vector& { \
-        x op static_cast<T>(v.x);                                           \
-        y op static_cast<T>(v.y);                                           \
-        z op static_cast<T>(v.z);                                           \
+        x op static_cast<T>(v[0]);                                          \
+        y op static_cast<T>(v[1]);                                          \
+        z op static_cast<T>(v[2]);                                          \
         return *this;                                                       \
     }
 
@@ -42,18 +50,17 @@ struct Vector<T, 3> {
     template<typename U>
     explicit constexpr Vector(U s) noexcept : Vector(s, s, s) {}
 
-    template<typename U1, typename U2, typename U3>
-    constexpr Vector(U1 _x, U2 _y, U3 _z) noexcept :
+    constexpr Vector(auto _x, auto _y, auto _z) noexcept :
       x{static_cast<T>(_x)}, y{static_cast<T>(_y)}, z{static_cast<T>(_z)} {}
 
-    template<typename U1, typename U2>
-    constexpr Vector(U1 s, const Vector<U2, 2>& v) noexcept : Vector(s, v[0], v[1]) {}
-
-    template<typename U1, typename U2>
-    constexpr Vector(const Vector<U1, 2>& v, U2 s) noexcept : Vector(v[0], v[1], s) {}
+    template<typename U>
+    constexpr Vector(auto s, const Vector<U, 2>& v) noexcept : Vector(s, v[0], v[1]) {}
 
     template<typename U>
-    explicit constexpr Vector(const Vector<U, 3>& v) noexcept : Vector(v.x, v.y, v.z) {}
+    constexpr Vector(const Vector<U, 2>& v, auto s) noexcept : Vector(v[0], v[1], s) {}
+
+    template<typename U>
+    explicit constexpr Vector(const Vector<U, 3>& v) noexcept : Vector(v[0], v[1], v[2]) {}
 
     constexpr auto operator-() const noexcept -> Vector { return {-x, -y, -z}; }
 
@@ -64,9 +71,9 @@ struct Vector<T, 3> {
 
     template<typename U>
     constexpr auto operator=(const Vector<U, 3>& v) noexcept -> Vector& {
-        x = v.x;
-        y = v.y;
-        z = v.z;
+        x = static_cast<T>(v[0]);
+        y = static_cast<T>(v[1]);
+        z = static_cast<T>(v[2]);
         return *this;
     }
 

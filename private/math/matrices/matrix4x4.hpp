@@ -3,17 +3,20 @@
 #include <xme/math/matrices/matrix_functions.hpp>
 #include <xme/math/matrices/matrix_transformation.hpp>
 
-#define MAT_OP1(op)                                                                  \
-    template<typename U>                                                             \
-    constexpr auto operator op(U s) const noexcept -> Matrix {                       \
-        return {(*this)[0] op s, (*this)[1] op s, (*this)[2] op s, (*this)[3] op s}; \
+#define MAT_OP1(op)                                            \
+    template<typename U>                                       \
+    constexpr auto operator op(U s) const noexcept -> Matrix { \
+        return {m_data[0] op static_cast<T>(s),                \
+            m_data[1] op static_cast<T>(s),                    \
+            m_data[2] op static_cast<T>(s),                    \
+            m_data[3] op static_cast<T>(s)};                   \
     }
 
-#define MAT_OP2(op)                                                                              \
-    MAT_OP1(op)                                                                                  \
-    template<typename U>                                                                         \
-    constexpr auto operator op(const Matrix<U, 4, 4>& m) const noexcept -> Matrix {              \
-        return {(*this)[0] op m[0], (*this)[1] op m[1], (*this)[2] op m[2], (*this)[3] op m[3]}; \
+#define MAT_OP2(op)                                                                          \
+    MAT_OP1(op)                                                                              \
+    template<typename U>                                                                     \
+    constexpr auto operator op(const Matrix<U, 4, 4>& m) const noexcept -> Matrix {          \
+        return {m_data[0] op m[0], m_data[1] op m[1], m_data[2] op m[2], m_data[3] op m[3]}; \
     }
 
 #define MAT_SELF_OP1(op)                                  \
@@ -49,19 +52,21 @@ public:
     constexpr Matrix() noexcept : Matrix(1) {}
 
     template<typename U>
-    explicit constexpr Matrix(U s) noexcept {
-        for(std::size_t i = 0; i < 4; ++i)
-            m_data[i][i] = static_cast<T>(s);
-    }
+    explicit constexpr Matrix(U s) noexcept :
+      m_data{
+          column_type{s, 0, 0, 0},
+          column_type{0, s, 0, 0},
+          column_type{0, 0, s, 0},
+          column_type{0, 0, 0, s}
+    } {}
 
     template<typename... Args>
-    constexpr Matrix(const Vector<Args, 4>&... args) noexcept : m_data({args...}) {}
+    constexpr Matrix(const Vector<Args, 4>&... args) noexcept :
+      m_data({static_cast<column_type>(args)...}) {}
 
     template<typename U>
-    explicit constexpr Matrix(const Matrix<U, 4, 4>& m) noexcept {
-        for(std::size_t i = 0; i < 4; ++i)
-            m_data[i] = m[i];
-    }
+    explicit constexpr Matrix(const Matrix<U, 4, 4>& m) noexcept :
+      m_data({m[0], m[1], m[2], m[3]}) {}
 
     template<typename U>
     explicit constexpr Matrix(const Matrix<U, 3, 3>& m) noexcept :
@@ -104,8 +109,10 @@ public:
 
     template<typename U>
     constexpr auto operator=(const Matrix<U, 4, 4>& m) noexcept -> Matrix& {
-        for(std::size_t i = 0; i < 4; ++i)
-            m_data[i] = m[i];
+        m_data[0] = m[0];
+        m_data[1] = m[1];
+        m_data[2] = m[2];
+        m_data[3] = m[3];
         return *this;
     }
 
@@ -114,9 +121,9 @@ public:
     MAT_SELF_OP1(*=)
     MAT_SELF_OP1(/=)
 
-    constexpr auto operator[](std::size_t i) noexcept -> column_type& { return m_data[i]; }
+    inline constexpr auto operator[](std::size_t i) noexcept -> column_type& { return m_data[i]; }
 
-    constexpr auto operator[](std::size_t i) const noexcept -> const column_type& {
+    inline constexpr auto operator[](std::size_t i) const noexcept -> const column_type& {
         return m_data[i];
     }
 

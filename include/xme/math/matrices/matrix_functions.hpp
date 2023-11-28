@@ -4,7 +4,7 @@
 
 namespace xme::math {
 template<CArithmetic T, std::size_t Size>
-class Vector;
+struct Vector;
 template<std::floating_point T, std::size_t Cols, std::size_t Rows>
 class Matrix;
 

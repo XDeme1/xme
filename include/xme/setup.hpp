@@ -12,3 +12,17 @@
 #        define XME_CONSTEXPR20
 #    endif
 #endif
+
+#if defined(__clang__)
+#    if __has_attribute(always_inline)
+#        define XME_INLINE __attribute__((always_inline)) __inline__
+#    else
+#        define XME_INLINE inline
+#    endif
+#elif defined(__GNUC__)
+#    define XME_INLINE __attribute__((always_inline)) __inline__
+#elif defined(_MSC_VER)
+#    define XME_INLINE inline
+#else
+#    define XME_INLINE inline
+#endif
