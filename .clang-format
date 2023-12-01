@@ -21,7 +21,7 @@ AlignTrailingComments: Always
 
 AllowAllArgumentsOnNextLine: true
 AllowAllParametersOfDeclarationOnNextLine: false
-AllowBreakBeforeNoexceptSpecifier: OnlyWithParen
+#AllowBreakBeforeNoexceptSpecifier: OnlyWithParen
 
 AllowShortBlocksOnASingleLine: Empty
 AllowShortCaseLabelsOnASingleLine: true
