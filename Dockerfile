@@ -1,7 +1,7 @@
 FROM ubuntu:latest
 RUN apt-get update && apt-get -y install software-properties-common && add-apt-repository universe
 RUN apt-get update && apt-get -y install cmake ninja-build git
-RUN apt-get -y install clang-11 clang-12 clang-13 clang
+RUN apt-get -y install clang-11
 
 COPY . /app
 WORKDIR /app

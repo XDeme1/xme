@@ -13,7 +13,7 @@ function(CreateTest NAME std)
         target_link_options(test_${NAME} PRIVATE -lc++)
     endif()
 
-    target_compile_options(test_${NAME} PRIVATE -Wall -Wextra -Wpedantic -Wshadow -Wno-missing-braces)
+    target_compile_options(test_${NAME} PRIVATE -Wall -Wextra -Wpedantic -Wshadow -Wconversion -Wno-missing-braces)
     target_compile_features(test_${NAME} PRIVATE cxx_std_${std})
     add_test(NAME test_${NAME} COMMAND test_${NAME})
 endfunction()

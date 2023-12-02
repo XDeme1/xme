@@ -7,7 +7,6 @@
 namespace xme {
 //! Provides a wrapper for an aligned storage.
 //! This wrapper makes the data start in a multiple of Align
-//! If a custom align is required, is must not be lower than the default align of T
 //! @param T the type of the aligned data
 //! @param Align must be a power of 2 non negative number
 template<typename T, std::size_t Align = alignof(T)>
@@ -16,8 +15,6 @@ public:
     static_assert(std::has_single_bit(Align), "Align must be a power of 2");
     static_assert(std::is_same_v<T, std::remove_cv_t<T>>,
         "xme::AlignedData must have a non-const and non-volatile T");
-    static_assert(alignof(T) <= Align,
-        "The provided align must be higher or equal to the default align of T");
 
     using value_type      = T;
     using reference       = T&;

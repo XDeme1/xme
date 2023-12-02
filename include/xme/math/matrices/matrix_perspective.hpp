@@ -3,6 +3,7 @@
 #include <cmath>
 #include <xme/setup.hpp>
 
+//! http://www.songho.ca/opengl/gl_projectionmatrix.html
 namespace xme::math {
 template<std::floating_point T, std::size_t Cols, std::size_t Rows>
 class Matrix;
@@ -35,7 +36,6 @@ perspective_lh(T fov, T aspect_ratio, T near, T far) noexcept -> Matrix<T, 4, 4>
     return result;
 }
 
-//! http://www.songho.ca/opengl/gl_projectionmatrix.html
 template<std::floating_point T>
 XME_INLINE constexpr auto
 perspective(T fov, T aspect_ratio, T near, T far) noexcept -> Matrix<T, 4, 4> {
