@@ -1,7 +1,9 @@
 #pragma once
 #include <type_traits>
 #include "vector.hpp"
+#include "matrices/matrix_perspective.hpp"
 #include "matrices/matrix_functions.hpp"
+#include "matrices/matrix_transformation.hpp"
 
 #define MAT_OP1(op)                                                       \
     template<typename U>                                                  \
@@ -150,80 +152,6 @@ template<typename T, typename... Args, std::size_t Rows>
 Matrix(Vector<T, Rows>,
     Vector<Args, Rows>...) -> Matrix<std::common_type_t<T, Args...>, sizeof...(Args) + 1, Rows>;
 
-template<std::floating_point T>
-XME_INLINE constexpr auto
-perspective_rh(T fov, T aspect_ratio, T near, T far) noexcept -> Matrix<T, 4> {
-    const auto halfTan = std::tan(fov / 2);
-
-    Matrix<T, 4> result{0};
-    result[0][0] = 1 / (aspect_ratio * halfTan);
-    result[1][1] = 1 / halfTan;
-    result[2][2] = -(far + near) / (far - near);
-    result[2][3] = -1;
-    result[3][2] = -(2 * far * near) / (far - near);
-    return result;
-}
-
-template<std::floating_point T>
-XME_INLINE constexpr auto
-perspective_lh(T fov, T aspect_ratio, T near, T far) noexcept -> Matrix<T, 4> {
-    const auto halfTan = std::tan(fov / 2);
-
-    Matrix<T, 4> result{0};
-    result[0][0] = 1 / (aspect_ratio * halfTan);
-    result[1][1] = 1 / halfTan;
-    result[2][2] = (far + near) / (far - near);
-    result[2][3] = 1;
-    result[3][2] = -(2 * far * near) / (far - near);
-    return result;
-}
-
-//! http://www.songho.ca/opengl/gl_projectionmatrix.html
-template<std::floating_point T>
-XME_INLINE constexpr auto
-perspective(T fov, T aspect_ratio, T near, T far) noexcept -> Matrix<T, 4> {
-#if defined(XME_MATH_CLIP_LH)
-    return perspective_rh(fov, aspect_ratio, far, near);
-#else
-    return perspective_rh(fov, aspect_ratio, near, far);
-#endif
-}
-
-template<std::floating_point T>
-XME_INLINE constexpr auto
-ortho_lh(T left, T right, T bottom, T top, T near, T far) noexcept -> Matrix<T, 4> {
-    Matrix<T, 4> result{1};
-    result[0][0] = 2 / (right - left);
-    result[1][1] = 2 / (top - bottom);
-    result[1][1] = 2 / (far - near);
-    result[2][0] = -(right + left) / (right - left);
-    result[2][1] = -(top + bottom) / (top - bottom);
-    result[2][2] = -(far + near) / (far - near);
-    return result;
-}
-
-template<std::floating_point T>
-XME_INLINE constexpr auto
-ortho_rh(T left, T right, T bottom, T top, T near, T far) noexcept -> Matrix<T, 4> {
-    Matrix<T, 4> result{1};
-    result[0][0] = 2 / (right - left);
-    result[1][1] = 2 / (top - bottom);
-    result[1][1] = -2 / (far - near);
-    result[2][0] = -(right + left) / (right - left);
-    result[2][1] = -(top + bottom) / (top - bottom);
-    result[2][2] = -(far + near) / (far - near);
-    return result;
-}
-
-template<std::floating_point T>
-XME_INLINE constexpr auto
-ortho(T left, T right, T bottom, T top, T near, T far) noexcept -> Matrix<T, 4> {
-#if defined(XME_MATH_CLIP_LH)
-    return ortho_lh(left, right, bottom, top, near, far);
-#else
-    return ortho_rh(left, right, bottom, top, near, far);
-#endif
-}
 }  // namespace xme::math
 
 #undef MAT_OP1
