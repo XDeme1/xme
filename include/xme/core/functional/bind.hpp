@@ -17,9 +17,10 @@ public:
     constexpr BindFront(BindFront&&) noexcept = default;
 
     template<typename Fn, typename... BoundArgs>
-    explicit constexpr BindFront(Fn&& func, BoundArgs&&... args)
-        noexcept(std::is_nothrow_constructible_v<F, Fn>
-                 && (std::is_nothrow_constructible_v<Args, BoundArgs> && ...)) :
+        requires(!std::same_as<BindFront, std::decay_t<Fn>>)
+    explicit constexpr BindFront(Fn&& func, BoundArgs&&... args) noexcept(
+        std::is_nothrow_constructible_v<F, Fn>
+        && (std::is_nothrow_constructible_v<BoundArgs, Args> && ...)) :
       callable(std::forward<Fn>(func)), bound_args{std::forward<BoundArgs>(args)...} {}
 
     constexpr auto operator=(const BindFront&) noexcept -> self& = default;
@@ -53,8 +54,8 @@ public:
 
 private:
     template<typename T, std::size_t... I, typename... InArgs>
-    static constexpr auto call(T&& self, std::index_sequence<I...>, InArgs&&... args)
-        noexcept(noexcept(std::invoke(std::forward<T>(self).callable,
+    static constexpr auto call(T&& self, std::index_sequence<I...>, InArgs&&... args) noexcept(
+        noexcept(std::invoke(std::forward<T>(self).callable,
             get<I>(std::forward<T>(self).bound_args)...,
             std::forward<InArgs>(args)...))) -> decltype(auto) {
         return std::invoke(std::forward<T>(self).callable,
@@ -78,9 +79,10 @@ public:
     constexpr BindBack(BindBack&&) noexcept = default;
 
     template<typename Fn, typename... BoundArgs>
-    explicit constexpr BindBack(Fn&& func, BoundArgs&&... args)
-        noexcept(std::is_nothrow_constructible_v<F, Fn>
-                 && (std::is_nothrow_constructible_v<Args, BoundArgs> && ...)) :
+        requires(!std::same_as<BindBack, std::decay_t<Fn>>)
+    explicit constexpr BindBack(Fn&& func, BoundArgs&&... args) noexcept(
+        std::is_nothrow_constructible_v<F, Fn>
+        && (std::is_nothrow_constructible_v<Args, BoundArgs> && ...)) :
       callable(std::forward<Fn>(func)), bound_args{std::forward<BoundArgs>(args)...} {}
 
     constexpr auto operator=(const BindBack&) noexcept -> self& = default;
@@ -114,8 +116,8 @@ public:
 
 private:
     template<typename T, std::size_t... I, typename... InArgs>
-    static constexpr auto call(T&& self, std::index_sequence<I...>, InArgs&&... args)
-        noexcept(noexcept(std::invoke(std::forward<T>(self).callable,
+    static constexpr auto call(T&& self, std::index_sequence<I...>, InArgs&&... args) noexcept(
+        noexcept(std::invoke(std::forward<T>(self).callable,
             std::forward<InArgs>(args)...,
             get<I>(std::forward<T>(self).bound_args)...))) -> decltype(auto) {
         return std::invoke(std::forward<T>(self).callable,
