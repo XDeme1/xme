@@ -18,7 +18,8 @@ int test_move_parameters() {
     int errors = 0;
     {
         std::string a = "Hello";
-        xme::Delegate<void(std::string&&)> fn1{[](std::string&&) {}};
+        xme::Delegate<void(std::string&&)> fn1{
+            [](std::string&& b) { std::string a = std::move(b); }};
         fn1(std::move(a));
         bool error = !a.empty();
         if(error) {
