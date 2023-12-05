@@ -18,8 +18,8 @@ target_link_libraries(<target> PRIVATE xme)
 ## Components
 * ### Math
     Lives under the `xme::math` namespace. To use it, include `<xme/math/math.hpp>` or other parts separately.
-    
-    This component provides math constants, Vector, Matrix, trigonometric and geometric functions, made to use for OpenGL.
+
+    For detailed information see the [math directory](./include/xme/math).
 
 ## C++20 Modules
 Currently modules only works with libc++ and clang 18+.
