@@ -7,7 +7,7 @@
 int test_access() {
     int errors = 0;
     {
-        xme::Array<float> arr{5, 3, 2.5};
+        xme::Array<float> arr{5.f, 3.f, 2.5f};
         bool error = arr[0] != 5 || arr[1] != 3 || arr[2] != 2.5f;
         if(error) {
             std::cerr << "xme::Array::operator[] error\n";

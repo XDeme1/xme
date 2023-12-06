@@ -27,7 +27,7 @@ int test_access() {
         }
     }
     {
-        math::Vector<float, 5> v{2};
+        math::Vector<float, 5> v{2.f};
         bool error = math::get<0>(v) != 2 || math::get<1>(v) != 2 || math::get<2>(v) != 2
                      || math::get<3>(v) != 2 || math::get<4>(v) != 2;
         if(error) {
@@ -64,7 +64,7 @@ int test_unary() {
 int test_arithmetic() {
     int errors = 0;
     {
-        math::Vector<float, 5> v{fv5 + 2};
+        math::Vector<float, 5> v{fv5 + 2.f};
         bool error = v[0] != 3.5 || v[1] != 4 || v[2] != 5 || v[3] != 6 || v[4] != 7;
         if(error) {
             std::cerr << "xme::Vector::operator+ 1 error\n";
@@ -80,7 +80,7 @@ int test_arithmetic() {
         }
     }
     {
-        math::Vector<float, 5> v{fv5 - 2};
+        math::Vector<float, 5> v{fv5 - 2.f};
         bool error = v[0] != -0.5 || v[1] != 0 || v[2] != 1 || v[3] != 2 || v[4] != 3;
         if(error) {
             std::cerr << "xme::Vector::operator- 1 error\n";
@@ -98,7 +98,7 @@ int test_arithmetic() {
         }
     }
     {
-        math::Vector<float, 5> v{fv5 * 3};
+        math::Vector<float, 5> v{fv5 * 3.f};
         bool error = v[0] != 4.5 || v[1] != 6 || v[2] != 9 || v[3] != 12 || v[4] != 15;
         if(error) {
             std::cerr << "xme::Vector::operator* 1 error\n";
@@ -117,7 +117,7 @@ int test_arithmetic() {
     }
     {
         math::Vector<float, 5> v1{5, 10, 15, 5, 20};
-        math::Vector<float, 5> v{v1 / 5};
+        math::Vector<float, 5> v{v1 / 5.f};
         bool error = v[0] != 1 || v[1] != 2 || v[2] != 3 || v[3] != 1 || v[4] != 4;
         if(error) {
             std::cerr << "xme::Vector::operator/ 1 error\n";
@@ -150,7 +150,7 @@ int test_self() {
     }
     {
         math::Vector<float, 5> v{2, 5, 3, 1, 2};
-        v += 4;
+        v += 4.f;
         bool error = v[0] != 6 || v[1] != 9 || v[2] != 7 || v[3] != 5 || v[4] != 6;
         if(error) {
             std::cerr << "xme::Vector::operator+= 1 error\n";
@@ -168,7 +168,7 @@ int test_self() {
     }
     {
         math::Vector<float, 5> v{2, 2, 5, 3, 3};
-        v -= 2;
+        v -= 2.f;
         bool error = v[0] != 0 || v[1] != 0 || v[2] != 3 || v[3] != 1 || v[4] != 1;
         if(error) {
             std::cerr << "xme::Vector::operator-= 1 error\n";
@@ -186,7 +186,7 @@ int test_self() {
     }
     {
         math::Vector<float, 5> v{2, -2, 3, 1, 5};
-        v *= 3;
+        v *= 3.f;
         bool error = v[0] != 6 || v[1] != -6 || v[2] != 9 || v[3] != 3 || v[4] != 15;
         if(error) {
             std::cerr << "xme::Vector::operator*= 1 error\n";
@@ -204,7 +204,7 @@ int test_self() {
     }
     {
         math::Vector<float, 5> v{7, 14, 21, 28, 35};
-        v /= 7;
+        v /= 7.f;
         bool error = v[0] != 1 || v[1] != 2 || v[2] != 3 || v[3] != 4 || v[4] != 5;
         if(error) {
             std::cerr << "xme::Vector::operator/= 1 error\n";
@@ -226,8 +226,8 @@ int test_self() {
 int test_equality() {
     int errors = 0;
     {
-        math::Vector<float, 5> v1{5};
-        math::Vector<float, 5> v2{7};
+        math::Vector<float, 5> v1{5.f};
+        math::Vector<float, 5> v2{7.f};
         bool error = v1 == v2;
         if(error) {
             std::cerr << "xme::Vector::operator== Error\n";
@@ -276,7 +276,7 @@ int test_operations() {
         }
     }
     {
-        math::Vector<float, 5> v1{1, 1, 1, 1, 1};
+        math::Vector<float, 5> v1{1.f, 1.f, 1.f, 1.f, 1.f};
         auto r1 = math::reflect(v1, math::Vector<float, 5>{0, 1, 0, 0, 0});
         auto r2 = math::reflect(v1, math::Vector<float, 5>{1, 0, 0, 0, 0});
         auto r3 = math::reflect(v1, math::Vector<float, 5>{0, 0, 1, 0, 0});

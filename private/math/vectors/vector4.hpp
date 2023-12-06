@@ -24,10 +24,10 @@
 
 #define VEC_SELF_OP(op)                                                                \
     XME_INLINE constexpr auto operator op(auto s) noexcept -> Vector& {                \
-        x op s;                                                                        \
-        y op s;                                                                        \
-        z op s;                                                                        \
-        w op s;                                                                        \
+        x op static_cast<T>(s);                                                        \
+        y op static_cast<T>(s);                                                        \
+        z op static_cast<T>(s);                                                        \
+        w op static_cast<T>(s);                                                        \
         return *this;                                                                  \
     }                                                                                  \
     template<typename U>                                                               \

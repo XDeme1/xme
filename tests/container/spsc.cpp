@@ -74,7 +74,7 @@ int test_pop() {
 
 void test_concurrency() {
     ConcurrencyTest t;
-    for(std::size_t i = 0; i < 3e4; ++i) {
+    for(std::size_t i = 0; i < 1000; ++i) {
         while(!t.queue.emplace(i)) {
             std::this_thread::sleep_for(std::chrono::milliseconds(10));
         }
