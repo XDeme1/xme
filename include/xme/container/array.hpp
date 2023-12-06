@@ -5,6 +5,7 @@
 #include <memory>
 #include <xme/iterators/contiguous_iterator.hpp>
 #include <xme/iterators/reverse_iterator.hpp>
+#include <vector>
 
 namespace xme {
 //! Array is a contigous container with dynamic size.
@@ -48,7 +49,7 @@ public:
     //! Allocates and create N elements of the same value.
     constexpr Array(size_type n, const T& value) : Array(n) {
         try {
-            for(std::size_t i = 0; i < n; ++i) {
+            for(size_type i = 0; i < n; ++i) {
                 std::ranges::construct_at(m_data.end, value);
                 ++m_data.end;
             }
@@ -62,8 +63,7 @@ public:
     constexpr Array(std::initializer_list<T> list) : Array(list.begin(), list.end()) {}
 
     template<std::input_iterator Iter, std::sentinel_for<Iter> Sent>
-    constexpr Array(Iter first, Sent last) :
-      Array(static_cast<size_type>(std::ranges::distance(first, last))) {
+    constexpr Array(Iter first, Sent last) : Array(std::ranges::distance(first, last)) {
         try {
             for(; first != last; ++first) {
                 std::ranges::construct_at(m_data.end, *first);
@@ -146,13 +146,11 @@ public:
     constexpr auto back() const noexcept -> reference { return *(end() - 1); }
 
     //! @returns the amount of elements currently in the array.
-    constexpr auto size() const noexcept -> size_type {
-        return static_cast<size_type>(m_data.end - m_data.begin);
-    }
+    constexpr auto size() const noexcept -> size_type { return m_data.end - m_data.begin; }
 
     //! @returns the amount of elements the container can hold without a resize
     constexpr auto capacity() const noexcept -> size_type {
-        return static_cast<size_type>(m_data.storage_end - m_data.begin);
+        return m_data.storage_end - m_data.begin;
     }
 
     //! Checks if the underlying storage is empty
@@ -190,18 +188,17 @@ public:
         auto p = const_cast<pointer>(pos.operator->());
         if(size() + 1 > capacity()) {
             self tmp(capacity() == 0 ? 1 : capacity() * 2);
-            const auto elements_before =
-                static_cast<size_type>(std::ranges::distance(begin(), pos));
+            const auto elements_before = std::ranges::distance(begin(), pos);
             // Must be constructed first, so if it throws we don't break the original
             // array
             std::ranges::construct_at(tmp.m_data.begin + elements_before, std::forward<U>(value));
 
             std::move(cbegin(), pos, tmp.begin());
-            std::move(pos, cend(), tmp.begin() + static_cast<difference_type>(elements_before) + 1);
+            std::move(pos, cend(), tmp.begin() + elements_before) + 1;
             tmp.m_data.end = tmp.m_data.begin + size() + 1;
             std::ranges::swap(m_data, tmp.m_data);
 
-            return begin() + static_cast<difference_type>(elements_before);
+            return begin() + elements_before;
         }
 
         std::move_backward(pos, cend(), end() + 1);
@@ -216,12 +213,11 @@ public:
     //! @returns an iterator to the first inserted element.
     template<std::input_iterator Iter, std::sentinel_for<Iter> Sent>
     constexpr auto insert(const_iterator pos, Iter first, Sent last) -> iterator {
-        auto p                   = const_cast<pointer>(pos.operator->());
-        difference_type elements = std::ranges::distance(first, last);
+        auto p             = const_cast<pointer>(pos.operator->());
+        size_type elements = std::ranges::distance(first, last);
         if(size() + elements > capacity()) {
-            self tmp(capacity() == 0 ? static_cast<size_type>(elements)
-                                     : capacity() + static_cast<size_type>(elements));
-            difference_type elements_before = std::ranges::distance(begin(), pos);
+            self tmp(capacity() == 0 ? elements : capacity() + elements);
+            size_type elements_before = std::ranges::distance(begin(), pos);
 
             // Must be constructed first, so if it throws we don't break the original
             // array
@@ -236,7 +232,7 @@ public:
             return begin() + elements_before;
         }
 
-        std::move_backward(pos, cend(), end() + static_cast<difference_type>(elements));
+        std::move_backward(pos, cend(), end() + elements);
         m_data.end += elements;
         for(std::size_t n = 0; first != last; ++first, ++n)
             std::ranges::construct_at(p + n, *first);
@@ -262,7 +258,7 @@ public:
     //! Pushes [first, last) to the end of the array.
     template<std::input_iterator Iter, std::sentinel_for<Iter> Sent>
     constexpr void push_back(Iter first, Sent last) {
-        auto dist = static_cast<size_type>(std::ranges::distance(first, last));
+        size_type dist = std::ranges::distance(first, last);
         if(size() + dist > capacity()) {
             grow_storage(capacity() + dist);
         }
@@ -307,8 +303,8 @@ public:
     //! Erases the element in [first, last)
     //! @returns an iterator pointing to the element at `last`
     constexpr auto erase(const_iterator first, const_iterator last) -> iterator {
-        auto p                   = const_cast<pointer>(first.operator->());
-        difference_type elements = std::ranges::distance(first, last);
+        auto p             = const_cast<pointer>(first.operator->());
+        size_type elements = std::ranges::distance(first, last);
         std::ranges::destroy_n(p, elements);
         std::move(first + elements, cend(), p);
         m_data.end -= elements;
@@ -328,11 +324,11 @@ private:
     }
 
     constexpr void shrink_storage(size_type n) {
-        auto elements_to_move = static_cast<size_type>(std::min(size(), n));
-        pointer new_begin     = m_allocator.allocate(n);
+        size_type elements_to_move = std::min(size(), n);
+        pointer new_begin          = m_allocator.allocate(n);
 
-        std::move(begin(), begin() + static_cast<difference_type>(elements_to_move), new_begin);
-        std::ranges::destroy(begin() + static_cast<difference_type>(elements_to_move), end());
+        std::move(begin(), begin() + elements_to_move, new_begin);
+        std::ranges::destroy(begin() + elements_to_move, end());
         m_allocator.deallocate(m_data.begin, capacity());
         m_data.begin       = new_begin;
         m_data.end         = new_begin + elements_to_move;
