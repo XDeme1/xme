@@ -58,6 +58,7 @@ BraceWrapping:
 
 BracedInitializerIndentWidth: 4
 
+BreakAfterAttributes: Always
 BreakArrays: false
 BreakBeforeBinaryOperators: NonAssignment
 BreakBeforeBraces: Custom

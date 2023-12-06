@@ -1,5 +1,6 @@
 #pragma once
 #include "array.hpp"
+#include <vector>
 
 namespace xme {
 //! Heap is a priority queue stored in a contiguous array.
@@ -11,15 +12,15 @@ namespace xme {
 template<typename T, std::ranges::contiguous_range Container = Array<T>, typename Cmp = std::less<>>
 class Heap {
 public:
-    using container_type = Container;
-    using size_type = std::size_t;
+    using container_type  = Container;
+    using size_type       = std::size_t;
     using difference_type = std::ptrdiff_t;
-    using value_type = T;
-    using reference = T&;
+    using value_type      = T;
+    using reference       = T&;
     using const_reference = const T&;
-    using pointer = T*;
-    using const_pointer = const T*;
-    using const_iterator = ContiguousIterator<const T>;
+    using pointer         = T*;
+    using const_pointer   = const T*;
+    using const_iterator  = ContiguousIterator<const T>;
 
     constexpr Heap() = default;
 
@@ -35,20 +36,26 @@ public:
 
     //! Creates a heap with [begin(range), end(range)) elements.
     template<std::ranges::input_range R>
-        requires(std::convertible_to<std::ranges::range_reference_t<R>, T>) &&
-        (!std::is_same_v<Heap, std::remove_cvref_t<R>>)
+        requires(std::convertible_to<std::ranges::range_reference_t<R>, T>)
+                && (!std::is_same_v<Heap, std::remove_cvref_t<R>>)
     constexpr Heap(R&& range) {
         m_array.reserve(std::ranges::size(range));
         auto first = std::ranges::begin(range);
-        auto last = std::ranges::end(range);
+        auto last  = std::ranges::end(range);
         for(; first != last; ++first) {
             push(*first);
         }
     }
 
-    constexpr bool is_empty() const noexcept { return m_array.isEmpty(); }
+    [[nodiscard]]
+    constexpr bool is_empty() const noexcept {
+        return m_array.isEmpty();
+    }
 
-    constexpr auto size() const noexcept -> size_type { return m_array.size(); }
+    [[nodiscard]]
+    constexpr auto size() const noexcept -> size_type {
+        return m_array.size();
+    }
 
     constexpr auto begin() const noexcept -> const_iterator { return m_array.cbegin(); }
 
@@ -88,21 +95,18 @@ private:
         return (index - 1) / 2;
     }
 
-    constexpr auto left_child(size_type index) const noexcept -> size_type {
-        return index * 2 + 1;
-    }
+    constexpr auto left_child(size_type index) const noexcept -> size_type { return index * 2 + 1; }
 
     constexpr auto right_child(size_type index) const noexcept -> size_type {
         return index * 2 + 2;
     }
 
     constexpr void heapfy_up(size_type index) noexcept {
-        for (auto parent_heap = parent(index); index != 0;) {
-            if (!m_compare(m_array[parent_heap], m_array[index]))
-                return;
+        for(auto parent_heap = parent(index); index != 0;) {
+            if(!m_compare(m_array[parent_heap], m_array[index])) return;
 
             std::ranges::swap(m_array[parent_heap], m_array[index]);
-            index = parent_heap;
+            index       = parent_heap;
             parent_heap = parent(parent_heap);
         }
     }
@@ -112,17 +116,18 @@ private:
         const auto ridx = right_child(index);
 
         std::size_t swap_index = index;
-        if (lidx < m_array.size() && m_compare(m_array[swap_index], m_array[lidx]))
+        if(lidx < m_array.size() && m_compare(m_array[swap_index], m_array[lidx]))
             swap_index = lidx;
-        if (ridx < m_array.size() && m_compare(m_array[swap_index], m_array[ridx]))
+        if(ridx < m_array.size() && m_compare(m_array[swap_index], m_array[ridx]))
             swap_index = ridx;
-        if (swap_index != index) {
+        if(swap_index != index) {
             std::ranges::swap(m_array[index], m_array[swap_index]);
             heapfy_down(swap_index);
         }
     }
 
     container_type m_array;
-    [[no_unique_address]] Cmp m_compare;
+    [[no_unique_address]]
+    Cmp m_compare;
 };
-} // namespace xme
+}  // namespace xme

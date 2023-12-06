@@ -35,8 +35,8 @@ private:
     }
 
     template<std::size_t... I>
-    constexpr void swap(Tuple& tup, std::index_sequence<I...>)
-        noexcept((std::is_nothrow_swappable_v<T> && ...)) {
+    constexpr void swap(Tuple& tup, std::index_sequence<I...>) noexcept(
+        (std::is_nothrow_swappable_v<T> && ...)) {
         (std::ranges::swap(get<I>(*this), get<I>(tup)), ...);
     }
 };
@@ -60,16 +60,16 @@ constexpr auto get(Tuple<T...>&& tup) noexcept -> decltype(auto) {
 }
 
 template<typename... T>
-constexpr void swap(Tuple<T...>& lhs, Tuple<T...>& rhs)
-    noexcept((std::is_nothrow_swappable_v<T> && ...)) {
+constexpr void swap(Tuple<T...>& lhs, Tuple<T...>& rhs) noexcept(
+    (std::is_nothrow_swappable_v<T> && ...)) {
     lhs.swap(rhs);
 }
 
 namespace detail {
 template<typename F, typename T, std::size_t... I>
     requires(CTupleLike<std::decay_t<T>>)
-constexpr auto apply(F&& fun, T&& tup, std::index_sequence<I...>)
-    noexcept(noexcept(std::forward<F>(fun)(get<I>(std::forward<T>(tup))...))) -> decltype(auto) {
+constexpr auto apply(F&& fun, T&& tup, std::index_sequence<I...>) noexcept(
+    noexcept(std::forward<F>(fun)(get<I>(std::forward<T>(tup))...))) -> decltype(auto) {
     return std::forward<F>(fun)(get<I>(std::forward<T>(tup))...);
 }
 }  // namespace detail
@@ -90,8 +90,8 @@ constexpr auto tie(T&... t) -> Tuple<T&...> {
 }
 
 template<typename... T>
-constexpr auto make_tuple(T&&... values)
-    noexcept(std::is_nothrow_constructible_v<Tuple<std::unwrap_ref_decay_t<T>...>, T...>) {
+constexpr auto make_tuple(T&&... values) noexcept(
+    std::is_nothrow_constructible_v<Tuple<std::unwrap_ref_decay_t<T>...>, T...>) {
     return Tuple<std::unwrap_ref_decay_t<T>...>{std::forward<T>(values)...};
 }
 
@@ -138,8 +138,8 @@ using tuple_cat = TupleCat<Tuple<T&&...>,
     std::make_index_sequence<std::tuple_size_v<std::remove_cvref_t<T>>>...>;
 
 template<typename R, std::size_t... OuterIndex, std::size_t... InnerIndex, typename T>
-constexpr auto tuple_cat_impl(
-    std::index_sequence<OuterIndex...>, std::index_sequence<InnerIndex...>, T tup) -> R {
+constexpr auto
+tuple_cat_impl(std::index_sequence<OuterIndex...>, std::index_sequence<InnerIndex...>, T tup) -> R {
     return R{get<OuterIndex>(get<InnerIndex>(std::move(tup)))...};
 }
 }  // namespace detail

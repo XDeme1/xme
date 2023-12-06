@@ -5,7 +5,6 @@
 #include <memory>
 #include <xme/iterators/contiguous_iterator.hpp>
 #include <xme/iterators/reverse_iterator.hpp>
-#include <vector>
 
 namespace xme {
 //! Array is a contigous container with dynamic size.
@@ -118,43 +117,113 @@ public:
         return m_data.begin[index];
     }
 
-    constexpr auto data() noexcept -> pointer { return m_data.begin; }
-    constexpr auto data() const noexcept -> const_pointer { return m_data.begin; }
+    [[nodiscard]]
+    constexpr auto data() noexcept -> pointer {
+        return m_data.begin;
+    }
 
-    constexpr auto begin() noexcept -> iterator { return m_data.begin; }
-    constexpr auto end() noexcept -> iterator { return m_data.end; }
+    [[nodiscard]]
+    constexpr auto data() const noexcept -> const_pointer {
+        return m_data.begin;
+    }
 
-    constexpr auto begin() const noexcept -> const_iterator { return m_data.begin; }
-    constexpr auto end() const noexcept -> const_iterator { return m_data.end; }
+    [[nodiscard]]
+    constexpr auto begin() noexcept -> iterator {
+        return m_data.begin;
+    }
 
-    constexpr auto cbegin() const noexcept -> const_iterator { return m_data.begin; }
-    constexpr auto cend() const noexcept -> const_iterator { return m_data.end; }
+    [[nodiscard]]
+    constexpr auto end() noexcept -> iterator {
+        return m_data.end;
+    }
 
-    constexpr auto rbegin() noexcept -> reverse_iterator { return end(); }
-    constexpr auto rend() noexcept -> reverse_iterator { return begin(); }
+    [[nodiscard]]
+    constexpr auto begin() const noexcept -> const_iterator {
+        return m_data.begin;
+    }
 
-    constexpr auto rbegin() const noexcept -> const_reverse_iterator { return end(); }
-    constexpr auto rend() const noexcept -> const_reverse_iterator { return begin(); }
+    [[nodiscard]]
+    constexpr auto end() const noexcept -> const_iterator {
+        return m_data.end;
+    }
 
-    constexpr auto crbegin() const noexcept -> const_reverse_iterator { return cend(); }
-    constexpr auto crend() const noexcept -> const_reverse_iterator { return cbegin(); }
+    [[nodiscard]]
+    constexpr auto cbegin() const noexcept -> const_iterator {
+        return m_data.begin;
+    }
 
-    constexpr auto front() noexcept -> reference { return *begin(); }
-    constexpr auto front() const noexcept -> const_reference { return *begin(); }
+    [[nodiscard]]
+    constexpr auto cend() const noexcept -> const_iterator {
+        return m_data.end;
+    }
 
-    constexpr auto back() noexcept -> reference { return *(end() - 1); }
-    constexpr auto back() const noexcept -> reference { return *(end() - 1); }
+    [[nodiscard]]
+    constexpr auto rbegin() noexcept -> reverse_iterator {
+        return end();
+    }
+
+    [[nodiscard]]
+    constexpr auto rend() noexcept -> reverse_iterator {
+        return begin();
+    }
+
+    [[nodiscard]]
+    constexpr auto rbegin() const noexcept -> const_reverse_iterator {
+        return end();
+    }
+
+    [[nodiscard]]
+    constexpr auto rend() const noexcept -> const_reverse_iterator {
+        return begin();
+    }
+
+    [[nodiscard]]
+    constexpr auto crbegin() const noexcept -> const_reverse_iterator {
+        return cend();
+    }
+
+    [[nodiscard]]
+    constexpr auto crend() const noexcept -> const_reverse_iterator {
+        return cbegin();
+    }
+
+    [[nodiscard]]
+    constexpr auto front() noexcept -> reference {
+        return *begin();
+    }
+
+    [[nodiscard]]
+    constexpr auto front() const noexcept -> const_reference {
+        return *begin();
+    }
+
+    [[nodiscard]]
+    constexpr auto back() noexcept -> reference {
+        return *(end() - 1);
+    }
+
+    [[nodiscard]]
+    constexpr auto back() const noexcept -> reference {
+        return *(end() - 1);
+    }
 
     //! @returns the amount of elements currently in the array.
-    constexpr auto size() const noexcept -> size_type { return m_data.end - m_data.begin; }
+    [[nodiscard]]
+    constexpr auto size() const noexcept -> size_type {
+        return m_data.end - m_data.begin;
+    }
 
     //! @returns the amount of elements the container can hold without a resize
+    [[nodiscard]]
     constexpr auto capacity() const noexcept -> size_type {
         return m_data.storage_end - m_data.begin;
     }
 
     //! Checks if the underlying storage is empty
-    constexpr bool is_empty() const noexcept { return m_data.begin == m_data.end; }
+    [[nodiscard]]
+    constexpr bool is_empty() const noexcept {
+        return m_data.begin == m_data.end;
+    }
 
     //! Erases every element, leaving the array empty while keeping its capacity.
     constexpr void clear() noexcept {
@@ -356,6 +425,7 @@ private:
     };
 
     ArrayData m_data;
-    [[no_unique_address]] Alloc m_allocator;
+    [[no_unique_address]]
+    Alloc m_allocator;
 };
 }  // namespace xme

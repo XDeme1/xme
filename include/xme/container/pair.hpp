@@ -9,8 +9,8 @@ struct Pair {
 public:
     template<typename P>
         requires(CPairLike<std::decay_t<P>>)
-    constexpr auto operator=(P&& p)
-        noexcept(std::is_nothrow_swappable_v<T> && std::is_nothrow_swappable_v<U>) -> Pair& {
+    constexpr auto operator=(P&& p) noexcept(
+        std::is_nothrow_swappable_v<T> && std::is_nothrow_swappable_v<U>) -> Pair& {
         first  = get<0>(std::forward<P>(p));
         second = get<1>(std::forward<P>(p));
         return *this;
@@ -44,14 +44,16 @@ public:
 
     XME_CONSTEXPR20 auto operator<=>(const Pair&) const noexcept = default;
 
-    constexpr void swap(Pair& p)
-        noexcept(std::is_nothrow_swappable_v<T> && std::is_nothrow_swappable_v<U>) {
+    constexpr void swap(Pair& p) noexcept(
+        std::is_nothrow_swappable_v<T> && std::is_nothrow_swappable_v<U>) {
         std::ranges::swap(first, p.first);
         std::ranges::swap(second, p.second);
     }
 
-    [[no_unique_address]] T first;
-    [[no_unique_address]] U second;
+    [[no_unique_address]]
+    T first;
+    [[no_unique_address]]
+    U second;
 };
 
 template<typename T, typename U>
@@ -73,8 +75,8 @@ constexpr auto get(Pair<T, U>&& p) noexcept -> decltype(auto) {
 }
 
 template<typename T, typename U>
-constexpr void swap(Pair<T, U>& lhs, Pair<T, U>& rhs)
-    noexcept(std::is_nothrow_swappable_v<T> && std::is_nothrow_swappable_v<U>) {
+constexpr void swap(Pair<T, U>& lhs, Pair<T, U>& rhs) noexcept(
+    std::is_nothrow_swappable_v<T> && std::is_nothrow_swappable_v<U>) {
     lhs.swap(rhs);
 }
 

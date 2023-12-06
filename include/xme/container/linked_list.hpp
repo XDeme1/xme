@@ -15,42 +15,42 @@ template<typename T, CAllocator Alloc = std::allocator<T>>
 class LinkedList {
 private:
     using node_base = detail::LinkedListNodeBase;
-    using node = detail::LinkedListNode<T>;
+    using node      = detail::LinkedListNode<T>;
 
 public:
     static_assert(std::is_same_v<T, std::remove_cv_t<T>>,
-                  "xme::LinkedList must have a non-const and non-volatile T");
+        "xme::LinkedList must have a non-const and non-volatile T");
     static_assert(std::is_same_v<T, typename Alloc::value_type>,
-                  "xme::LinkedList must have the same T as its allocator");
+        "xme::LinkedList must have the same T as its allocator");
 
-    using allocator_type = typename std::allocator_traits<Alloc>::template rebind_alloc<
-        detail::LinkedListNode<T>>;
+    using allocator_type =
+        typename std::allocator_traits<Alloc>::template rebind_alloc<detail::LinkedListNode<T>>;
 
-    using value_type = T;
-    using pointer = T*;
-    using const_pointer = const T*;
-    using reference = T&;
+    using value_type      = T;
+    using pointer         = T*;
+    using const_pointer   = const T*;
+    using reference       = T&;
     using const_reference = const T&;
-    using iterator = detail::LinkedListIterator<T>;
-    using const_iterator = detail::LinkedListConstIterator<T>;
+    using iterator        = detail::LinkedListIterator<T>;
+    using const_iterator  = detail::LinkedListConstIterator<T>;
 
     constexpr LinkedList() noexcept = default;
 
     //! Default constructs N nodes
     explicit constexpr LinkedList(std::size_t n) {
         node_base* curr = &m_head;
-        for (; n > 0; --n) {
+        for(; n > 0; --n) {
             curr->next = create_node();
-            curr = curr->next;
+            curr       = curr->next;
         }
     }
 
     //! Constructs N nodes with value
     constexpr LinkedList(std::size_t n, const T& value) {
         node_base* curr = &m_head;
-        for (; n > 0; --n) {
+        for(; n > 0; --n) {
             curr->next = create_node(value);
-            curr = curr->next;
+            curr       = curr->next;
         }
     }
 
@@ -79,7 +79,7 @@ public:
 
     //! Constructs a LinkedList by transfering elements from other
     explicit constexpr LinkedList(LinkedList&& other) noexcept {
-        m_head.next = other.m_head.next;
+        m_head.next       = other.m_head.next;
         other.m_head.next = nullptr;
     }
 
@@ -144,23 +144,21 @@ public:
         auto prev = before_begin();
         auto curr = begin();
         auto _end = end();
-        while (curr != _end && first != last) {
+        while(curr != _end && first != last) {
             *curr = *first;
             ++prev;
             ++curr;
             ++first;
         }
 
-        if (first != last)
+        if(first != last)
             insert_after(prev, first, last);
-        else if (curr != _end)
+        else if(curr != _end)
             erase_after(prev, _end);
     }
 
     //! Clears the current LinkedList and copy elements from the initializer_list
-    constexpr void assign(std::initializer_list<T> list) {
-        assign(list.begin(), list.end());
-    }
+    constexpr void assign(std::initializer_list<T> list) { assign(list.begin(), list.end()); }
 
     //! Clears the current LinkedList and copy elements from a [begin(range), end(range))
     //! range
@@ -196,7 +194,7 @@ public:
     //! @returns an iterator to the last inserted element.
     template<std::input_iterator Iter, std::sentinel_for<Iter> Sent>
     constexpr auto insert_after(const_iterator pos, Iter first, Sent last) -> iterator {
-        for (; first != last; ++first)
+        for(; first != last; ++first)
             pos = emplace_after(pos, *first);
         return iterator(const_cast<node_base*>(pos.current_node));
     }
@@ -213,10 +211,10 @@ public:
     //! @returns an iterator to the new node.
     template<typename... Args>
     constexpr auto emplace_after(const_iterator pos, Args&&... args) -> iterator {
-        node_base* to = const_cast<node_base*>(pos.current_node);
+        node_base* to       = const_cast<node_base*>(pos.current_node);
         node_base* new_node = create_node(std::forward<Args>(args)...);
-        new_node->next = to->next;
-        to->next = new_node;
+        new_node->next      = to->next;
+        to->next            = new_node;
         return iterator(new_node);
     }
 
@@ -232,26 +230,24 @@ public:
     constexpr void erase_after(const_iterator pos, const_iterator last) noexcept {
         node* curr{static_cast<node*>(pos.current_node->next)};
 
-        while (curr != last.current_node) {
+        while(curr != last.current_node) {
             node* const tmp{static_cast<node*>(curr->next)};
             std::ranges::destroy_at(curr->storage.data());
             m_allocator.deallocate(curr, 1);
             curr = tmp;
         }
-        const_cast<node_base*>(pos.current_node)->next =
-            const_cast<node_base*>(last.current_node);
+        const_cast<node_base*>(pos.current_node)->next = const_cast<node_base*>(last.current_node);
     }
 
     //! Reverses the linked list, making the last element the first
     constexpr void reverse() noexcept {
-        if (m_head.next == nullptr)
-            return;
+        if(m_head.next == nullptr) return;
 
         node_base* tail = m_head.next;
-        while (node_base* tmp = tail->next) {
-            node_base* keep = m_head.next;
-            m_head.next = tmp;
-            tail->next = tmp->next;
+        while(node_base* tmp = tail->next) {
+            node_base* keep   = m_head.next;
+            m_head.next       = tmp;
+            tail->next        = tmp->next;
             m_head.next->next = keep;
         }
     }
@@ -262,9 +258,9 @@ private:
         node* new_node = m_allocator.allocate(1);
         try {
             std::ranges::construct_at(new_node);
-            std::ranges::construct_at(new_node->storage.data(),
-                                      std::forward<Args>(args)...);
-        } catch (...) {
+            std::ranges::construct_at(new_node->storage.data(), std::forward<Args>(args)...);
+        }
+        catch(...) {
             m_allocator.deallocate(new_node, 1);
             throw;
         }
@@ -274,13 +270,14 @@ private:
     template<std::input_iterator Iter, std::sentinel_for<Iter> Sent>
     constexpr void range_initialize(Iter first, Sent last) {
         node_base* curr = &m_head;
-        for (; first != last; ++first) {
+        for(; first != last; ++first) {
             curr->next = create_node(*first);
-            curr = curr->next;
+            curr       = curr->next;
         }
     }
 
     node_base m_head;
-    [[no_unique_address]] allocator_type m_allocator;
+    [[no_unique_address]]
+    allocator_type m_allocator;
 };
-} // namespace xme
+}  // namespace xme

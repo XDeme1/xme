@@ -23,16 +23,28 @@ public:
     using const_pointer   = const T*;
 
     //! Returns a void pointer to the address of the object
-    constexpr auto address() noexcept { return static_cast<void*>(m_data.data()); }
+    [[nodiscard]]
+    constexpr auto address() noexcept -> void* {
+        return static_cast<void*>(m_data.data());
+    }
 
     //! Returns a void pointer to the address of the object
-    constexpr auto address() const noexcept { return static_cast<const void*>(m_data.data()); }
+    [[nodiscard]]
+    constexpr auto address() const noexcept -> const void* {
+        return static_cast<const void*>(m_data.data());
+    }
 
     //! Returns a pointer to the object
-    constexpr auto data() noexcept { return static_cast<T*>(address()); }
+    [[nodiscard]]
+    constexpr auto data() noexcept -> pointer {
+        return static_cast<T*>(address());
+    }
 
     //! Returns a pointer to the object
-    constexpr auto data() const noexcept { return static_cast<const T*>(address()); }
+    [[nodiscard]]
+    constexpr auto data() const noexcept -> const_pointer {
+        return static_cast<const T*>(address());
+    }
 
 private:
     alignas(Align) std::array<std::byte, sizeof(T)> m_data{};
