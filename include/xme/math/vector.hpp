@@ -5,32 +5,30 @@
 #include "geometric.hpp"
 
 #define VEC_OP(op)                                                                             \
-    template<typename U>                                                                       \
-    XME_INLINE constexpr auto operator op(U s) const noexcept -> Vector {                      \
+    XME_INLINE constexpr auto operator op(auto s) const noexcept -> Vector {                   \
         Vector result{};                                                                       \
         for(std::size_t i = 0; i < Size; ++i)                                                  \
-            result[i] = ((*this)[i] op s);                                                     \
+            result[i] = ((*this)[i] op static_cast<T>(s));                                     \
         return result;                                                                         \
     }                                                                                          \
     template<typename U>                                                                       \
     XME_INLINE constexpr auto operator op(const Vector<U, Size>& v) const noexcept -> Vector { \
         Vector result{};                                                                       \
         for(std::size_t i = 0; i < Size; ++i)                                                  \
-            result[i] = ((*this)[i] op v[i]);                                                  \
+            result[i] = ((*this)[i] op static_cast<T>(v[i]));                                  \
         return result;                                                                         \
     }
 
 #define VEC_SELF_OP(op)                                                                   \
-    template<typename U>                                                                  \
-    XME_INLINE constexpr auto operator op(U s) noexcept -> Vector& {                      \
+    XME_INLINE constexpr auto operator op(auto s) noexcept -> Vector& {                   \
         for(std::size_t i = 0; i < Size; ++i)                                             \
-            (*this)[i] op s;                                                              \
+            (*this)[i] op static_cast<T>(s);                                              \
         return *this;                                                                     \
     }                                                                                     \
     template<typename U>                                                                  \
     XME_INLINE constexpr auto operator op(const Vector<U, Size>& v) noexcept -> Vector& { \
         for(std::size_t i = 0; i < Size; ++i)                                             \
-            (*this)[i] op v[i];                                                           \
+            (*this)[i] op static_cast<T>(v[i]);                                           \
         return *this;                                                                     \
     }
 

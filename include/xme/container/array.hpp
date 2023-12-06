@@ -263,7 +263,7 @@ public:
             std::ranges::construct_at(tmp.m_data.begin + elements_before, std::forward<U>(value));
 
             std::move(cbegin(), pos, tmp.begin());
-            std::move(pos, cend(), tmp.begin() + elements_before) + 1;
+            std::move(pos, cend(), tmp.begin() + elements_before + 1);
             tmp.m_data.end = tmp.m_data.begin + size() + 1;
             std::ranges::swap(m_data, tmp.m_data);
 
