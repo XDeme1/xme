@@ -3,13 +3,12 @@
 #include <xme/math/matrices/matrix_functions.hpp>
 #include <xme/math/matrices/matrix_transformation.hpp>
 
-#define MAT_OP1(op)                                                       \
-    template<typename U>                                                  \
-    XME_INLINE constexpr auto operator op(U s) const noexcept -> Matrix { \
-        return {m_data[0] op static_cast<T>(s),                           \
-            m_data[1] op static_cast<T>(s),                               \
-            m_data[2] op static_cast<T>(s),                               \
-            m_data[3] op static_cast<T>(s)};                              \
+#define MAT_OP1(op)                                                          \
+    XME_INLINE constexpr auto operator op(auto s) const noexcept -> Matrix { \
+        return {m_data[0] op static_cast<T>(s),                              \
+            m_data[1] op static_cast<T>(s),                                  \
+            m_data[2] op static_cast<T>(s),                                  \
+            m_data[3] op static_cast<T>(s)};                                 \
     }
 
 #define MAT_OP2(op)                                                                            \
@@ -19,12 +18,11 @@
         return {m_data[0] op m[0], m_data[1] op m[1], m_data[2] op m[2], m_data[3] op m[3]};   \
     }
 
-#define MAT_SELF_OP1(op)                                             \
-    template<typename U>                                             \
-    XME_INLINE constexpr auto operator op(U s) noexcept -> Matrix& { \
-        for(std::size_t i = 0; i < 4; ++i)                           \
-            (*this)[i] op s;                                         \
-        return *this;                                                \
+#define MAT_SELF_OP1(op)                                                \
+    XME_INLINE constexpr auto operator op(auto s) noexcept -> Matrix& { \
+        for(std::size_t i = 0; i < 4; ++i)                              \
+            (*this)[i] op static_cast<T>(s);                            \
+        return *this;                                                   \
     }
 
 #define MAT_SELF_OP2(op)                                                                  \
@@ -97,8 +95,8 @@ public:
     }
 
     template<typename U, std::size_t Rows2>
-    XME_INLINE constexpr auto operator*(const Matrix<U, Rows2, 4>& m) const noexcept
-        -> Matrix<T, Rows2, 4> {
+    XME_INLINE constexpr auto operator*(
+        const Matrix<U, Rows2, 4>& m) const noexcept -> Matrix<T, Rows2, 4> {
         Matrix<T, Rows2, 4> result{0};
         for(std::size_t rowIndex = 0; rowIndex < 4; ++rowIndex) {
             const row_type row = this->row(rowIndex);
@@ -122,28 +120,42 @@ public:
     MAT_SELF_OP1(*=)
     MAT_SELF_OP1(/=)
 
-    XME_INLINE constexpr auto operator[](std::size_t i) noexcept -> column_type& {
+    [[nodiscard]]
+    XME_INLINE constexpr auto
+    operator[](std::size_t i) noexcept -> column_type& {
         return m_data[i];
     }
 
-    XME_INLINE constexpr auto operator[](std::size_t i) const noexcept -> const column_type& {
+    [[nodiscard]]
+    XME_INLINE constexpr auto
+    operator[](std::size_t i) const noexcept -> const column_type& {
         return m_data[i];
     }
 
-    XME_INLINE constexpr bool operator==(const Matrix&) const noexcept = default;
+    [[nodiscard]]
+    XME_INLINE constexpr bool
+    operator==(const Matrix&) const noexcept = default;
 
-    XME_INLINE constexpr auto operator<=>(const Matrix&) const noexcept = default;
+    [[nodiscard]]
+    XME_INLINE constexpr auto
+    operator<=>(const Matrix&) const noexcept = default;
 
+    [[nodiscard]]
     XME_INLINE constexpr auto row(std::size_t row) const noexcept -> row_type {
         return {(*this)[0][row], (*this)[1][row], (*this)[2][row], (*this)[3][row]};
     }
 
+    [[nodiscard]]
     XME_INLINE constexpr auto column(std::size_t column) const noexcept -> column_type {
         return m_data[column];
-    };
+    }
 
-    XME_INLINE constexpr auto determinant() const noexcept -> T { return math::determinant(*this); }
+    [[nodiscard]]
+    XME_INLINE constexpr auto determinant() const noexcept -> T {
+        return math::determinant(*this);
+    }
 
+    [[nodiscard]]
     XME_INLINE constexpr auto transpose() const noexcept -> Matrix {
         return math::transpose(*this);
     }

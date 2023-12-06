@@ -9,6 +9,7 @@ template<std::floating_point T, std::size_t Cols, std::size_t Rows>
 class Matrix;
 
 template<std::floating_point T>
+[[nodiscard]]
 XME_INLINE constexpr auto
 perspective_rh(T fov, T aspect_ratio, T near, T far) noexcept -> Matrix<T, 4, 4> {
     const auto halfTan = std::tan(fov / 2);
@@ -23,6 +24,7 @@ perspective_rh(T fov, T aspect_ratio, T near, T far) noexcept -> Matrix<T, 4, 4>
 }
 
 template<std::floating_point T>
+[[nodiscard]]
 XME_INLINE constexpr auto
 perspective_lh(T fov, T aspect_ratio, T near, T far) noexcept -> Matrix<T, 4, 4> {
     const auto halfTan = std::tan(fov / 2);
@@ -37,6 +39,7 @@ perspective_lh(T fov, T aspect_ratio, T near, T far) noexcept -> Matrix<T, 4, 4>
 }
 
 template<std::floating_point T>
+[[nodiscard]]
 XME_INLINE constexpr auto
 perspective(T fov, T aspect_ratio, T near, T far) noexcept -> Matrix<T, 4, 4> {
 #if defined(XME_MATH_CLIP_LH)
@@ -47,6 +50,7 @@ perspective(T fov, T aspect_ratio, T near, T far) noexcept -> Matrix<T, 4, 4> {
 }
 
 template<std::floating_point T>
+[[nodiscard]]
 XME_INLINE constexpr auto
 perspective_lh(T left, T right, T bottom, T top, T near, T far) noexcept -> Matrix<T, 4, 4> {
     Matrix<T, 4, 4> result{0};
@@ -61,6 +65,7 @@ perspective_lh(T left, T right, T bottom, T top, T near, T far) noexcept -> Matr
 }
 
 template<std::floating_point T>
+[[nodiscard]]
 XME_INLINE constexpr auto
 perspective_rh(T left, T right, T bottom, T top, T near, T far) noexcept -> Matrix<T, 4, 4> {
     Matrix<T, 4, 4> result{0};
@@ -75,6 +80,7 @@ perspective_rh(T left, T right, T bottom, T top, T near, T far) noexcept -> Matr
 }
 
 template<std::floating_point T>
+[[nodiscard]]
 XME_INLINE constexpr auto
 perspective(T left, T right, T bottom, T top, T near, T far) noexcept -> Matrix<T, 4, 4> {
 #if defined(XME_MATH_CLIP_LH)
@@ -85,6 +91,7 @@ perspective(T left, T right, T bottom, T top, T near, T far) noexcept -> Matrix<
 }
 
 template<std::floating_point T>
+[[nodiscard]]
 XME_INLINE constexpr auto
 ortho_lh(T left, T right, T bottom, T top, T near, T far) noexcept -> Matrix<T, 4, 4> {
     Matrix<T, 4, 4> result{1};
@@ -98,6 +105,7 @@ ortho_lh(T left, T right, T bottom, T top, T near, T far) noexcept -> Matrix<T, 
 }
 
 template<std::floating_point T>
+[[nodiscard]]
 XME_INLINE constexpr auto
 ortho_rh(T left, T right, T bottom, T top, T near, T far) noexcept -> Matrix<T, 4, 4> {
     Matrix<T, 4, 4> result{1};
@@ -111,6 +119,7 @@ ortho_rh(T left, T right, T bottom, T top, T near, T far) noexcept -> Matrix<T, 
 }
 
 template<std::floating_point T>
+[[nodiscard]]
 XME_INLINE constexpr auto
 ortho(T left, T right, T bottom, T top, T near, T far) noexcept -> Matrix<T, 4, 4> {
 #if defined(XME_MATH_CLIP_LH)

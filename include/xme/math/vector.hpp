@@ -40,10 +40,7 @@ public:
 
     XME_INLINE constexpr Vector() noexcept = default;
 
-    template<typename U>
-    XME_INLINE constexpr Vector(U s) noexcept {
-        m_data.fill(s);
-    }
+    XME_INLINE constexpr Vector(auto s) noexcept { m_data.fill(s); }
 
     template<CArithmetic... Args>
     XME_INLINE constexpr Vector(Args... args) noexcept : m_data({static_cast<T>(args)...}) {
@@ -90,12 +87,20 @@ public:
         return m_data[i];
     }
 
-    XME_INLINE constexpr bool operator==(const Vector&) const noexcept = default;
+    [[nodiscard]]
+    XME_INLINE constexpr bool
+    operator==(const Vector&) const noexcept = default;
 
-    XME_INLINE constexpr auto operator<=>(const Vector&) const noexcept = default;
+    [[nodiscard]]
+    XME_INLINE constexpr auto
+    operator<=>(const Vector&) const noexcept = default;
 
-    XME_INLINE constexpr auto length() const noexcept -> T { return math::length(*this); }
+    [[nodiscard]]
+    XME_INLINE constexpr auto length() const noexcept -> T {
+        return math::length(*this);
+    }
 
+    [[nodiscard]]
     XME_INLINE constexpr auto normalize() const noexcept -> Vector {
         return math::normalize(*this);
     }
@@ -108,31 +113,37 @@ template<typename T, typename... Args>
 Vector(T, Args...) -> Vector<std::common_type_t<T, Args...>, sizeof...(Args) + 1>;
 
 template<std::size_t I, typename T, std::size_t Size>
+[[nodiscard]]
 XME_INLINE constexpr auto get(Vector<T, Size>& v) noexcept -> decltype(auto) {
     return v[I];
 }
 
 template<std::size_t I, typename T, std::size_t Size>
+[[nodiscard]]
 XME_INLINE constexpr auto get(const Vector<T, Size>& v) noexcept -> decltype(auto) {
     return v[I];
 }
 
 template<typename T, std::size_t Size>
+[[nodiscard]]
 XME_INLINE constexpr auto begin(Vector<T, Size>& v) noexcept -> T* {
     return std::addressof(v[0]);
 }
 
 template<typename T, std::size_t Size>
+[[nodiscard]]
 XME_INLINE constexpr auto begin(const Vector<T, Size>& v) noexcept -> const T* {
     return std::addressof(v[0]);
 }
 
 template<typename T, std::size_t Size>
+[[nodiscard]]
 XME_INLINE constexpr auto end(Vector<T, Size>& v) noexcept -> T* {
     return std::addressof(v[Size - 1]) + 1;
 }
 
 template<typename T, std::size_t Size>
+[[nodiscard]]
 XME_INLINE constexpr auto end(const Vector<T, Size>& v) noexcept -> const T* {
     return std::addressof(v[Size - 1]) + 1;
 }

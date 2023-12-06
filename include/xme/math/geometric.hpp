@@ -10,6 +10,7 @@ struct Vector;
 
 //! Dot product.
 template<typename T, std::size_t Size>
+[[nodiscard]]
 XME_INLINE constexpr auto dot(const Vector<T, Size>& v1, const Vector<T, Size>& v2) noexcept -> T {
     T result = 0;
     for(std::size_t i = 0; i < Size; ++i)
@@ -20,6 +21,7 @@ XME_INLINE constexpr auto dot(const Vector<T, Size>& v1, const Vector<T, Size>& 
 //! Cross product.
 // Returns a vector orthogonal to both `v1` and `v2`
 template<typename T>
+[[nodiscard]]
 XME_INLINE constexpr auto cross(const Vector<T, 3>& v1,
     const Vector<T, 3>& v2) noexcept -> Vector<T, 3> {
     return {
@@ -31,6 +33,7 @@ XME_INLINE constexpr auto cross(const Vector<T, 3>& v1,
 
 //! Return the length of `v`
 template<std::floating_point T, std::size_t Size>
+[[nodiscard]]
 XME_INLINE constexpr auto length(const Vector<T, Size>& v) noexcept -> T {
     return std::sqrt(dot(v, v));
 }
@@ -39,6 +42,7 @@ XME_INLINE constexpr auto length(const Vector<T, Size>& v) noexcept -> T {
 //! `v1` Start vector
 //! `v2` End vector
 template<std::floating_point T, std::size_t Size>
+[[nodiscard]]
 XME_INLINE constexpr auto distance(const Vector<T, Size>& v1,
     const Vector<T, Size>& v2) noexcept -> T {
     return (v2 - v1).length();
@@ -47,6 +51,7 @@ XME_INLINE constexpr auto distance(const Vector<T, Size>& v1,
 //! Returns a vector with a length of 1
 //! `v` Vector to normalize
 template<std::floating_point T, std::size_t Size>
+[[nodiscard]]
 XME_INLINE constexpr auto normalize(const Vector<T, Size>& v) noexcept -> Vector<T, Size> {
     return v * (1 / length(v));
 }
@@ -57,12 +62,14 @@ XME_INLINE constexpr auto normalize(const Vector<T, Size>& v) noexcept -> Vector
 //! `i` Incident vector
 //! `n` Normal vector
 template<typename T, std::size_t N>
+[[nodiscard]]
 XME_INLINE constexpr auto
 faceforward(const Vector<T, N>& v, const Vector<T, N>& i, const Vector<T, N>& n) -> Vector<T, N> {
     return dot(n, i) < 0 ? v : -v;
 }
 
 template<typename T, std::size_t Size>
+[[nodiscard]]
 XME_INLINE constexpr auto reflect(const Vector<T, Size>& v,
     const Vector<T, Size>& n) noexcept -> Vector<T, Size> {
     return v - n * dot(v, n) * static_cast<T>(2);
