@@ -46,25 +46,32 @@ public:
 
     constexpr Array() noexcept = default;
 
-    constexpr Array(const Array& other) : Array(other.begin(), other.end()) {}
+    constexpr Array(const Array& other) : Array(other.begin(), other.end(), other.m_allocator) {}
 
-    constexpr Array(Array&& other) noexcept : m_data(std::move(other.m_data)) {}
+    constexpr Array(Array&& other) noexcept :
+      m_data(std::move(other.m_data)), m_allocator(std::move(other.m_allocator)) {}
+
+    explicit constexpr Array(const allocator_type& alloc) noexcept : m_allocator(alloc) {}
 
     //! Allocates memory for N elements, but doesn't create any.
-    explicit constexpr Array(size_type n) {
+    explicit constexpr Array(size_type n, const allocator_type& alloc = allocator_type()) :
+      m_allocator(alloc) {
         m_data.begin = m_data.end = m_allocator.allocate(n);
         m_data.storage_end        = m_data.begin + n;
     }
 
     //! Allocates and create N elements of the same value.
-    constexpr Array(size_type n, const T& value) : Array(n) {
+    constexpr Array(size_type n, const T& value, const allocator_type& alloc = allocator_type()) :
+      Array(n, alloc) {
         m_data.end = xme::ranges::uninitialized_fill_n_a(m_data.begin, n, value, m_allocator);
     }
 
-    constexpr Array(std::initializer_list<T> list) : Array(list.begin(), list.end()) {}
+    constexpr Array(std::initializer_list<T> list, const allocator_type& alloc = allocator_type()) :
+      Array(list.begin(), list.end(), alloc) {}
 
     template<std::input_iterator Iter, std::sentinel_for<Iter> Sent>
-    constexpr Array(Iter first, Sent last) : Array(std::ranges::distance(first, last)) {
+    constexpr Array(Iter first, Sent last, const allocator_type& alloc = allocator_type()) :
+      Array(std::ranges::distance(first, last), alloc) {
         auto&& [_, out] = xme::ranges::uninitialized_copy_a(
             first, last, m_data.begin, m_data.storage_end, m_allocator
         );
@@ -74,8 +81,8 @@ public:
     template<std::ranges::input_range R>
         requires(std::convertible_to<std::ranges::range_reference_t<R>, T>)
                 && (!std::is_same_v<Array, std::decay_t<R>>)
-    explicit constexpr Array(R&& range) :
-      Array(std::ranges::begin(range), std::ranges::end(range)) {}
+    explicit constexpr Array(R&& range, const allocator_type& alloc = allocator_type()) :
+      Array(std::ranges::begin(range), std::ranges::end(range), alloc) {}
 
     constexpr ~Array() noexcept {
         xme::ranges::destroy_a(m_data.begin, m_data.end, m_allocator);
@@ -220,9 +227,7 @@ public:
     }
 
     constexpr void swap(Array& other) noexcept {
-        std::ranges::swap(m_data.begin, other.m_data.begin);
-        std::ranges::swap(m_data.end, other.m_data.end);
-        std::ranges::swap(m_data.storage_end, other.m_data.storage_end);
+        std::ranges::swap(m_data, other.m_data);
         if constexpr(alloc_traits::propagate_on_container_swap::value) {
             std::ranges::swap(m_allocator, other.m_allocator);
         }
