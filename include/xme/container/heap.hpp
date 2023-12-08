@@ -91,12 +91,17 @@ public:
     }
 
 private:
+    [[nodiscard]]
     constexpr auto parent(difference_type index) const noexcept -> std::ptrdiff_t {
         return (index - 1) / 2;
     }
 
-    constexpr auto left_child(size_type index) const noexcept -> size_type { return index * 2 + 1; }
+    [[nodiscard]]
+    constexpr auto left_child(size_type index) const noexcept -> size_type {
+        return index * 2 + 1;
+    }
 
+    [[nodiscard]]
     constexpr auto right_child(size_type index) const noexcept -> size_type {
         return index * 2 + 2;
     }
