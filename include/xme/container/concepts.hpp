@@ -4,12 +4,12 @@
 #include <tuple>
 
 namespace xme {
-template<typename T>
-concept CAllocator = requires(T a, typename T::value_type* ptr) {
-    typename T::value_type;
-    typename T::size_type;
-    typename T::difference_type;
-    { a.allocate(std::size_t(1)) } -> std::same_as<typename T::value_type*>;
+template<typename Alloc>
+concept CAllocator = requires(Alloc a, typename Alloc::value_type* ptr) {
+    typename Alloc::value_type;
+    typename Alloc::size_type;
+    typename Alloc::difference_type;
+    { a.allocate(std::size_t(1)) } -> std::same_as<typename Alloc::value_type*>;
     a.deallocate(ptr, std::size_t(1));
 };
 
@@ -29,8 +29,8 @@ constexpr auto tuple_element(std::index_sequence<I...>) noexcept {
 template<typename T>
 concept CTupleLike = requires(T t) {
     typename std::tuple_size<T>::type;
-    requires std::derived_from<std::tuple_size<T>,
-        std::integral_constant<std::size_t, std::tuple_size_v<T>>>;
+    requires std::
+        derived_from<std::tuple_size<T>, std::integral_constant<std::size_t, std::tuple_size_v<T>>>;
 } && detail::tuple_element<T>(std::make_index_sequence<std::tuple_size_v<T>>{});
 
 template<typename T>

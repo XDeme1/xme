@@ -7,6 +7,7 @@
 #include <xme/iterators/reverse_iterator.hpp>
 #include <xme/setup.hpp>
 #include <xme/ranges/uninitialized.hpp>
+#include <xme/ranges/destroy.hpp>
 
 namespace xme {
 //! Array is a contigous container with dynamic size.
@@ -77,8 +78,7 @@ public:
       Array(std::ranges::begin(range), std::ranges::end(range)) {}
 
     constexpr ~Array() noexcept {
-        for(std::size_t i = 0; i < size(); ++i)
-            alloc_traits::destroy(m_allocator, m_data.begin + i);
+        xme::ranges::destroy_a(m_data.begin, m_data.end, m_allocator);
         if(m_data.begin) m_allocator.deallocate(m_data.begin, capacity());
     }
 
@@ -233,8 +233,7 @@ public:
 
     //! Erases every element, leaving the array empty while keeping its capacity.
     constexpr void clear() noexcept {
-        for(std::size_t i = 0; i < size(); ++i)
-            alloc_traits::destroy(m_allocator, m_data.begin + i);
+        xme::ranges::destroy_a(m_data.begin, m_data.end, m_allocator);
         m_data.end = m_data.begin;
     }
 
@@ -348,7 +347,7 @@ public:
     constexpr void pop_back() {
         assert(size() > 0);
         --m_data.end;
-        alloc_traits::destroy(m_allocator, m_data.end);
+        xme::ranges::destroy_at_a(m_data.end, m_allocator);
     }
 
     //! @returns a reference to the newly inserted element.
@@ -365,7 +364,7 @@ public:
     //! @returns an iterator pointing to the element after it
     constexpr auto erase(const_iterator pos) -> iterator {
         auto p = const_cast<pointer>(pos.operator->());
-        alloc_traits::destroy(m_allocator, p);
+        xme::ranges::destroy_at_a(p, m_allocator);
         std::move(std::ranges::next(pos), cend(), p);
         --m_data.end;
         return p;
@@ -376,9 +375,7 @@ public:
     constexpr auto erase(const_iterator first, const_iterator last) -> iterator {
         auto p             = const_cast<pointer>(first.operator->());
         size_type elements = std::ranges::distance(first, last);
-        for(size_type i = 0; elements > 0; --elements, (void)++i) {
-            alloc_traits::destroy(m_allocator, p + i);
-        }
+        xme::ranges::destroy_n_a(p, elements, m_allocator);
         std::move(first + elements, cend(), p);
         m_data.end -= elements;
         return p;
@@ -401,7 +398,7 @@ private:
         pointer new_begin          = m_allocator.allocate(n);
 
         std::move(begin(), begin() + elements_to_move, new_begin);
-        std::ranges::destroy(begin() + elements_to_move, end());
+        xme::ranges::destroy_a(m_data.begin + elements_to_move, m_data.end, m_allocator);
         m_allocator.deallocate(m_data.begin, capacity());
         m_data.begin       = new_begin;
         m_data.end         = new_begin + elements_to_move;
@@ -422,7 +419,7 @@ private:
             std::ranges::move(pos, end(), new_start + elements_before + 1);
         }
         catch(...) {
-            alloc_traits::destroy(m_allocator, new_start + elements_before);
+            xme::ranges::destroy_at_a(new_start + elements_before, m_allocator);
             m_allocator.deallocate(m_data.begin, capacity());
             throw;
         }

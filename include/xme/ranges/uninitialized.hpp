@@ -1,16 +1,11 @@
 #pragma once
 #include <iterator>
 #include <xme/container/pair.hpp>
+#include <xme/container/concepts.hpp>
+#include "destroy.hpp"
 
 namespace xme::ranges {
 namespace detail {
-template<typename Alloc, typename T, typename... Args>
-concept CTrivialAllocator = !requires(Alloc a, T ptr, Args&&... args) {
-    { a.construct(ptr, std::forward<Args>(args)...) };
-} || !requires(Alloc a, T ptr) {
-    { a.destroy(ptr) };
-};
-
 struct UninitializedCopyA {
     template<
         std::forward_iterator InIter,
@@ -18,29 +13,21 @@ struct UninitializedCopyA {
         std::forward_iterator OutIter,
         std::sentinel_for<OutIter> OutSent,
         typename Alloc>
-    constexpr auto operator()(
-        InIter in_first,
-        InSent in_last,
-        OutIter out_first,
-        OutSent out_last,
-        Alloc& allocator
-    ) const -> xme::Pair<InIter, OutIter> {
-        InIter curr  = in_first;
-        using traits = std::allocator_traits<Alloc>;
-        using ptr_t  = decltype(std::addressof(*curr));
-        if constexpr(CTrivialAllocator<Alloc, ptr_t, decltype(*out_first)>) {}
+    constexpr auto
+    operator()(InIter in_first, InSent in_last, OutIter out_first, OutSent out_last, Alloc& alloc)
+        const -> xme::Pair<InIter, OutIter> {
+        OutIter out_curr = out_first;
+        using traits     = std::allocator_traits<Alloc>;
         try {
-            for(; curr != in_last && out_first != out_last; ++curr, (void)++out_first) {
-                traits::construct(allocator, std::addressof(*curr), *out_first);
+            for(; in_first != in_last && out_curr != out_last; ++out_curr, (void)++in_first) {
+                traits::construct(alloc, std::addressof(*out_curr), *in_first);
             }
         }
         catch(...) {
-            for(; in_first != curr; ++in_first) {
-                traits::destroy(allocator, std::addressof(*in_first));
-            }
+            ranges::destroy_a(in_first, out_curr, alloc);
             throw;
         }
-        return {curr, out_first};
+        return {in_first, out_curr};
     }
 };
 struct UninitializedFillNA {
@@ -55,9 +42,7 @@ struct UninitializedFillNA {
             }
         }
         catch(...) {
-            for(; first != curr; ++first) {
-                traits::destroy(allocator, std::addressof(*first));
-            }
+            ranges::destroy_a(first, curr, allocator);
             throw;
         }
         return curr;
