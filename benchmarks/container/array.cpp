@@ -3,6 +3,11 @@
 #include <vector>
 #include <cstdint>
 
+enum class ELib {
+    xme,
+    std,
+};
+
 struct T {
     ~T() {}
 };
@@ -26,31 +31,49 @@ void bench_push_std(benchmark::State& state) {
     }
 }
 
-template<typename T>
-void bench_insert_xme(benchmark::State& state) {
-    xme::Array<T> arr;
+template<typename T, ELib l>
+void bench_insert(benchmark::State& state) {
     for(auto&& _ : state) {
-        arr.insert(arr.cbegin(), T());
-        benchmark::DoNotOptimize(arr.data());
+        if constexpr(l == ELib::xme) {
+            xme::Array<T> arr;
+            arr.insert(arr.cbegin(), T());
+            benchmark::DoNotOptimize(arr.data());
+        }
+        else {
+            std::vector<T> arr;
+            arr.insert(arr.cbegin(), T());
+            benchmark::DoNotOptimize(arr.data());
+        }
     }
 }
 
-template<typename T>
-void bench_insert_std(benchmark::State& state) {
-    std::vector<T> arr;
+template<typename T, ELib l>
+void bench_fill_constructor(benchmark::State& state) {
     for(auto&& _ : state) {
-        arr.insert(arr.cbegin(), T());
-        benchmark::DoNotOptimize(arr.data());
+        if constexpr(l == ELib::xme) {
+            xme::Array<T> arr(8, T());
+            benchmark::DoNotOptimize(arr.data());
+        }
+        else {
+            std::vector<T> arr(8, T());
+            benchmark::DoNotOptimize(arr.data());
+        }
     }
 }
-BENCHMARK(bench_push_std<int64_t>);
+
 BENCHMARK(bench_push_xme<int64_t>);
-BENCHMARK(bench_push_std<T>);
+BENCHMARK(bench_push_std<int64_t>);
 BENCHMARK(bench_push_xme<T>);
+BENCHMARK(bench_push_std<T>);
 
-BENCHMARK(bench_insert_std<int64_t>);
-BENCHMARK(bench_insert_xme<int64_t>);
+BENCHMARK(bench_insert<int64_t, ELib::xme>);
+BENCHMARK(bench_insert<int64_t, ELib::std>);
 
-BENCHMARK(bench_insert_std<T>);
-BENCHMARK(bench_insert_xme<T>);
+BENCHMARK(bench_insert<T, ELib::xme>);
+BENCHMARK(bench_insert<T, ELib::std>);
+
+BENCHMARK(bench_fill_constructor<int64_t, ELib::xme>);
+BENCHMARK(bench_fill_constructor<int64_t, ELib::std>);
+BENCHMARK(bench_fill_constructor<T, ELib::xme>);
+BENCHMARK(bench_fill_constructor<T, ELib::std>);
 BENCHMARK_MAIN();
