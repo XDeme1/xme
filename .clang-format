@@ -5,7 +5,7 @@ PointerAlignment: Left
 ReferenceAlignment: Left
 
 AccessModifierOffset: -4
-AlignAfterOpenBracket: DontAlign
+AlignAfterOpenBracket: BlockIndent
 AlignArrayOfStructures: Left
 AlignConsecutiveAssignments: Consecutive
 AlignConsecutiveBitFields: Consecutive
