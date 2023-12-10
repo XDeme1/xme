@@ -3,7 +3,6 @@
 #include "concepts.hpp"
 #include <iterator>
 #include <memory>
-#include <xme/ranges/destroy.hpp>
 
 namespace xme {
 //! LinkedList is a singly linked list.
@@ -19,19 +18,14 @@ private:
     using node      = detail::LinkedListNode<T>;
 
 public:
-    static_assert(
-        std::is_same_v<T, std::remove_cv_t<T>>,
-        "xme::LinkedList must have a non-const and non-volatile T"
-    );
-    static_assert(
-        std::is_same_v<T, typename Alloc::value_type>,
-        "xme::LinkedList must have the same T as its allocator"
-    );
+    static_assert(std::is_same_v<T, std::remove_cv_t<T>>,
+        "xme::LinkedList must have a non-const and non-volatile T");
+    static_assert(std::is_same_v<T, typename Alloc::value_type>,
+        "xme::LinkedList must have the same T as its allocator");
 
     using allocator_type =
         typename std::allocator_traits<Alloc>::template rebind_alloc<detail::LinkedListNode<T>>;
-    using size_type       = std::size_t;
-    using difference_t    = std::ptrdiff_t;
+
     using value_type      = T;
     using pointer         = T*;
     using const_pointer   = const T*;
@@ -42,23 +36,8 @@ public:
 
     constexpr LinkedList() noexcept = default;
 
-    //! Constructs a LinkedList by Copying elements from other.
-    explicit constexpr LinkedList(const LinkedList& other) {
-        range_initialize(other.begin(), other.end());
-    }
-
-    //! Constructs a LinkedList by transfering elements from other
-    explicit constexpr LinkedList(LinkedList&& other) noexcept {
-        m_head.next       = other.m_head.next;
-        other.m_head.next = nullptr;
-    }
-
-    explicit constexpr LinkedList(const allocator_type& alloc = allocator_type()) :
-      m_allocator(alloc) {}
-
     //! Default constructs N nodes
-    explicit constexpr LinkedList(std::size_t n, const allocator_type& alloc = allocator_type()) :
-      m_allocator(alloc) {
+    explicit constexpr LinkedList(std::size_t n) {
         node_base* curr = &m_head;
         for(; n > 0; --n) {
             curr->next = create_node();
@@ -67,11 +46,7 @@ public:
     }
 
     //! Constructs N nodes with value
-    constexpr LinkedList(
-        std::size_t n,
-        const T& value,
-        const allocator_type& alloc = allocator_type()
-    ) : m_allocator(alloc) {
+    constexpr LinkedList(std::size_t n, const T& value) {
         node_base* curr = &m_head;
         for(; n > 0; --n) {
             curr->next = create_node(value);
@@ -81,25 +56,31 @@ public:
 
     //! Constructs a LinkedList from a [first, end) range
     template<std::input_iterator Iter, std::sentinel_for<Iter> Sent>
-    constexpr LinkedList(Iter first, Sent last, const allocator_type& alloc = allocator_type()) :
-      m_allocator(alloc) {
+    constexpr LinkedList(Iter first, Sent last) {
         range_initialize(first, last);
     }
 
     //! Constructs a LinkedList with the initializer_list syntax
-    explicit constexpr LinkedList(
-        std::initializer_list<T> list,
-        const allocator_type& alloc = allocator_type()
-    ) : m_allocator(alloc) {
+    explicit constexpr LinkedList(std::initializer_list<T> list) {
         range_initialize(list.begin(), list.end());
+    }
+
+    //! Constructs a LinkedList by Copying elements from other.
+    explicit constexpr LinkedList(const LinkedList& other) {
+        range_initialize(other.begin(), other.end());
     }
 
     //! Constructs a LinkedList from [begin(range), end(range)) range
     template<std::ranges::input_range R>
         requires(std::convertible_to<std::ranges::range_reference_t<R>, T>)
-    explicit constexpr LinkedList(R&& range, const allocator_type& alloc = allocator_type()) :
-      m_allocator(alloc) {
+    explicit constexpr LinkedList(R&& range) {
         range_initialize(std::ranges::begin(range), std::ranges::end(range));
+    }
+
+    //! Constructs a LinkedList by transfering elements from other
+    explicit constexpr LinkedList(LinkedList&& other) noexcept {
+        m_head.next       = other.m_head.next;
+        other.m_head.next = nullptr;
     }
 
     constexpr ~LinkedList() noexcept { clear(); }
@@ -124,71 +105,35 @@ public:
     }
 
     //! Returns a iterator to the head
-    [[nodiscard]]
-    constexpr auto before_begin() noexcept -> iterator {
-        return &m_head;
-    }
+    constexpr auto before_begin() noexcept -> iterator { return &m_head; }
     //! Returns a iterator to the head
-    [[nodiscard]]
-    constexpr auto before_begin() const noexcept -> const_iterator {
-        return &m_head;
-    }
+    constexpr auto before_begin() const noexcept -> const_iterator { return &m_head; }
 
     //! Returns a iterator to the first element
-    [[nodiscard]]
-    constexpr auto begin() noexcept -> iterator {
-        return m_head.next;
-    }
+    constexpr auto begin() noexcept -> iterator { return m_head.next; }
     //! Returns a iterator to the first element
-    [[nodiscard]]
-    constexpr auto begin() const noexcept -> const_iterator {
-        return m_head.next;
-    }
+    constexpr auto begin() const noexcept -> const_iterator { return m_head.next; }
 
     //! Returns a iterator representing the end of the LinkedList
-    [[nodiscard]]
-    constexpr auto end() noexcept -> iterator {
-        return nullptr;
-    }
+    constexpr auto end() noexcept -> iterator { return nullptr; }
     //! Returns a iterator representing the end of the LinkedList
-    [[nodiscard]]
-    constexpr auto end() const noexcept -> const_iterator {
-        return nullptr;
-    }
+    constexpr auto end() const noexcept -> const_iterator { return nullptr; }
 
     //! Returns a const iterator to the head
-    [[nodiscard]]
-    constexpr auto cbefore_begin() const noexcept -> const_iterator {
-        return &m_head;
-    }
+    constexpr auto cbefore_begin() const noexcept -> const_iterator { return &m_head; }
 
     //! Returns a const iterator to the first element
-    [[nodiscard]]
-    constexpr auto cbegin() const noexcept -> const_iterator {
-        return m_head.next;
-    }
+    constexpr auto cbegin() const noexcept -> const_iterator { return m_head.next; }
     //! Returns a const iterator representing the end of the LinkedList
-    [[nodiscard]]
-    constexpr auto cend() const noexcept -> const_iterator {
-        return nullptr;
-    }
+    constexpr auto cend() const noexcept -> const_iterator { return nullptr; }
 
     //! Returns a reference to the first element
-    [[nodiscard]]
-    constexpr auto front() noexcept -> reference {
-        return *begin();
-    }
+    constexpr auto front() noexcept -> reference { return *begin(); }
     //! Returns a reference to the first element
-    [[nodiscard]]
-    constexpr auto front() const noexcept -> reference {
-        return *begin();
-    }
+    constexpr auto front() const noexcept -> reference { return *begin(); }
 
     //! Returns true if there are no elements in the LinkedList
-    [[nodiscard]]
-    constexpr bool is_empty() const noexcept {
-        return m_head.next == nullptr;
-    }
+    constexpr bool is_empty() const noexcept { return m_head.next == nullptr; }
 
     //! Erases every element in the LinkedList
     constexpr void clear() noexcept { erase_after(before_begin(), nullptr); }
@@ -266,7 +211,7 @@ public:
     //! @returns an iterator to the new node.
     template<typename... Args>
     constexpr auto emplace_after(const_iterator pos, Args&&... args) -> iterator {
-        auto* to            = const_cast<node_base*>(pos.current_node);
+        node_base* to       = const_cast<node_base*>(pos.current_node);
         node_base* new_node = create_node(std::forward<Args>(args)...);
         new_node->next      = to->next;
         to->next            = new_node;
@@ -275,9 +220,9 @@ public:
 
     //! Erases the node after pos
     constexpr void erase_after(const_iterator pos) noexcept {
-        auto* tmp = const_cast<node_base*>(pos.current_node->next);
+        node_base* tmp = const_cast<node_base*>(pos.current_node->next);
         const_cast<node_base*>(pos.current_node)->next = tmp->next;
-        xme::ranges::destroy_at_a(static_cast<node*>(tmp)->storage.data());
+        std::ranges::destroy_at(static_cast<node*>(tmp)->storage.data());
         m_allocator.deallocate(static_cast<node*>(tmp), 1);
     }
 
@@ -287,7 +232,7 @@ public:
 
         while(curr != last.current_node) {
             node* const tmp{static_cast<node*>(curr->next)};
-            xme::ranges::destroy_at_a(curr->storage.data());
+            std::ranges::destroy_at(curr->storage.data());
             m_allocator.deallocate(curr, 1);
             curr = tmp;
         }
@@ -311,10 +256,9 @@ private:
     template<typename... Args>
     constexpr auto create_node(Args&&... args) -> node* {
         node* new_node = m_allocator.allocate(1);
-        using traits   = std::allocator_traits<allocator_type>;
         try {
-            traits::construct(new_node);
-            traits::construct(new_node->storage.data(), std::forward<Args>(args)...);
+            std::ranges::construct_at(new_node);
+            std::ranges::construct_at(new_node->storage.data(), std::forward<Args>(args)...);
         }
         catch(...) {
             m_allocator.deallocate(new_node, 1);
