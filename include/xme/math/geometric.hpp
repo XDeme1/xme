@@ -23,7 +23,7 @@ XME_INLINE constexpr auto dot(const Vector<T, Size>& v1, const Vector<T, Size>& 
 template<typename T>
 [[nodiscard]]
 XME_INLINE constexpr auto cross(const Vector<T, 3>& v1,
-    const Vector<T, 3>& v2) noexcept -> Vector<T, 3> {
+                                const Vector<T, 3>& v2) noexcept -> Vector<T, 3> {
     return {
         v1.y * v2.z - v1.z * v2.y,
         v1.z * v2.x - v1.x * v2.z,
@@ -44,7 +44,7 @@ XME_INLINE constexpr auto length(const Vector<T, Size>& v) noexcept -> T {
 template<std::floating_point T, std::size_t Size>
 [[nodiscard]]
 XME_INLINE constexpr auto distance(const Vector<T, Size>& v1,
-    const Vector<T, Size>& v2) noexcept -> T {
+                                   const Vector<T, Size>& v2) noexcept -> T {
     return (v2 - v1).length();
 }
 
@@ -63,15 +63,16 @@ XME_INLINE constexpr auto normalize(const Vector<T, Size>& v) noexcept -> Vector
 //! `n` Normal vector
 template<typename T, std::size_t N>
 [[nodiscard]]
-XME_INLINE constexpr auto
-faceforward(const Vector<T, N>& v, const Vector<T, N>& i, const Vector<T, N>& n) -> Vector<T, N> {
+XME_INLINE constexpr auto faceforward(const Vector<T, N>& v,
+                                      const Vector<T, N>& i,
+                                      const Vector<T, N>& n) -> Vector<T, N> {
     return dot(n, i) < 0 ? v : -v;
 }
 
 template<typename T, std::size_t Size>
 [[nodiscard]]
 XME_INLINE constexpr auto reflect(const Vector<T, Size>& v,
-    const Vector<T, Size>& n) noexcept -> Vector<T, Size> {
+                                  const Vector<T, Size>& n) noexcept -> Vector<T, Size> {
     return v - n * dot(v, n) * static_cast<T>(2);
 }
 }  // namespace xme::math

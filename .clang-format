@@ -5,7 +5,7 @@ PointerAlignment: Left
 ReferenceAlignment: Left
 
 AccessModifierOffset: -4
-AlignAfterOpenBracket: BlockIndent
+AlignAfterOpenBracket: Align
 AlignArrayOfStructures: Left
 AlignConsecutiveAssignments: Consecutive
 AlignConsecutiveBitFields: Consecutive
@@ -21,11 +21,11 @@ AlignTrailingComments: Always
 
 AllowAllArgumentsOnNextLine: true
 AllowAllParametersOfDeclarationOnNextLine: false
-#AllowBreakBeforeNoexceptSpecifier: OnlyWithParen
+AllowBreakBeforeNoexceptSpecifier: OnlyWithParen
 
 AllowShortBlocksOnASingleLine: Empty
 AllowShortCaseLabelsOnASingleLine: true
-#AllowShortCompoundRequirementOnASingleLine: true
+AllowShortCompoundRequirementOnASingleLine: true
 AllowShortEnumsOnASingleLine: true
 AllowShortFunctionsOnASingleLine: Inline
 AllowShortIfStatementsOnASingleLine: WithoutElse
@@ -109,5 +109,6 @@ SpacesInContainerLiterals: false
 SpacesInParens: Never
 SpacesInSquareBrackets: false
 
+PenaltyReturnTypeOnItsOwnLine: 1000000
 UseTab: Never
 
