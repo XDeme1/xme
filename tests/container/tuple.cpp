@@ -122,9 +122,9 @@ int test_operations() {
 
         auto str1 = xme::apply([](std::string& s1, std::string& s2) { return s1 + s2; }, t1);
         auto str2 =
-            xme::apply([](const std::string& s1, const std::string& s2) { return s1 + s2; }, t2);
+          xme::apply([](const std::string& s1, const std::string& s2) { return s1 + s2; }, t2);
         auto&& str3 =
-            xme::apply([](std::string&& s1, std::string&& s2) { return s1 + s2; }, std::move(t1));
+          xme::apply([](std::string&& s1, std::string&& s2) { return s1 + s2; }, std::move(t1));
 
         bool error = str1 != "HelloWorld" || str2 != "HelloWorld" || str3 != "HelloWorld";
 

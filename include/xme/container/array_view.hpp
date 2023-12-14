@@ -82,7 +82,8 @@ public:
         if constexpr(Size != dynamic_size) assert(size == Size);
     }
 
-    //! Creates an ArrayView pointing to first, up to first + distance(first, last)
+    //! Creates an ArrayView pointing to first, up to first + distance(first,
+    //! last)
     template<std::contiguous_iterator Iter, std::sentinel_for<Iter> Sent>
     constexpr ArrayView(Iter first, Sent last) noexcept :
       ArrayView(first, std::ranges::distance(first, last)) {}
@@ -109,67 +110,134 @@ public:
       ArrayView(static_cast<pointer>(arr.data()), Lenght) {}
 
     //! Create an ArrayView pointing to a const C++-Style array
-    //! Do not pass a temporary array, a view does not extends the lifetime of the array
+    //! Do not pass a temporary array, a view does not extends the lifetime of the
+    //! array
     template<typename U, std::size_t Lenght>
         requires(Size == dynamic_size || Size == Lenght)
     constexpr ArrayView(const std::array<U, Lenght>& arr) noexcept :
       ArrayView(static_cast<pointer>(arr.data()), Lenght) {}
 
     //! returns a reference to an element in the view
+    [[nodiscard]]
     constexpr auto operator[](size_type i) noexcept -> reference {
         assert(i < size());
         return m_view[i];
     }
+
     //! returns a reference to an element in the view
+    [[nodiscard]]
     constexpr auto operator[](size_type i) const noexcept -> const_reference {
         assert(i < size());
         return m_view[i];
     }
 
     //! Returns a raw pointer to beggining of the view
-    constexpr auto data() noexcept -> pointer { return m_view; }
+    [[nodiscard]]
+    constexpr auto data() noexcept -> pointer {
+        return m_view;
+    }
+
     //! Returns a raw pointer to beggining of the view
-    constexpr auto data() const noexcept -> const_pointer { return m_view; }
+    [[nodiscard]]
+    constexpr auto data() const noexcept -> const_pointer {
+        return m_view;
+    }
 
     //! Returns an iterator to the first element of the view
-    constexpr auto begin() noexcept -> iterator { return m_view; }
+    [[nodiscard]]
+    constexpr auto begin() noexcept -> iterator {
+        return m_view;
+    }
+
     //! Returns an iterator to the first element of the view
-    constexpr auto begin() const noexcept -> const_iterator { return m_view; }
+    [[nodiscard]]
+    constexpr auto begin() const noexcept -> const_iterator {
+        return m_view;
+    }
 
     //! Returns an iterator to one past the last element of the view
-    constexpr auto end() noexcept -> iterator { return m_view + size(); }
+    [[nodiscard]]
+    constexpr auto end() noexcept -> iterator {
+        return m_view + size();
+    }
+
     //! Returns an iterator to one past the last element of the view
-    constexpr auto end() const noexcept -> const_iterator { return m_view + size(); }
+    [[nodiscard]]
+    constexpr auto end() const noexcept -> const_iterator {
+        return m_view + size();
+    }
 
     //! Returns a const iterator to the first element of the view
-    constexpr auto cbegin() const noexcept -> const_iterator { return m_view; }
+    [[nodiscard]]
+    constexpr auto cbegin() const noexcept -> const_iterator {
+        return m_view;
+    }
+
     //! Returns a const iterator to one past the last element of the view
-    constexpr auto cend() const noexcept -> const_iterator { return m_view + size(); }
+    [[nodiscard]]
+    constexpr auto cend() const noexcept -> const_iterator {
+        return m_view + size();
+    }
 
     //! Returns a reverse iterator to one past the last element of the view
-    constexpr auto rbegin() noexcept -> reverse_iterator { return end(); }
+    [[nodiscard]]
+    constexpr auto rbegin() noexcept -> reverse_iterator {
+        return end();
+    }
+
     //! Returns a reverse iterator to the first element of the view
-    constexpr auto rend() noexcept -> reverse_iterator { return begin(); }
+    [[nodiscard]]
+    constexpr auto rend() noexcept -> reverse_iterator {
+        return begin();
+    }
 
     //! Returns a reverse iterator to one past the last element of the view
-    constexpr auto rbegin() const noexcept -> const_reverse_iterator { return end(); }
+    [[nodiscard]]
+    constexpr auto rbegin() const noexcept -> const_reverse_iterator {
+        return end();
+    }
+
     //! Returns a reverse iterator to the first element of the view
-    constexpr auto rend() const noexcept -> const_reverse_iterator { return begin(); }
+    [[nodiscard]]
+    constexpr auto rend() const noexcept -> const_reverse_iterator {
+        return begin();
+    }
 
     //! Returns a const reverse iterator to one past the last element of the view
-    constexpr auto crbegin() const noexcept -> const_reverse_iterator { return end(); }
+    [[nodiscard]]
+    constexpr auto crbegin() const noexcept -> const_reverse_iterator {
+        return end();
+    }
+
     //! Returns a reverse iterator to the first element of the view
-    constexpr auto crend() const noexcept -> const_reverse_iterator { return begin(); }
+    [[nodiscard]]
+    constexpr auto crend() const noexcept -> const_reverse_iterator {
+        return begin();
+    }
 
     //! Returns a reference to the first element of the view
-    constexpr auto front() noexcept -> reference { return *m_view; }
+    [[nodiscard]]
+    constexpr auto front() noexcept -> reference {
+        return *m_view;
+    }
+
     //! Returns a reference to the last element of the view
-    constexpr auto back() noexcept -> reference { return m_view[size() - 1]; }
+    [[nodiscard]]
+    constexpr auto back() noexcept -> reference {
+        return m_view[size() - 1];
+    }
 
     //! Returns a reference to the first element of the view
-    constexpr auto front() const noexcept -> const_reference { return *m_view; }
+    [[nodiscard]]
+    constexpr auto front() const noexcept -> const_reference {
+        return *m_view;
+    }
+
     //! Returns a reference to the last element of the view
-    constexpr auto back() const noexcept -> const_reference { return m_view[size() - 1]; }
+    [[nodiscard]]
+    constexpr auto back() const noexcept -> const_reference {
+        return m_view[size() - 1];
+    }
 
     //! Returns the size of the view
     [[nodiscard]]
@@ -191,6 +259,7 @@ public:
 
     //! Creates a new ArrayView containing a part of the view
     template<std::size_t Offset, std::size_t Count>
+    [[nodiscard]]
     constexpr auto subview() const noexcept -> ArrayView<T, Count> {
         if constexpr(Size == dynamic_size)
             assert(Count + Offset <= size());
@@ -200,8 +269,9 @@ public:
     }
 
     //! Creates a new ArrayView containing a part of the view
+    [[nodiscard]]
     constexpr auto subview(size_type offset,
-        size_type count) const noexcept -> ArrayView<T, dynamic_size> {
+                           size_type count) const noexcept -> ArrayView<T, dynamic_size> {
         assert(count + offset <= size());
         return ArrayView<T, dynamic_size>(m_view + offset, count);
     }
@@ -242,7 +312,7 @@ private:
     T* m_view = nullptr;
     [[no_unique_address]]
     detail::Extent<Size>
-        m_size;
+      m_size;
 };
 
 template<typename T, std::size_t N>
@@ -263,7 +333,7 @@ ArrayView(R&&) -> ArrayView<std::remove_reference_t<std::ranges::range_reference
 //! Creates a readonly byte ArrayView of any ArrayView
 template<typename T, std::size_t Size>
 constexpr auto as_bytes(ArrayView<T, Size> view) noexcept
-    -> ArrayView<const std::byte, Size == -1 ? -1 : sizeof(T) * Size> {
+  -> ArrayView<const std::byte, Size == -1 ? -1 : sizeof(T) * Size> {
     auto data                  = reinterpret_cast<const std::byte*>(view.data());
     auto byteSize              = view.size_bytes();
     constexpr std::size_t size = Size == -1 ? -1 : sizeof(T) * Size;
@@ -273,8 +343,8 @@ constexpr auto as_bytes(ArrayView<T, Size> view) noexcept
 //! Creates a writable byte ArrayView of any ArrayView
 template<typename T, std::size_t Size>
     requires(!std::is_const_v<T>)
-constexpr auto as_writable_bytes(
-    ArrayView<T, Size> view) noexcept -> ArrayView<std::byte, Size == -1 ? -1 : sizeof(T) * Size> {
+constexpr auto as_writable_bytes(ArrayView<T, Size> view) noexcept
+  -> ArrayView<std::byte, Size == -1 ? -1 : sizeof(T) * Size> {
     auto data                  = reinterpret_cast<std::byte*>(view.data());
     auto byteSize              = view.size_bytes();
     constexpr std::size_t size = Size == -1 ? -1 : sizeof(T) * Size;

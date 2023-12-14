@@ -1,8 +1,9 @@
 #pragma once
-#include "../../../private/container/spsc_queue_base.hpp"
-#include "container_policy.hpp"
 #include <cassert>
 #include <memory>
+#include "../../../private/container/spsc_queue_base.hpp"
+#include "container_policy.hpp"
+#include "container.hpp"
 
 namespace xme {
 //! SPSCQueue is a single-producer, single-consumer queue.
@@ -11,13 +12,11 @@ namespace xme {
 //!     xme::Capacity<std::size_t>: Creates a compile time sized SPSCQueue.
 //!     Allocator: Creates a runtime sized SPSCQueue.
 template<typename T, typename Policy = std::allocator<T>>
-class SPSCQueue : std::conditional_t<CAllocator<Policy>,
-                      detail::DynamicSPSCQueue<T, Policy>,
-                      detail::StaticSPSCQueue<T, Policy>> {
+class SPSCQueue : std::conditional_t<CAllocator<Policy>, detail::DynamicSPSCQueue<T, Policy>,
+                    detail::StaticSPSCQueue<T, Policy>> {
 private:
-    using super = std::conditional_t<CAllocator<Policy>,
-        detail::DynamicSPSCQueue<T, Policy>,
-        detail::StaticSPSCQueue<T, Policy>>;
+    using super = std::conditional_t<CAllocator<Policy>, detail::DynamicSPSCQueue<T, Policy>,
+      detail::StaticSPSCQueue<T, Policy>>;
 
 public:
     constexpr SPSCQueue()

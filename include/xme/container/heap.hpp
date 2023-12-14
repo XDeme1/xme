@@ -1,6 +1,5 @@
 #pragma once
 #include "array.hpp"
-#include <vector>
 
 namespace xme {
 //! Heap is a priority queue stored in a contiguous array.
@@ -48,6 +47,21 @@ public:
     }
 
     [[nodiscard]]
+    constexpr auto begin() const noexcept -> const_iterator {
+        return m_array.cbegin();
+    }
+
+    [[nodiscard]]
+    constexpr auto end() const noexcept -> const_iterator {
+        return m_array.cend();
+    }
+
+    [[nodiscard]]
+    constexpr auto front() const noexcept -> const_reference {
+        return *begin();
+    }
+
+    [[nodiscard]]
     constexpr bool is_empty() const noexcept {
         return m_array.isEmpty();
     }
@@ -56,12 +70,6 @@ public:
     constexpr auto size() const noexcept -> size_type {
         return m_array.size();
     }
-
-    constexpr auto begin() const noexcept -> const_iterator { return m_array.cbegin(); }
-
-    constexpr auto end() const noexcept -> const_iterator { return m_array.cend(); }
-
-    constexpr auto front() const noexcept -> const_reference { return *begin(); }
 
     //! Pop the front element and rearrange elements to keep a week sort.
     //! O(log(N)) operation
@@ -91,12 +99,17 @@ public:
     }
 
 private:
+    [[nodiscard]]
     constexpr auto parent(difference_type index) const noexcept -> std::ptrdiff_t {
         return (index - 1) / 2;
     }
 
-    constexpr auto left_child(size_type index) const noexcept -> size_type { return index * 2 + 1; }
+    [[nodiscard]]
+    constexpr auto left_child(size_type index) const noexcept -> size_type {
+        return index * 2 + 1;
+    }
 
+    [[nodiscard]]
     constexpr auto right_child(size_type index) const noexcept -> size_type {
         return index * 2 + 2;
     }

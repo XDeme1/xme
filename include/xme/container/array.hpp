@@ -22,14 +22,10 @@ private:
     using alloc_traits = std::allocator_traits<Alloc>;
 
 public:
-    static_assert(
-        std::is_same_v<T, std::remove_cv_t<T>>,
-        "xme::Array must have a non-const and non-volatile T"
-    );
-    static_assert(
-        std::is_same_v<T, typename Alloc::value_type>,
-        "xme::Array must have the same T as its allocator"
-    );
+    static_assert(std::is_same_v<T, std::remove_cv_t<T>>,
+      "xme::Array must have a non-const and non-volatile T");
+    static_assert(std::is_same_v<T, typename Alloc::value_type>,
+      "xme::Array must have the same T as its allocator");
 
     using allocator_type         = Alloc;
     using size_type              = std::size_t;
@@ -73,8 +69,7 @@ public:
     constexpr Array(Iter first, Sent last, const allocator_type& alloc = allocator_type()) :
       Array(std::ranges::distance(first, last), alloc) {
         auto&& [_, out] = xme::ranges::uninitialized_copy_a(
-            first, last, m_data.begin, m_data.storage_end, m_allocator
-        );
+          first, last, m_data.begin, m_data.storage_end, m_allocator);
         m_data.end = out;
     }
 
@@ -105,15 +100,13 @@ public:
     }
 
     [[nodiscard]]
-    constexpr auto
-    operator[](size_type index) noexcept -> reference {
+    constexpr auto operator[](size_type index) noexcept -> reference {
         assert(index < size());
         return m_data.begin[index];
     }
 
     [[nodiscard]]
-    constexpr auto
-    operator[](size_type index) const noexcept -> const_reference {
+    constexpr auto operator[](size_type index) const noexcept -> const_reference {
         assert(index < size());
         return m_data.begin[index];
     }
@@ -294,8 +287,7 @@ public:
             // array
             for(std::size_t n = 0; first != last; ++first, ++n)
                 alloc_traits::construct(
-                    m_allocator, tmp.m_data.begin + elements_before + n, *first
-                );
+                  m_allocator, tmp.m_data.begin + elements_before + n, *first);
 
             std::move(cbegin(), pos, tmp.begin());
             std::move(pos, cend(), tmp.begin() + elements_before + elements);
@@ -418,8 +410,7 @@ private:
         pointer new_start               = m_allocator.allocate(new_size);
         try {
             alloc_traits::construct(
-                m_allocator, new_start + elements_before, std::forward<Args>(args)...
-            );
+              m_allocator, new_start + elements_before, std::forward<Args>(args)...);
             std::ranges::move(begin(), pos, new_start);
             std::ranges::move(pos, end(), new_start + elements_before + 1);
         }

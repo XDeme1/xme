@@ -25,8 +25,8 @@ static_assert(std::is_trivially_copy_constructible_v<xme::Pair<int&, float&>>);
 static_assert(!std::is_trivially_copy_constructible_v<xme::Pair<std::string, int>>);
 
 static_assert(std::is_trivially_default_constructible_v<xme::Pair<int, float>>);
-static_assert(
-    !std::is_trivially_default_constructible_v<xme::Pair<int&&, float&>>);  // Because of &
+static_assert(!std::is_trivially_default_constructible_v<xme::Pair<int&&, float&>>);  // Because of
+                                                                                      // &
 static_assert(!std::is_trivially_default_constructible_v<xme::Pair<std::string, int>>);
 
 void test_deduction_guides() {
@@ -159,9 +159,9 @@ int test_operations() {
 
         auto str1 = xme::apply([](std::string& s1, std::string& s2) { return s1 + s2; }, p1);
         auto str2 =
-            xme::apply([](const std::string& s1, const std::string& s2) { return s1 + s2; }, p2);
+          xme::apply([](const std::string& s1, const std::string& s2) { return s1 + s2; }, p2);
         auto&& str3 =
-            xme::apply([](std::string&& s1, std::string&& s2) { return s1 + s2; }, std::move(p1));
+          xme::apply([](std::string&& s1, std::string&& s2) { return s1 + s2; }, std::move(p1));
 
         std::string result{"HelloWorld"};
         bool error = str1 != result || str2 != result || str3 != result;

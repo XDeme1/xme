@@ -5,7 +5,7 @@ PointerAlignment: Left
 ReferenceAlignment: Left
 
 AccessModifierOffset: -4
-AlignAfterOpenBracket: Align
+AlignAfterOpenBracket: DontAlign
 AlignArrayOfStructures: Left
 AlignConsecutiveAssignments: Consecutive
 AlignConsecutiveBitFields: Consecutive
@@ -37,7 +37,7 @@ AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: Yes
 
 BinPackArguments: false
-BinPackParameters: false
+BinPackParameters: true
 
 BitFieldColonSpacing: Both
 
@@ -70,6 +70,7 @@ BreakInheritanceList: AfterComma
 CompactNamespaces: false
 
 ConstructorInitializerIndentWidth: 2
+ContinuationIndentWidth: 2
 
 Cpp11BracedListStyle: true
 
