@@ -19,10 +19,17 @@ struct UninitializedCopyA {
             }
         }
         catch(...) {
-            ranges::destroy_a(in_first, out_curr, alloc);
+            xme::ranges::destroy_a(in_first, out_curr, alloc);
             throw;
         }
         return {in_first, out_curr};
+    }
+
+    template<std::ranges::forward_range InR, std::ranges::forward_range OutR, typename Alloc>
+    constexpr auto operator()(InR&& in, OutR&& out, Alloc& alloc) const
+      -> xme::Pair<std::ranges::borrowed_iterator_t<InR>, std::ranges::borrowed_iterator_t<OutR>> {
+        namespace rngs = std::ranges;
+        return (*this)(rngs::begin(in), rngs::end(in), rngs::begin(out), rngs::end(out), alloc);
     }
 };
 struct UninitializedFillNA {
