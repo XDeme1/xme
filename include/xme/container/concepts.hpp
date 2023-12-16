@@ -30,7 +30,7 @@ template<typename T>
 concept CTupleLike = requires(T t) {
     typename std::tuple_size<T>::type;
     requires std::derived_from<std::tuple_size<T>,
-      std::integral_constant<std::size_t, std::tuple_size_v<T>>>;
+                               std::integral_constant<std::size_t, std::tuple_size_v<T>>>;
 } && detail::tuple_element<T>(std::make_index_sequence<std::tuple_size_v<T>>{});
 
 template<typename T>

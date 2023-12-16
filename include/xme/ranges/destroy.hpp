@@ -37,8 +37,8 @@ inline constexpr detail::DestroyAtA destroy_at_a;
 namespace detail {
 struct DestroyNA {
     template<std::forward_iterator Iter, typename Alloc>
-    constexpr void
-    operator()(Iter first, std::iter_difference_t<Iter> n, Alloc& alloc) const noexcept {
+    constexpr void operator()(Iter first, std::iter_difference_t<Iter> n,
+                              Alloc& alloc) const noexcept {
         for(; n > 0; ++first, (void)--n) {
             ranges::destroy_at_a(std::addressof(*first), alloc);
         }

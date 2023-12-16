@@ -13,10 +13,10 @@ namespace xme {
 //!     Allocator: Creates a runtime sized SPSCQueue.
 template<typename T, typename Policy = std::allocator<T>>
 class SPSCQueue : std::conditional_t<CAllocator<Policy>, detail::DynamicSPSCQueue<T, Policy>,
-                    detail::StaticSPSCQueue<T, Policy>> {
+                                     detail::StaticSPSCQueue<T, Policy>> {
 private:
     using super = std::conditional_t<CAllocator<Policy>, detail::DynamicSPSCQueue<T, Policy>,
-      detail::StaticSPSCQueue<T, Policy>>;
+                                     detail::StaticSPSCQueue<T, Policy>>;
 
 public:
     constexpr SPSCQueue()

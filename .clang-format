@@ -5,7 +5,7 @@ PointerAlignment: Left
 ReferenceAlignment: Left
 
 AccessModifierOffset: -4
-AlignAfterOpenBracket: DontAlign
+AlignAfterOpenBracket: Align
 AlignArrayOfStructures: Left
 AlignConsecutiveAssignments: Consecutive
 AlignConsecutiveBitFields: Consecutive
@@ -112,4 +112,3 @@ SpacesInSquareBrackets: false
 
 PenaltyReturnTypeOnItsOwnLine: 1000000
 UseTab: Never
-

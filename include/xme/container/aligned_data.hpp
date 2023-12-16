@@ -14,7 +14,7 @@ class AlignedData {
 public:
     static_assert(std::has_single_bit(Align), "Align must be a power of 2");
     static_assert(std::is_same_v<T, std::remove_cv_t<T>>,
-      "xme::AlignedData must have a non-const and non-volatile T");
+                  "xme::AlignedData must have a non-const and non-volatile T");
 
     using value_type      = T;
     using reference       = T&;

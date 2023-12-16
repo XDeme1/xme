@@ -91,11 +91,11 @@ constexpr void swap(Pair<T, U>& lhs, Pair<T, U>& rhs) noexcept(noexcept(lhs.swap
 }
 
 template<typename T, typename U>
-constexpr auto make_pair(T&& t, U&& u) noexcept(
-  std::is_nothrow_constructible_v<xme::Pair<std::unwrap_ref_decay_t<T>, std::unwrap_ref_decay_t<U>>,
-    T, U>) {
-    return Pair<std::unwrap_ref_decay_t<T>, std::unwrap_ref_decay_t<U>>{
-        std::forward<T>(t), std::forward<U>(u)};
+constexpr auto make_pair(T&& t, U&& u)
+  noexcept(std::is_nothrow_constructible_v<
+           xme::Pair<std::unwrap_ref_decay_t<T>, std::unwrap_ref_decay_t<U>>, T, U>) {
+    return Pair<std::unwrap_ref_decay_t<T>, std::unwrap_ref_decay_t<U>>{std::forward<T>(t),
+                                                                        std::forward<U>(u)};
 }
 
 }  // namespace xme

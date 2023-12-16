@@ -11,9 +11,6 @@
 
 namespace xme {
 //! Array is a contigous container with dynamic size.
-//! Random access is O(1).
-//! push and pop from end is amortized O(1).
-//! insert at the middle is O(n).
 //! @param T the type of the stored element
 //! @param Alloc must be an allocator that satisfies the Allocator concept
 template<typename T, CAllocator Alloc = std::allocator<T>>
@@ -23,9 +20,9 @@ private:
 
 public:
     static_assert(std::is_same_v<T, std::remove_cv_t<T>>,
-      "xme::Array must have a non-const and non-volatile T");
+                  "xme::Array must have a non-const and non-volatile T");
     static_assert(std::is_same_v<T, typename Alloc::value_type>,
-      "xme::Array must have the same T as its allocator");
+                  "xme::Array must have the same T as its allocator");
 
     using allocator_type         = Alloc;
     using size_type              = std::size_t;

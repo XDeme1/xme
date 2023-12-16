@@ -19,9 +19,9 @@ private:
 
 public:
     static_assert(std::is_same_v<T, std::remove_cv_t<T>>,
-      "xme::LinkedList must have a non-const and non-volatile T");
+                  "xme::LinkedList must have a non-const and non-volatile T");
     static_assert(std::is_same_v<T, typename Alloc::value_type>,
-      "xme::LinkedList must have the same T as its allocator");
+                  "xme::LinkedList must have the same T as its allocator");
 
     using allocator_type =
       typename std::allocator_traits<Alloc>::template rebind_alloc<detail::LinkedListNode<T>>;
