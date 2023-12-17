@@ -1,5 +1,11 @@
 #pragma once
 
+#if __cplusplus >= 202302L
+#    define XME_CPP23
+#elif __cplusplus >= 202002L
+#    define XME_CPP20
+#endif
+
 #if defined(__cpp_constexpr)
 #    define XME_CONSTEXPR constexpr
 #    if __cpp_constexpr >= 202002L

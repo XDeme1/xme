@@ -24,6 +24,7 @@ add_subdirectory(core/type_traits)
 add_subdirectory(container)
 add_subdirectory(iterators)
 add_subdirectory(math)
+add_subdirectory(ranges)
 
 if (${PROJECT_IS_TOP_LEVEL} OR ${XME_BUILD_MODULES})
     if(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang" AND ${CMAKE_CXX_COMPILER_VERSION} VERSION_GREATER_EQUAL "18.0.0")
