@@ -24,14 +24,17 @@ template<typename T, std::size_t... I>
 constexpr auto tuple_element(std::index_sequence<I...>) noexcept {
     return (detail::CTupleElement<T, I> && ...);
 }
-}  // namespace detail
 
 template<typename T>
-concept CTupleLike = requires(T t) {
+concept CTupleLikeImpl = requires(T t) {
     typename std::tuple_size<T>::type;
     requires std::derived_from<std::tuple_size<T>,
                                std::integral_constant<std::size_t, std::tuple_size_v<T>>>;
 } && detail::tuple_element<T>(std::make_index_sequence<std::tuple_size_v<T>>{});
+}  // namespace detail
+
+template<typename T>
+concept CTupleLike = detail::CTupleLikeImpl<std::remove_cvref_t<T>>;
 
 template<typename T>
 concept CPairLike = CTupleLike<T> && (std::tuple_size_v<T> == 2);

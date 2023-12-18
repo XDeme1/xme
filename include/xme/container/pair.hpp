@@ -7,8 +7,7 @@ namespace xme {
 template<typename T, typename U>
 struct Pair {
 public:
-    template<typename P>
-        requires(CPairLike<std::decay_t<P>>)
+    template<CPairLike P>
     constexpr auto operator=(P&& p)
       noexcept(std::is_nothrow_swappable_v<T> && std::is_nothrow_swappable_v<U>) -> Pair& {
         first  = get<0>(std::forward<P>(p));

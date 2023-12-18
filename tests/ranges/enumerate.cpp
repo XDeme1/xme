@@ -31,15 +31,14 @@ consteval int test_enumerate() {
         }
         errors += order != 4;
 
-        auto e2 = arr | xme::views::enumerate;
         order   = 0;
+        auto e2 = arr | xme::views::enumerate;
         for(auto&& [i, v] : e2) {
             errors += order != i;
             errors += arr[i] != v;
             ++order;
         }
         errors += order != 4;
-        order = 0;
     }
     return errors;
 }
@@ -50,7 +49,7 @@ int main() {
     {
         std::forward_list<int> l{1, 5, 3, 2};
         const auto e     = l | xme::views::enumerate;
-        const auto b     = l.begin();
+        auto b           = l.begin();
         using it         = decltype(e.begin());
         using const_it   = decltype(std::as_const(e).begin());
         using sent       = decltype(e.end());
@@ -63,6 +62,7 @@ int main() {
         for(auto&& [i, v] : e) {
             errors += order != i;
             errors += *b != v;
+            ++b;
             ++order;
         }
         errors += order != 4;

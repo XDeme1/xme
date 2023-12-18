@@ -13,8 +13,7 @@ private:
 public:
     static constexpr std::size_t size = sizeof...(T);
 
-    template<typename U>
-        requires(CTupleLike<std::decay_t<U>>)
+    template<CTupleLike U>
     constexpr auto operator=(U&& tup) -> self& {
         assign_tuple_index(std::forward<U>(tup), std::make_index_sequence<size>{});
         return *this;
@@ -66,16 +65,14 @@ constexpr void swap(Tuple<T...>& lhs, Tuple<T...>& rhs)
 }
 
 namespace detail {
-template<typename F, typename T, std::size_t... I>
-    requires(CTupleLike<std::decay_t<T>>)
+template<typename F, CTupleLike T, std::size_t... I>
 constexpr auto apply(F&& fun, T&& tup, std::index_sequence<I...>)
   noexcept(noexcept(std::forward<F>(fun)(get<I>(std::forward<T>(tup))...))) -> decltype(auto) {
     return std::forward<F>(fun)(get<I>(std::forward<T>(tup))...);
 }
 }  // namespace detail
 
-template<typename F, typename T>
-    requires(CTupleLike<std::decay_t<T>>)
+template<typename F, CTupleLike T>
 constexpr auto apply(F&& fun, T&& tup)
   noexcept(noexcept(detail::apply(std::forward<F>(fun), std::forward<T>(tup),
                                   std::make_index_sequence<std::tuple_size_v<std::decay_t<T>>>{})))
@@ -132,8 +129,7 @@ constexpr auto tuple_cat_impl(std::index_sequence<OuterIndex...>,
 }
 }  // namespace detail
 
-template<typename... T>
-    requires(CTupleLike<std::decay_t<T>> && ...)
+template<CTupleLike... T>
 constexpr auto tuple_cat(T&&... t) {
     using cat   = detail::tuple_cat<T...>;
     using outer = typename cat::outer_indices;
