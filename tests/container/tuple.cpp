@@ -29,12 +29,26 @@ static_assert(std::is_trivially_assignable_v<xme::Tuple<int>, xme::Tuple<int>>);
 static_assert(!std::is_trivially_assignable_v<xme::Tuple<int>, xme::Tuple<float>>);
 static_assert(!std::is_trivially_assignable_v<xme::Tuple<std::string>, xme::Tuple<std::string>>);
 
+static_assert(std::convertible_to<xme::Tuple<int>, xme::Tuple<const int>>);
+
 static_assert(xme::CTupleLike<xme::Tuple<>>);
 static_assert(xme::CTupleLike<xme::Tuple<int, int, int&>>);
 static_assert(xme::CTupleLike<const xme::Tuple<int, int, int&>>);
 
+static_assert(xme::CTupleLike<xme::Tuple<int>&>);
+static_assert(xme::CTupleLike<xme::Tuple<int>&&>);
+
 static_assert(xme::CPairLike<xme::Tuple<int, int>>);
 static_assert(!xme::CPairLike<xme::Tuple<>>);
+
+consteval void test_convertions() {
+    {
+        using t1     = xme::Tuple<int, int&>;
+        using t2     = xme::Tuple<int, int>&;
+        using result = xme::Tuple<int, int&>;
+        static_assert(std::same_as<result, std::common_reference_t<t1, t2>>);
+    }
+}
 
 int test_access() {
     int errors = 0;
@@ -96,6 +110,17 @@ int test_assign() {
         if(error) {
             ++errors;
             std::cerr << "xme::Tuple::operator=(U&&) error\n";
+        }
+    }
+
+    {
+        std::string s{"Hello"};
+        xme::Tuple<std::string&> t1{s};
+        xme::Tuple<const std::string&> t2{t1};
+        bool error = get<0>(t2) != get<0>(t1) || get<0>(t2).data() != get<0>(t1).data();
+        if(error) {
+            ++errors;
+            std::cerr << "xme::Tuple convertion operator error\n";
         }
     }
     return errors;
@@ -182,8 +207,8 @@ int test_operations() {
         xme::Tuple<int, const int, const int&> t1{1, 5, 3};
         xme::Tuple<> t2;
         xme::Tuple<float> t3{0.5};
-        auto t4 = xme::tuple_cat(t1, t2, t3);
 
+        auto t4 = xme::tuple_cat(t1, t2, t3);
         static_assert(std::is_same_v<decltype(t4), xme::Tuple<int, int, const int&, float>>);
 
         bool error = get<0>(t4) != 1 || get<1>(t4) != 5;
@@ -199,6 +224,7 @@ int test_operations() {
 
 int main() {
     int errors = 0;
+    test_convertions();
     errors += test_access();
     errors += test_assign();
     errors += test_operations();

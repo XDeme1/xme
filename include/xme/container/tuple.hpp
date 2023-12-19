@@ -14,14 +14,25 @@ public:
     static constexpr std::size_t size = sizeof...(T);
 
     template<CTupleLike U>
+        requires(!std::same_as<Tuple, std::remove_reference_t<U>>)
     constexpr auto operator=(U&& tup) -> self& {
         assign_tuple_index(std::forward<U>(tup), std::make_index_sequence<size>{});
         return *this;
     }
 
-    XME_CONSTEXPR20 bool operator==(const self&) const = default;
+    template<typename U>
+        requires(CTupleLike<U> || std::is_aggregate_v<std::remove_reference_t<U>>)
+                && (!std::same_as<Tuple, U>) && requires(T... args) { U{args...}; }
+    constexpr operator U() const {
+        auto convert = []<typename Tup, std::size_t... I>(Tup&& tup, std::index_sequence<I...>) {
+            return U{get<I>(std::forward<Tup>(tup))...};
+        };
+        return convert(*this, std::make_index_sequence<size>{});
+    }
 
-    XME_CONSTEXPR20 auto operator<=>(const self&) const = default;
+    XME_CONSTEXPR20 bool operator==(const self&) const noexcept = default;
+
+    XME_CONSTEXPR20 auto operator<=>(const self&) const noexcept = default;
 
     constexpr void swap(Tuple& other) noexcept((std::is_nothrow_swappable_v<T> && ...)) {
         swap(other, std::make_index_sequence<size>{});
@@ -94,7 +105,7 @@ constexpr auto make_tuple(T&&... values)
 }
 
 template<typename... T>
-constexpr auto forward_as_tuple(T&&... values) -> Tuple<T&&...> {
+constexpr auto forward_as_tuple(T&&... values) noexcept -> Tuple<T&&...> {
     static_assert((!std::is_rvalue_reference_v<T> && ...), "T is a dangling reference");
     return Tuple<T&&...>{std::forward<T>(values)...};
 }
@@ -147,5 +158,16 @@ struct tuple_size<xme::Tuple<T...>> : integral_constant<size_t, sizeof...(T)> {}
 template<size_t I, typename... T>
 struct tuple_element<I, xme::Tuple<T...>> {
     using type = decltype(xme::Tuple<T...>::declval(integral_constant<size_t, I>{}));
+};
+
+template<typename... T, typename... U, template<class> class TQual, template<class> class UQual>
+struct basic_common_reference<xme::Tuple<T...>, xme::Tuple<U...>, TQual, UQual> {
+    using type = xme::Tuple<std::common_reference_t<TQual<T>, UQual<U>>...>;
+};
+
+template<typename... T, typename... U>
+    requires(sizeof...(T) == sizeof...(U))
+struct common_type<xme::Tuple<T...>, xme::Tuple<U...>> {
+    using type = xme::Tuple<std::common_type_t<T, U>...>;
 };
 }  // namespace std

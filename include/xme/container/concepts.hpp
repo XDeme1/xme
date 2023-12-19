@@ -9,8 +9,8 @@ concept CAllocator = requires(Alloc a, typename Alloc::value_type* ptr) {
     typename Alloc::value_type;
     typename Alloc::size_type;
     typename Alloc::difference_type;
-    { a.allocate(std::size_t(1)) } -> std::same_as<typename Alloc::value_type*>;
-    a.deallocate(ptr, std::size_t(1));
+    { a.allocate(std::size_t()) } -> std::same_as<typename Alloc::value_type*>;
+    a.deallocate(ptr, std::size_t());
 };
 
 namespace detail {
