@@ -16,11 +16,13 @@ consteval int test_enumerate() {
         static_assert(std::same_as<it, sent>);
         static_assert(std::same_as<const_it, const_sent>);
         static_assert(std::same_as<it::iterator_concept, std::random_access_iterator_tag>);
+        static_assert(std::ranges::random_access_range<decltype(e)>);
         static_assert(requires {
             e.begin() - e.end();
             e.end() - e.begin();
             e.begin() == e.end();
             e.begin() == std::as_const(e).end();
+            e.size();
         });
 
         int order = 0;
@@ -57,6 +59,7 @@ int main() {
         static_assert(!std::same_as<it, sent>);
         static_assert(!std::same_as<const_it, const_sent>);
         static_assert(std::same_as<it::iterator_concept, std::forward_iterator_tag>);
+        static_assert(std::ranges::forward_range<decltype(e)>);
 
         int order = 0;
         for(auto&& [i, v] : e) {
