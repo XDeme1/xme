@@ -37,5 +37,5 @@ template<typename T>
 concept CTupleLike = detail::CTupleLikeImpl<std::remove_cvref_t<T>>;
 
 template<typename T>
-concept CPairLike = CTupleLike<T> && (std::tuple_size_v<T> == 2);
+concept CPairLike = CTupleLike<T> && (std::tuple_size_v<std::remove_cvref_t<T>> == 2);
 }  // namespace xme
