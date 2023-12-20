@@ -5,8 +5,24 @@
 #include <list>
 #include <utility>
 
-int test_ref() {
-    int errors = 0;
+void test_forward() {
+    {
+        int arr[]{1, 5, 3, 5};
+        std::span s{arr};
+        auto a = xme::views::all(s);
+        static_assert(std::same_as<decltype(a), std::span<int, 4>>);
+        static_assert(std::ranges::contiguous_range<decltype(a)>);
+        static_assert(std::ranges::range<decltype(a)>);
+        static_assert(std::ranges::view<decltype(a)>);
+        static_assert(requires { s | xme::views::all; });
+        static_assert(a.size() == 4);
+        for(std::size_t i = 0; i < 4; ++i) {
+            assert(a[i] == s[i]);
+        }
+    }
+}
+
+void test_ref() {
     {
         std::vector<int> v{1, 5, 3, 5};
         auto a = xme::views::all(v);
@@ -15,7 +31,7 @@ int test_ref() {
         static_assert(std::ranges::range<decltype(a)>);
         static_assert(std::ranges::view<decltype(a)>);
         static_assert(requires {
-            a.begin();
+            { a.begin() } -> std::same_as<std::ranges::iterator_t<decltype(v)>>;
             a.end();
             a.cbegin();
             a.cend();
@@ -40,10 +56,6 @@ int test_ref() {
         for(std::size_t i = 0; i < 4; ++i)
             assert(a[i] == v[i]);
     }
-    return errors;
-}
-
-int main() {
 
     {
         int arr[]{1, 5, 3, 5};
@@ -54,21 +66,6 @@ int main() {
         assert(a.size() == 4);
         for(std::size_t i = 0; i < 4; ++i)
             assert(a[i] == arr[i]);
-    }
-
-    {
-        int arr[]{1, 5, 3, 5};
-        std::span s{arr};
-        auto a = xme::views::all(s);
-        static_assert(std::same_as<decltype(a), std::span<int, 4>>);
-        static_assert(std::ranges::contiguous_range<decltype(a)>);
-        static_assert(std::ranges::range<decltype(a)>);
-        static_assert(std::ranges::view<decltype(a)>);
-        static_assert(requires { s | xme::views::all; });
-        static_assert(a.size() == 4);
-        for(std::size_t i = 0; i < 4; ++i) {
-            assert(a[i] == s[i]);
-        }
     }
 
     {
@@ -84,4 +81,36 @@ int main() {
             ++b;
         }
     }
+}
+
+void test_owning() {
+    {
+        std::vector<int> v{1, 5, 3, 1};
+        auto a = xme::views::all(std::move(v));
+        auto b = std::views::all(std::move(v));
+        static_assert(std::same_as<decltype(a), xme::ranges::OwningView<std::vector<int>>>);
+        static_assert(std::ranges::contiguous_range<decltype(a)>);
+        static_assert(std::ranges::view<decltype(a)>);
+        static_assert(requires {
+            {
+                std::move(v) | xme::views::all
+            } -> std::same_as<xme::ranges::OwningView<std::vector<int>>>;
+            { a.begin() } -> std::same_as<std::ranges::iterator_t<decltype(v)>>;
+            { a.end() } -> std::same_as<std::ranges::sentinel_t<decltype(v)>>;
+            { !!a } -> std::same_as<bool>;
+            { a.front() } -> std::same_as<int&>;
+            { a.back() } -> std::same_as<int&>;
+            { a.size() } -> std::same_as<std::ranges::range_size_t<decltype(v)>>;
+            { a.data() } -> std::same_as<int*>;
+        });
+        assert(a.size() == 4);
+        for(std::size_t i = 0; i < 4; ++i)
+            assert(a[i] == v[i]);
+    }
+}
+
+int main() {
+    test_forward();
+    test_ref();
+    test_owning();
 }

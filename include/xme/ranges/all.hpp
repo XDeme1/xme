@@ -66,10 +66,6 @@ RefView(R&) -> RefView<R>;
 template<std::ranges::range R>
     requires(std::movable<R>) && (!detail::is_initializer_list<std::remove_cvref_t<R>>)
 class OwningView : public ViewInterface<OwningView<R>> {
-private:
-    using iterator = std::ranges::iterator_t<R>;
-    using sentinel = std::ranges::sentinel_t<R>;
-
 public:
     constexpr OwningView()
         requires(std::default_initializable<R>)
@@ -87,7 +83,7 @@ public:
     constexpr auto operator=(OwningView&&) -> OwningView& = default;
 
     [[nodiscard]]
-    constexpr auto begin() -> iterator {
+    constexpr auto begin() {
         return std::ranges::begin(m_range);
     }
 
@@ -99,12 +95,12 @@ public:
     }
 
     [[nodiscard]]
-    constexpr auto end() -> sentinel {
+    constexpr auto end() {
         return std::ranges::end(m_range);
     }
 
     [[nodiscard]]
-    constexpr auto end() const -> sentinel
+    constexpr auto end() const
         requires(std::ranges::range<const R>)
     {
         return std::ranges::end(m_range);
