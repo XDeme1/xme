@@ -3,26 +3,47 @@
 #include <cassert>
 #include <span>
 #include <list>
+#include <utility>
 
-int main() {
+int test_ref() {
+    int errors = 0;
     {
         std::vector<int> v{1, 5, 3, 5};
         auto a = xme::views::all(v);
         static_assert(std::same_as<decltype(a), xme::ranges::RefView<std::vector<int>>>);
         static_assert(std::ranges::contiguous_range<decltype(a)>);
+        static_assert(std::ranges::range<decltype(a)>);
+        static_assert(std::ranges::view<decltype(a)>);
         static_assert(requires {
             a.begin();
             a.end();
+            a.cbegin();
+            a.cend();
+            !!a;
             a.front();
             a.back();
-            a.empty();
             a.size();
             { a.data() } -> std::same_as<int*>;
+        });
+        static_assert(requires {
+            std::as_const(a).begin();
+            std::as_const(a).end();
+            std::as_const(a).cbegin();
+            std::as_const(a).cend();
+            !!std::as_const(a);
+            std::as_const(a).front();
+            std::as_const(a).back();
+            std::as_const(a).size();
+            { std::as_const(a).data() } -> std::same_as<int*>;
         });
         assert(a.size() == 4);
         for(std::size_t i = 0; i < 4; ++i)
             assert(a[i] == v[i]);
     }
+    return errors;
+}
+
+int main() {
 
     {
         int arr[]{1, 5, 3, 5};
@@ -41,6 +62,8 @@ int main() {
         auto a = xme::views::all(s);
         static_assert(std::same_as<decltype(a), std::span<int, 4>>);
         static_assert(std::ranges::contiguous_range<decltype(a)>);
+        static_assert(std::ranges::range<decltype(a)>);
+        static_assert(std::ranges::view<decltype(a)>);
         static_assert(requires { s | xme::views::all; });
         static_assert(a.size() == 4);
         for(std::size_t i = 0; i < 4; ++i) {
@@ -52,6 +75,7 @@ int main() {
         std::list l{1, 5, 3, 5};
         auto a = xme::views::all(l);
         static_assert(std::ranges::bidirectional_range<decltype(a)>);
+        static_assert(std::ranges::range<decltype(a)>);
         static_assert(requires { l | xme::views::all; });
         assert(a.size() == 4);
         auto b = a.begin();

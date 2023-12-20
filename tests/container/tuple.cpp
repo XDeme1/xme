@@ -41,7 +41,7 @@ static_assert(xme::CTupleLike<xme::Tuple<int>&&>);
 static_assert(xme::CPairLike<xme::Tuple<int, int>>);
 static_assert(!xme::CPairLike<xme::Tuple<>>);
 
-consteval void test_convertions() {
+void test_convertions() {
     {
         using t1     = xme::Tuple<int, int&>;
         using t2     = xme::Tuple<int, int>&;

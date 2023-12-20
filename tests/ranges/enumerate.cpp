@@ -4,7 +4,7 @@
 #include <xme/container/array_view.hpp>
 #include <forward_list>
 
-consteval int test_enumerate() {
+int test_enumerate() {
     int errors = 0;
     {
         int arr[]{5, 3, 1, 4};

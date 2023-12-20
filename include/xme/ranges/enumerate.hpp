@@ -3,6 +3,7 @@
 #include <ranges>
 #include <xme/container/tuple.hpp>
 #include "../../../private/ranges/setup.hpp"
+#include "all.hpp"
 
 namespace xme::ranges {
 namespace detail {
@@ -13,7 +14,7 @@ concept CRangeMovableReference =
 }
 template<std::ranges::view V>
     requires(detail::CRangeMovableReference<V>)
-struct EnumerateView : std::ranges::view_interface<EnumerateView<V>> {
+struct EnumerateView : public ViewInterface<EnumerateView<V>> {
 private:
     template<bool Const>
     struct Iterator;
@@ -65,7 +66,7 @@ public:
 };
 
 template<typename V>
-EnumerateView(V) -> EnumerateView<std::views::all_t<V>>;
+EnumerateView(V) -> EnumerateView<xme::views::all_t<V>>;
 
 template<std::ranges::view V>
     requires(detail::CRangeMovableReference<V>)
@@ -250,7 +251,7 @@ struct Enumerate : XME_RANGE_ADAPTOR_CLOSURE(Enumerate) {
 
     template<std::ranges::viewable_range R>
     constexpr auto operator()(R&& r) const {
-        return EnumerateView<std::views::all_t<R>>(std::forward<R>(r));
+        return EnumerateView<xme::views::all_t<R>>(std::forward<R>(r));
     }
 };
 }  // namespace detail
@@ -261,6 +262,9 @@ inline constexpr detail::Enumerate enumerate;
 namespace xme {
 namespace views = xme::ranges::views;
 }
+
+template<typename T>
+inline constexpr bool std::ranges::enable_view<xme::ranges::EnumerateView<T>> = true;
 
 template<typename T>
 inline constexpr bool std::ranges::enable_borrowed_range<xme::ranges::EnumerateView<T>> =

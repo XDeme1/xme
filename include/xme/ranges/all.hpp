@@ -1,6 +1,7 @@
 #pragma once
 #include <ranges>
 #include "../../../private/ranges/setup.hpp"
+#include "view_interface.hpp"
 
 namespace xme::ranges {
 namespace detail {
@@ -13,11 +14,9 @@ inline constexpr bool is_initializer_list<std::initializer_list<T>> = true;
 
 template<std::ranges::range R>
     requires(std::is_object_v<R>)
-class RefView : public std::ranges::view_interface<RefView<R>> {
+class RefView : public ViewInterface<RefView<R>> {
     static void fun(R&);
     static void fun(R&&) = delete;
-
-    using iterator = std::ranges::iterator_t<R>;
 
 public:
     template<typename T>
@@ -27,12 +26,12 @@ public:
       m_range(std::addressof(static_cast<R&>(std::forward<T>(t)))) {}
 
     [[nodiscard]]
-    constexpr auto begin() const -> iterator {
+    constexpr auto begin() const {
         return std::ranges::begin(*m_range);
     }
 
     [[nodiscard]]
-    constexpr auto end() const -> iterator {
+    constexpr auto end() const {
         return std::ranges::end(*m_range);
     }
 
@@ -66,7 +65,7 @@ RefView(R&) -> RefView<R>;
 
 template<std::ranges::range R>
     requires(std::movable<R>) && (!detail::is_initializer_list<std::remove_cvref_t<R>>)
-class OwningView : public std::ranges::view_interface<OwningView<R>> {
+class OwningView : public ViewInterface<OwningView<R>> {
 private:
     using iterator = std::ranges::iterator_t<R>;
     using sentinel = std::ranges::sentinel_t<R>;
@@ -204,6 +203,12 @@ using all_t = decltype(all(std::declval<R>()));
 namespace xme {
 namespace views = xme::ranges::views;
 }
+
+template<typename T>
+inline constexpr bool std::ranges::enable_view<xme::ranges::RefView<T>> = true;
+
+template<typename T>
+inline constexpr bool std::ranges::enable_view<xme::ranges::OwningView<T>> = true;
 
 template<typename T>
 inline constexpr bool std::ranges::enable_borrowed_range<xme::ranges::RefView<T>> = true;
