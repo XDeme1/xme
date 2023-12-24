@@ -4,13 +4,13 @@
 #include <xme/math/vector.hpp>
 
 namespace xme::math {
-template<std::floating_point T, std::size_t Cols, std::size_t Rows>
+template<floating_point T, std::size_t Cols, std::size_t Rows>
 class Matrix;
 
 template<typename T, typename U>
 [[nodiscard]]
 XME_INLINE constexpr auto translate(const Matrix<T, 4, 4>& m,
-    const Vector<U, 3>& v) noexcept -> Matrix<T, 4, 4> {
+                                    const Vector<U, 3>& v) noexcept -> Matrix<T, 4, 4> {
     return {
         m[0],
         m[1],
@@ -22,7 +22,7 @@ XME_INLINE constexpr auto translate(const Matrix<T, 4, 4>& m,
 template<typename T, typename U>
 [[nodiscard]]
 XME_INLINE constexpr auto scale(const Matrix<T, 4, 4>& m,
-    const Vector<U, 3>& v) noexcept -> Matrix<T, 4, 4> {
+                                const Vector<U, 3>& v) noexcept -> Matrix<T, 4, 4> {
     return {
         m[0] * v[0],
         m[1] * v[1],
@@ -37,8 +37,8 @@ XME_INLINE constexpr auto scale(const Matrix<T, 4, 4>& m,
 //! `n` normal vector specifying which axis to rotate
 template<typename T, typename U>
 [[nodiscard]]
-XME_INLINE constexpr auto
-rotate(const Matrix<T, 4, 4>& m, auto angle, const Vector<U, 3>& n) noexcept -> Matrix<T, 4, 4> {
+XME_INLINE constexpr auto rotate(const Matrix<T, 4, 4>& m, auto angle,
+                                 const Vector<U, 3>& n) noexcept -> Matrix<T, 4, 4> {
     const auto s{std::sin(static_cast<T>(angle))};
     const auto c{std::cos(static_cast<T>(angle))};
 

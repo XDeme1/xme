@@ -37,10 +37,10 @@
     }
 
 namespace xme::math {
-template<std::floating_point T, std::size_t Cols, std::size_t Rows>
+template<floating_point T, std::size_t Cols, std::size_t Rows>
 class Matrix;
 
-template<std::floating_point T>
+template<floating_point T>
 class Matrix<T, 4, 4> {
 public:
     using row_type    = Vector<T, 4>;

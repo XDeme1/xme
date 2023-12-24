@@ -42,7 +42,7 @@
     }
 
 namespace xme::math {
-template<std::floating_point T, std::size_t Cols, std::size_t Rows = Cols>
+template<floating_point T, std::size_t Cols, std::size_t Rows = Cols>
 class Matrix {
 public:
     using row_type    = Vector<T, Cols>;
@@ -95,7 +95,7 @@ public:
     template<typename U, std::size_t Rows2>
     [[nodiscard]]
     constexpr auto operator*(const Matrix<U, Rows2, Cols>& m) const noexcept
-        -> Matrix<T, Rows2, Rows> {
+      -> Matrix<T, Rows2, Rows> {
         Matrix<T, Rows2, Rows> result{0};
         for(std::size_t rowIndex = 0; rowIndex < Rows; ++rowIndex) {
             const row_type row = this->row(rowIndex);

@@ -1,30 +1,29 @@
 #pragma once
 #include <cmath>
 #include <xme/setup.hpp>
+#include <xme/core/concepts/concepts.hpp>
 #include "constants.hpp"
-
-#include "concepts.hpp"
 
 // For more information see: https://en.wikipedia.org/wiki/Inverse_trigonometric_functions
 namespace xme::math {
-template<CArithmetic T, std::size_t>
+template<arithmetic T, std::size_t>
 struct Vector;
 
-template<std::floating_point T>
+template<floating_point T>
 [[nodiscard]]
 XME_INLINE constexpr auto radians(T deg) noexcept -> T {
     static_assert(std::is_floating_point_v<T>, "T must be a floating point");
     return deg * (math::pi_v<T> / 180);
 }
 
-template<std::floating_point T>
+template<floating_point T>
 [[nodiscard]]
 XME_INLINE constexpr auto degrees(T rad) noexcept -> T {
     static_assert(std::is_floating_point_v<T>, "T must be a floating point");
     return rad * (180 / math::pi_v<T>);
 }
 
-template<std::floating_point T, std::size_t Size>
+template<floating_point T, std::size_t Size>
 [[nodiscard]]
 XME_INLINE constexpr auto radians(const Vector<T, Size>& deg) noexcept -> Vector<T, Size> {
     static_assert(std::is_floating_point_v<T>, "T must be a floating point");
@@ -34,7 +33,7 @@ XME_INLINE constexpr auto radians(const Vector<T, Size>& deg) noexcept -> Vector
     return result;
 }
 
-template<std::floating_point T, std::size_t Size>
+template<floating_point T, std::size_t Size>
 [[nodiscard]]
 XME_INLINE constexpr auto degrees(const Vector<T, Size>& rad) noexcept -> Vector<T, Size> {
     static_assert(std::is_floating_point_v<T>, "T must be a floating point");
@@ -101,8 +100,8 @@ XME_INLINE constexpr auto arccot(T s) noexcept -> decltype(arctan(s)) {
 
 template<typename T, std::size_t Size>
 [[nodiscard]]
-XME_INLINE constexpr auto sin(
-    const Vector<T, Size>& v) noexcept -> Vector<decltype(sin(v[0])), Size> {
+XME_INLINE constexpr auto sin(const Vector<T, Size>& v) noexcept
+  -> Vector<decltype(sin(v[0])), Size> {
     Vector<decltype(sin(v[0])), Size> result;
     for(std::size_t i = 0; i < Size; ++i)
         result[i] = sin(v[i]);
@@ -120,8 +119,8 @@ XME_INLINE constexpr auto cos(const Vector<T, Size>& v) noexcept {
 
 template<typename T, std::size_t Size>
 [[nodiscard]]
-XME_INLINE constexpr auto tan(
-    const Vector<T, Size>& v) noexcept -> Vector<decltype(tan(v[0])), Size> {
+XME_INLINE constexpr auto tan(const Vector<T, Size>& v) noexcept
+  -> Vector<decltype(tan(v[0])), Size> {
     Vector<decltype(tan(v[0])), Size> result;
     for(std::size_t i = 0; i < Size; ++i)
         result[i] = tan(v[i]);
@@ -130,8 +129,8 @@ XME_INLINE constexpr auto tan(
 
 template<typename T, std::size_t Size>
 [[nodiscard]]
-XME_INLINE constexpr auto sec(
-    const Vector<T, Size>& v) noexcept -> Vector<decltype(sec(v[0])), Size> {
+XME_INLINE constexpr auto sec(const Vector<T, Size>& v) noexcept
+  -> Vector<decltype(sec(v[0])), Size> {
     Vector<decltype(sec(v[0])), Size> result;
     for(std::size_t i = 0; i < Size; ++i)
         result[i] = sec(v[i]);
@@ -149,8 +148,8 @@ XME_INLINE constexpr auto csc(const Vector<T, Size>& v) noexcept {
 
 template<typename T, std::size_t Size>
 [[nodiscard]]
-XME_INLINE constexpr auto cot(
-    const Vector<T, Size>& v) noexcept -> Vector<decltype(cot(v[0])), Size> {
+XME_INLINE constexpr auto cot(const Vector<T, Size>& v) noexcept
+  -> Vector<decltype(cot(v[0])), Size> {
     Vector<decltype(cot(v[0])), Size> result;
     for(std::size_t i = 0; i < Size; ++i)
         result[i] = cot(v[i]);

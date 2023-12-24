@@ -1,12 +1,12 @@
 #pragma once
 #include <cstddef>
 #include <xme/setup.hpp>
-#include <xme/math/concepts.hpp>
+#include <xme/core/concepts/concepts.hpp>
 
 namespace xme::math {
-template<CArithmetic T, std::size_t Size>
+template<arithmetic T, std::size_t Size>
 struct Vector;
-template<std::floating_point T, std::size_t Cols, std::size_t Rows>
+template<floating_point T, std::size_t Cols, std::size_t Rows>
 class Matrix;
 
 template<typename T>
@@ -44,8 +44,8 @@ XME_INLINE constexpr auto determinant(const Matrix<T, 4, 4>& m) noexcept -> T {
 //! Swaps the columns and rows indexes.
 template<typename T, std::size_t Cols, std::size_t Rows>
 [[nodiscard]]
-XME_INLINE constexpr auto transpose(
-    const Matrix<T, Cols, Rows>& m) noexcept -> Matrix<T, Rows, Cols> {
+XME_INLINE constexpr auto transpose(const Matrix<T, Cols, Rows>& m) noexcept
+  -> Matrix<T, Rows, Cols> {
     Matrix<T, Rows, Cols> result{0};
     for(std::size_t i = 0; i < Cols; ++i) {
         for(std::size_t j = 0; j < Rows; ++j) {
@@ -58,7 +58,7 @@ XME_INLINE constexpr auto transpose(
 template<typename T, std::size_t N1, std::size_t N2>
 [[nodiscard]]
 XME_INLINE constexpr auto outer_product(const Vector<T, N1>& v1,
-    const Vector<T, N2>& v2) noexcept -> Matrix<T, N2, N1> {
+                                        const Vector<T, N2>& v2) noexcept -> Matrix<T, N2, N1> {
     Matrix<T, N2, N1> result{0};
     for(std::size_t i = 0; i < N2; ++i)
         result[i] = v1 * v2[i];
@@ -70,7 +70,8 @@ XME_INLINE constexpr auto outer_product(const Vector<T, N1>& v1,
 template<typename T, std::size_t Cols, std::size_t Rows>
 [[nodiscard]]
 XME_INLINE constexpr auto hadamard_product(const Matrix<T, Cols, Rows>& m1,
-    const Matrix<T, Cols, Rows>& m2) noexcept -> Matrix<T, Cols, Rows> {
+                                           const Matrix<T, Cols, Rows>& m2) noexcept
+  -> Matrix<T, Cols, Rows> {
     Matrix<T, Cols, Rows> result;
     for(std::size_t i = 0; i < Cols; i++) {
         result[i] = m1[i] * m2[i];
