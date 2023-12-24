@@ -4,7 +4,7 @@
 
 namespace xme {
 template<typename LHS, typename RHS>
-concept assignable_from = std::is_lvalue_reference_v<LHS> && requires(LHS lhs, RHS&& rhs) {
+concept assignable_from_c = std::is_lvalue_reference_v<LHS> && requires(LHS lhs, RHS&& rhs) {
     { lhs = std::forward<RHS>(rhs) } -> std::same_as<LHS>;
 };
 }  // namespace xme

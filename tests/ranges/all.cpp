@@ -87,7 +87,6 @@ void test_owning() {
     {
         std::vector<int> v{1, 5, 3, 1};
         auto a = xme::views::all(std::move(v));
-        auto b = std::views::all(std::move(v));
         static_assert(std::same_as<decltype(a), xme::ranges::OwningView<std::vector<int>>>);
         static_assert(std::ranges::contiguous_range<decltype(a)>);
         static_assert(std::ranges::view<decltype(a)>);

@@ -1,13 +1,14 @@
 #pragma once
 #include "concepts.hpp"
-#include <xme/core/utility/forward_like.hpp>
 #include <xme/setup.hpp>
+#include <xme/core/utility/forward_like.hpp>
+#include <xme/ranges/swap.hpp>
 
 namespace xme {
 template<typename T, typename U>
 struct Pair {
 public:
-    template<CPairLike P>
+    template<pair_like_c P>
     constexpr auto operator=(P&& p)
       noexcept(std::is_nothrow_swappable_v<T> && std::is_nothrow_swappable_v<U>) -> Pair& {
         first  = get<0>(std::forward<P>(p));
@@ -53,8 +54,8 @@ public:
 
     constexpr void swap(Pair& p)
       noexcept(std::is_nothrow_swappable_v<T> && std::is_nothrow_swappable_v<U>) {
-        std::ranges::swap(first, p.first);
-        std::ranges::swap(second, p.second);
+        ranges::swap(first, p.first);
+        ranges::swap(second, p.second);
     }
 
     [[no_unique_address]]

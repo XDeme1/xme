@@ -5,5 +5,6 @@
 #include <xme/core/concepts/common.hpp>
 #include <xme/core/concepts/arithmetic.hpp>
 #include <xme/core/concepts/assignable.hpp>
+#include <xme/core/concepts/swappable.hpp>
 #include <xme/core/concepts/destructible.hpp>
 #include <xme/core/concepts/constructible.hpp>

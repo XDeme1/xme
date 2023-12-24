@@ -3,6 +3,7 @@
 #include "concepts.hpp"
 #include <iterator>
 #include <memory>
+#include <xme/ranges/swap.hpp>
 
 namespace xme {
 //! LinkedList is a singly linked list.
@@ -11,7 +12,7 @@ namespace xme {
 //! insert at the middle is O(n).
 //! @param T the type of the stored element
 //! @param Alloc must be an allocator that satisfies the Allocator concept
-template<typename T, CAllocator Alloc = std::allocator<T>>
+template<typename T, allocator_c Alloc = std::allocator<T>>
 class LinkedList {
 private:
     using node_base = detail::LinkedListNodeBase;
@@ -94,7 +95,7 @@ public:
     //! Clears the current elements and transfer elements from other
     constexpr auto operator=(LinkedList&& other) noexcept -> LinkedList& {
         clear();
-        std::ranges::swap(m_head.next, other.m_head.next);
+        ranges::swap(m_head.next, other.m_head.next);
         return *this;
     }
 

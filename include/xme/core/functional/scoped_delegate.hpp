@@ -21,6 +21,7 @@ public:
     constexpr auto operator=(ScopedDelegate&&) = delete;
 
 private:
-    [[no_unique_address]] F m_callable;
+    [[no_unique_address]]
+    F m_callable;
 };
 }  // namespace xme

@@ -1,6 +1,7 @@
 #pragma once
 #include <functional>
 #include <xme/container/tuple.hpp>
+#include <xme/core/concepts/same_as.hpp>
 #include <xme/core/utility/forward_like.hpp>
 
 namespace xme {
@@ -17,10 +18,10 @@ public:
     constexpr BindFront(BindFront&&) noexcept = default;
 
     template<typename Fn, typename... BoundArgs>
-        requires(!std::same_as<BindFront, std::decay_t<Fn>>)
-    explicit constexpr BindFront(Fn&& func, BoundArgs&&... args) noexcept(
-        std::is_nothrow_constructible_v<F, Fn>
-        && (std::is_nothrow_constructible_v<BoundArgs, Args> && ...)) :
+        requires(!same_as_c<BindFront, std::decay_t<Fn>>)
+    explicit constexpr BindFront(Fn&& func, BoundArgs&&... args)
+      noexcept(std::is_nothrow_constructible_v<F, Fn>
+               && (std::is_nothrow_constructible_v<BoundArgs, Args> && ...)) :
       callable(std::forward<Fn>(func)), bound_args{std::forward<BoundArgs>(args)...} {}
 
     constexpr auto operator=(const BindFront&) noexcept -> self& = default;
@@ -30,41 +31,44 @@ public:
     // TODO: Simplify when deducing this is added
     template<typename... CallArgs>
     constexpr auto operator()(CallArgs&&... args) & noexcept(
-        std::is_nothrow_invocable_v<F&, Args&..., CallArgs...>) -> decltype(auto) {
+      std::is_nothrow_invocable_v<F&, Args&..., CallArgs...>) -> decltype(auto) {
         return self::call(*this, bound_indices{}, std::forward<CallArgs>(args)...);
     }
 
     template<typename... CallArgs>
     constexpr auto operator()(CallArgs&&... args) const& noexcept(
-        std::is_nothrow_invocable_v<const F&, const Args&..., CallArgs...>) -> decltype(auto) {
+      std::is_nothrow_invocable_v<const F&, const Args&..., CallArgs...>) -> decltype(auto) {
         return self::call(*this, bound_indices{}, std::forward<CallArgs>(args)...);
     }
 
     template<typename... CallArgs>
     constexpr auto operator()(CallArgs&&... args) && noexcept(
-        std::is_nothrow_invocable_v<F, Args..., CallArgs...>) -> decltype(auto) {
+      std::is_nothrow_invocable_v<F, Args..., CallArgs...>) -> decltype(auto) {
         return self::call(std::move(*this), bound_indices{}, std::forward<CallArgs>(args)...);
     }
 
     template<typename... CallArgs>
     constexpr auto operator()(CallArgs&&... args) const&& noexcept(
-        std::is_nothrow_invocable_v<const F, const Args..., CallArgs...>) -> decltype(auto) {
+      std::is_nothrow_invocable_v<const F, const Args..., CallArgs...>) -> decltype(auto) {
         return self::call(std::move(*this), bound_indices{}, std::forward<CallArgs>(args)...);
     }
 
 private:
     template<typename T, std::size_t... I, typename... InArgs>
-    static constexpr auto call(T&& self, std::index_sequence<I...>, InArgs&&... args) noexcept(
-        noexcept(std::invoke(std::forward<T>(self).callable,
-            get<I>(std::forward<T>(self).bound_args)...,
-            std::forward<InArgs>(args)...))) -> decltype(auto) {
+    static constexpr auto call(T&& self, std::index_sequence<I...>, InArgs&&... args)
+      noexcept(noexcept(std::invoke(std::forward<T>(self).callable,
+                                    get<I>(std::forward<T>(self).bound_args)...,
+                                    std::forward<InArgs>(args)...))) -> decltype(auto) {
         return std::invoke(std::forward<T>(self).callable,
-            get<I>(std::forward<T>(self).bound_args)...,
-            std::forward<InArgs>(args)...);
+                           get<I>(std::forward<T>(self).bound_args)...,
+                           std::forward<InArgs>(args)...);
     }
 
-    [[no_unique_address]] F callable;
-    [[no_unique_address]] xme::Tuple<Args...> bound_args;
+    [[no_unique_address]]
+    F callable;
+    [[no_unique_address]]
+    xme::Tuple<Args...>
+      bound_args;
 };
 
 template<typename F, typename... Args>
@@ -79,10 +83,10 @@ public:
     constexpr BindBack(BindBack&&) noexcept = default;
 
     template<typename Fn, typename... BoundArgs>
-        requires(!std::same_as<BindBack, std::decay_t<Fn>>)
-    explicit constexpr BindBack(Fn&& func, BoundArgs&&... args) noexcept(
-        std::is_nothrow_constructible_v<F, Fn>
-        && (std::is_nothrow_constructible_v<Args, BoundArgs> && ...)) :
+        requires(!same_as_c<BindBack, std::decay_t<Fn>>)
+    explicit constexpr BindBack(Fn&& func, BoundArgs&&... args)
+      noexcept(std::is_nothrow_constructible_v<F, Fn>
+               && (std::is_nothrow_constructible_v<Args, BoundArgs> && ...)) :
       callable(std::forward<Fn>(func)), bound_args{std::forward<BoundArgs>(args)...} {}
 
     constexpr auto operator=(const BindBack&) noexcept -> self& = default;
@@ -92,41 +96,44 @@ public:
     // TODO: Simplify when deducing this is added
     template<typename... CallArgs>
     constexpr auto operator()(CallArgs&&... args) & noexcept(
-        std::is_nothrow_invocable_v<F&, CallArgs..., Args&...>) -> decltype(auto) {
+      std::is_nothrow_invocable_v<F&, CallArgs..., Args&...>) -> decltype(auto) {
         return self::call(*this, bound_indices{}, std::forward<CallArgs>(args)...);
     }
 
     template<typename... CallArgs>
     constexpr auto operator()(CallArgs&&... args) const& noexcept(
-        std::is_nothrow_invocable_v<const F&, CallArgs..., const Args&...>) -> decltype(auto) {
+      std::is_nothrow_invocable_v<const F&, CallArgs..., const Args&...>) -> decltype(auto) {
         return self::call(*this, bound_indices{}, std::forward<CallArgs>(args)...);
     }
 
     template<typename... CallArgs>
     constexpr auto operator()(CallArgs&&... args) && noexcept(
-        std::is_nothrow_invocable_v<F, CallArgs..., Args...>) -> decltype(auto) {
+      std::is_nothrow_invocable_v<F, CallArgs..., Args...>) -> decltype(auto) {
         return self::call(std::move(*this), bound_indices{}, std::forward<CallArgs>(args)...);
     }
 
     template<typename... CallArgs>
     constexpr auto operator()(CallArgs&&... args) const&& noexcept(
-        std::is_nothrow_invocable_v<const F, CallArgs..., const Args...>) -> decltype(auto) {
+      std::is_nothrow_invocable_v<const F, CallArgs..., const Args...>) -> decltype(auto) {
         return self::call(std::move(*this), bound_indices{}, std::forward<CallArgs>(args)...);
     }
 
 private:
     template<typename T, std::size_t... I, typename... InArgs>
-    static constexpr auto call(T&& self, std::index_sequence<I...>, InArgs&&... args) noexcept(
-        noexcept(std::invoke(std::forward<T>(self).callable,
-            std::forward<InArgs>(args)...,
-            get<I>(std::forward<T>(self).bound_args)...))) -> decltype(auto) {
+    static constexpr auto call(T&& self, std::index_sequence<I...>, InArgs&&... args)
+      noexcept(noexcept(std::invoke(std::forward<T>(self).callable, std::forward<InArgs>(args)...,
+                                    get<I>(std::forward<T>(self).bound_args)...)))
+        -> decltype(auto) {
         return std::invoke(std::forward<T>(self).callable,
-            std::forward<InArgs>(args)...,
-            get<I>(std::forward<T>(self).bound_args)...);
+                           std::forward<InArgs>(args)...,
+                           get<I>(std::forward<T>(self).bound_args)...);
     }
 
-    [[no_unique_address]] F callable;
-    [[no_unique_address]] xme::Tuple<Args...> bound_args;
+    [[no_unique_address]]
+    F callable;
+    [[no_unique_address]]
+    xme::Tuple<Args...>
+      bound_args;
 };
 }  // namespace detail
 
@@ -137,8 +144,8 @@ constexpr auto bind_front(F&& func, Args&&... args) {
     static_assert((std::is_constructible_v<std::decay_t<Args>, Args> && ...));
     static_assert((std::is_move_constructible_v<std::decay_t<Args>> && ...));
 
-    return detail::BindFront<std::decay_t<F>, std::decay_t<Args>...>(
-        std::forward<F>(func), std::forward<Args>(args)...);
+    return detail::BindFront<std::decay_t<F>, std::decay_t<Args>...>(std::forward<F>(func),
+                                                                     std::forward<Args>(args)...);
 }
 
 #if defined(_cpp_explicit_this_parameter)
@@ -148,7 +155,7 @@ constexpr auto bindFront(Args&&... args) {
     static_assert((std::is_move_constructible_v<std::decay<Args>> && ...));
 
     return [... bound_args(std::forward<Args>(args))]<typename Self, typename... T>(
-               this Self&&, T&&... call_args) -> decltype(auto) {
+             this Self&&, T&&... call_args) -> decltype(auto) {
         return std::invoke(f, xme::forwardLike<Self>(bound_args)..., std::forward<T>(call_args)...);
     };
 }
@@ -161,8 +168,8 @@ constexpr auto bind_back(F&& func, Args&&... args) {
     static_assert((std::is_constructible_v<std::decay_t<Args>, Args> && ...));
     static_assert((std::is_move_constructible_v<std::decay_t<Args>> && ...));
 
-    return detail::BindBack<std::decay_t<F>, std::decay_t<Args>...>(
-        std::forward<F>(func), std::forward<Args>(args)...);
+    return detail::BindBack<std::decay_t<F>, std::decay_t<Args>...>(std::forward<F>(func),
+                                                                    std::forward<Args>(args)...);
 }
 
 #if defined(_cpp_explicit_this_parameter)
@@ -172,7 +179,7 @@ constexpr auto bindBack(Args&&... args) {
     static_assert((std::is_move_constructible_v<std::decay<Args>> && ...));
 
     return [... bound_args(std::forward<Args>(args))]<typename Self, typename... T>(
-               this Self&&, T&&... call_args) -> decltype(auto) {
+             this Self&&, T&&... call_args) -> decltype(auto) {
         return std::invoke(f, xme::forwardLike<Self>(bound_args)..., std::forward<T>(call_args)...);
     };
 }

@@ -9,21 +9,21 @@ namespace xme::math {
 template<arithmetic T, std::size_t>
 struct Vector;
 
-template<floating_point T>
+template<floating_point_c T>
 [[nodiscard]]
 XME_INLINE constexpr auto radians(T deg) noexcept -> T {
     static_assert(std::is_floating_point_v<T>, "T must be a floating point");
     return deg * (math::pi_v<T> / 180);
 }
 
-template<floating_point T>
+template<floating_point_c T>
 [[nodiscard]]
 XME_INLINE constexpr auto degrees(T rad) noexcept -> T {
     static_assert(std::is_floating_point_v<T>, "T must be a floating point");
     return rad * (180 / math::pi_v<T>);
 }
 
-template<floating_point T, std::size_t Size>
+template<floating_point_c T, std::size_t Size>
 [[nodiscard]]
 XME_INLINE constexpr auto radians(const Vector<T, Size>& deg) noexcept -> Vector<T, Size> {
     static_assert(std::is_floating_point_v<T>, "T must be a floating point");
@@ -33,7 +33,7 @@ XME_INLINE constexpr auto radians(const Vector<T, Size>& deg) noexcept -> Vector
     return result;
 }
 
-template<floating_point T, std::size_t Size>
+template<floating_point_c T, std::size_t Size>
 [[nodiscard]]
 XME_INLINE constexpr auto degrees(const Vector<T, Size>& rad) noexcept -> Vector<T, Size> {
     static_assert(std::is_floating_point_v<T>, "T must be a floating point");

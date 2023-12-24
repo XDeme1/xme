@@ -2,6 +2,14 @@
 #include <xme/ranges/swap.hpp>
 #include <xme/container/tuple.hpp>
 
+struct Foo {
+    int a = 0;
+};
+
+void swap(Foo& a, Foo& b) noexcept(false) {
+    xme::ranges::swap(a.a, b.a);
+}
+
 int main() {
     {
         int a = 1;
@@ -36,5 +44,13 @@ int main() {
         static_assert(noexcept(xme::ranges::swap(a, b)));
         xme::ranges::swap(a, b);
         assert(a[0] == 1 && a[1] == 2 && b[0] == 5 && b[1] == 3);
+    }
+
+    {
+        Foo a{5};
+        Foo b{3};
+        static_assert(!noexcept(xme::ranges::swap(a, b)));
+        xme::ranges::swap(a, b);
+        assert(a.a == 3 && b.a == 5);
     }
 }

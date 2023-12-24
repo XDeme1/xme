@@ -1,5 +1,5 @@
 #pragma once
-#include <ranges>
+#include <xme/core/concepts/concepts.hpp>
 #include "../../../private/ranges/setup.hpp"
 #include "view_interface.hpp"
 
@@ -21,7 +21,7 @@ class RefView : public ViewInterface<RefView<R>> {
 public:
     template<typename T>
         requires(!std::same_as<RefView, std::remove_cvref_t<T>>)
-                && std::convertible_to<T, R&> && requires { fun(std::declval<T>()); }
+                && convertible_to_c<T, R&> && requires { fun(std::declval<T>()); }
     constexpr RefView(T&& t) noexcept(noexcept(static_cast<R&>(std::declval<T>()))) :
       m_range(std::addressof(static_cast<R&>(std::forward<T>(t)))) {}
 

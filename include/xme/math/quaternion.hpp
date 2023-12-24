@@ -4,7 +4,7 @@
 #include "matrix.hpp"
 
 namespace xme::math {
-template<floating_point T>
+template<floating_point_c T>
 class Quaternion {
 public:
     XME_INLINE constexpr Quaternion() noexcept = default;

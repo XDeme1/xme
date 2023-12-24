@@ -29,9 +29,9 @@ private:
 public:
     template<typename T, typename U>
         requires adl_swap<T, U>
-                 || (same_as<T, U> && std::is_lvalue_reference_v<T>
-                     && move_constructible<std::remove_reference_t<T>>
-                     && assignable_from<T, std::remove_reference_t<T>>)
+                 || (same_as_c<T, U> && std::is_lvalue_reference_v<T>
+                     && move_constructible_c<std::remove_reference_t<T>>
+                     && assignable_from_c<T, std::remove_reference_t<T>>)
     constexpr void operator()(T&& t, U&& u) const noexcept(is_noexcept<T, U>()) {
         if constexpr(adl_swap<T, U>) {
             swap(static_cast<T&&>(t), static_cast<U&&>(u));

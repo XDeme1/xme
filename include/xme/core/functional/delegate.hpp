@@ -2,6 +2,7 @@
 #include <functional>
 #include <memory>
 #include <array>
+#include <xme/ranges/swap.hpp>
 
 namespace xme {
 template<typename T>
@@ -19,19 +20,25 @@ public:
     };
 
     struct AnyData {
-        [[nodiscard]] inline constexpr auto access() noexcept -> void* { return data.data(); }
+        [[nodiscard]]
+        inline constexpr auto access() noexcept -> void* {
+            return data.data();
+        }
 
-        [[nodiscard]] inline constexpr auto access() const noexcept -> const void* {
+        [[nodiscard]]
+        inline constexpr auto access() const noexcept -> const void* {
             return data.data();
         }
 
         template<typename T>
-        [[nodiscard]] inline constexpr auto access() noexcept -> T& {
+        [[nodiscard]]
+        inline constexpr auto access() noexcept -> T& {
             return *static_cast<T*>(access());
         }
 
         template<typename T>
-        [[nodiscard]] inline constexpr auto access() const noexcept -> const T& {
+        [[nodiscard]]
+        inline constexpr auto access() const noexcept -> const T& {
             return *static_cast<const T*>(access());
         }
 
@@ -48,7 +55,7 @@ public:
         static constexpr std::size_t max_size  = sizeof(AnyCallable);
         static constexpr std::size_t max_align = alignof(AnyCallable);
         static constexpr bool is_local_storage =
-            sizeof(Functor) <= max_size && alignof(Functor) <= max_align;
+          sizeof(Functor) <= max_size && alignof(Functor) <= max_align;
 
         static constexpr auto invoke(const AnyData& functor, Args... args) -> R {
             return std::invoke(*handle(functor), std::forward<Args>(args)...);
@@ -162,9 +169,9 @@ public:
     }
 
     constexpr void swap(Delegate& other) noexcept {
-        std::swap(m_storage, other.m_storage);
-        std::swap(m_callable, other.m_callable);
-        std::swap(m_manager, other.m_manager);
+        ranges::swap(m_storage, other.m_storage);
+        ranges::swap(m_callable, other.m_callable);
+        ranges::swap(m_manager, other.m_manager);
     }
 
     template<typename Functor>

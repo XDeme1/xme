@@ -1,9 +1,10 @@
 #pragma once
 #include <ranges>
+#include <xme/core/concepts/same_as.hpp>
 
 namespace xme::ranges {
 template<typename D>
-    requires std::is_class_v<D> && std::same_as<D, std::remove_cv_t<D>>
+    requires std::is_class_v<D> && same_as_c<D, std::remove_cv_t<D>>
 class ViewInterface {
 public:
     template<std::ranges::sized_range R = D>

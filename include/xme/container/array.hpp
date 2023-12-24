@@ -8,12 +8,13 @@
 #include <xme/setup.hpp>
 #include <xme/ranges/uninitialized.hpp>
 #include <xme/ranges/destroy.hpp>
+#include <xme/ranges/swap.hpp>
 
 namespace xme {
 //! Array is a contigous container with dynamic size.
 //! @param T the type of the stored element
 //! @param Alloc must be an allocator that satisfies the Allocator concept
-template<typename T, CAllocator Alloc = std::allocator<T>>
+template<typename T, allocator_c Alloc = std::allocator<T>>
 class Array {
 private:
     using alloc_traits = std::allocator_traits<Alloc>;
@@ -217,9 +218,9 @@ public:
     }
 
     constexpr void swap(Array& other) noexcept {
-        std::ranges::swap(m_data, other.m_data);
+        ranges::swap(m_data, other.m_data);
         if constexpr(alloc_traits::propagate_on_container_swap::value) {
-            std::ranges::swap(m_allocator, other.m_allocator);
+            ranges::swap(m_allocator, other.m_allocator);
         }
         else {
             static_assert(alloc_traits::is_always_equal::value);
@@ -432,9 +433,9 @@ private:
         }
 
         constexpr auto operator=(ArrayData&& other) noexcept -> ArrayData& {
-            std::ranges::swap(begin, other.begin);
-            std::ranges::swap(end, other.end);
-            std::ranges::swap(storage_end, other.storage_end);
+            ranges::swap(begin, other.begin);
+            ranges::swap(end, other.end);
+            ranges::swap(storage_end, other.storage_end);
             return *this;
         }
 
