@@ -1,9 +1,14 @@
 #include <xme/core/utility/forward_like.hpp>
+#include <xme/core/concepts/same_as.hpp>
 
 int main() {
     int a{1};
-    static_assert(std::is_same_v<decltype(xme::forward_like<int&>(a)), int&>);
-    static_assert(std::is_same_v<decltype(xme::forward_like<int&&>(a)), int&&>);
-    static_assert(std::is_same_v<decltype(xme::forward_like<const int&>(a)), const int&>);
-    static_assert(std::is_same_v<decltype(xme::forward_like<const int&&>(a)), const int&&>);
+    int& b  = a;
+    int&& c = 2;
+    static_assert(requires {
+        { xme::forward_like<int&&>(1) } -> xme::same_as_c<int&&>;
+        { xme::forward_like<int&>(b) } -> xme::same_as_c<int&>;
+        { xme::forward_like<int&&>(b) } -> xme::same_as_c<int&&>;
+        { xme::forward_like<const int&>(c) } -> xme::same_as_c<const int&>;
+    });
 }
