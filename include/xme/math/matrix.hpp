@@ -42,7 +42,7 @@
     }
 
 namespace xme::math {
-template<floating_point T, std::size_t Cols, std::size_t Rows = Cols>
+template<floating_point_c T, std::size_t Cols, std::size_t Rows = Cols>
 class Matrix {
 public:
     using row_type    = Vector<T, Cols>;
@@ -53,7 +53,7 @@ public:
 
     constexpr Matrix() noexcept : Matrix(1) {}
 
-    template<CArithmetic U>
+    template<arithmetic_c U>
     explicit constexpr Matrix(U s) noexcept {
         constexpr std::size_t count = std::min(Cols, Rows);
         for(std::size_t i = 0; i < count; ++i)

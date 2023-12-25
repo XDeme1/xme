@@ -31,15 +31,15 @@ static_assert(!std::is_trivially_assignable_v<xme::Tuple<std::string>, xme::Tupl
 
 static_assert(std::convertible_to<xme::Tuple<int>, xme::Tuple<const int>>);
 
-static_assert(xme::CTupleLike<xme::Tuple<>>);
-static_assert(xme::CTupleLike<xme::Tuple<int, int, int&>>);
-static_assert(xme::CTupleLike<const xme::Tuple<int, int, int&>>);
+static_assert(xme::tuple_like_c<xme::Tuple<>>);
+static_assert(xme::tuple_like_c<xme::Tuple<int, int, int&>>);
+static_assert(xme::tuple_like_c<const xme::Tuple<int, int, int&>>);
 
-static_assert(xme::CTupleLike<xme::Tuple<int>&>);
-static_assert(xme::CTupleLike<xme::Tuple<int>&&>);
+static_assert(xme::tuple_like_c<xme::Tuple<int>&>);
+static_assert(xme::tuple_like_c<xme::Tuple<int>&&>);
 
-static_assert(xme::CPairLike<xme::Tuple<int, int>>);
-static_assert(!xme::CPairLike<xme::Tuple<>>);
+static_assert(xme::pair_like_c<xme::Tuple<int, int>>);
+static_assert(!xme::pair_like_c<xme::Tuple<>>);
 
 void test_convertions() {
     {

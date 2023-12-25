@@ -35,7 +35,7 @@
     }
 
 namespace xme::math {
-template<arithmetic T, std::size_t Size>
+template<arithmetic_c T, std::size_t Size>
 struct Vector {
 public:
     static constexpr std::size_t size = Size;

@@ -46,7 +46,7 @@ public:
 template<typename T, typename... Args, typename Temp = std::common_type_t<T, Args...>>
 Quaternion(T, Args...) -> Quaternion<std::conditional_t<std::is_integral_v<Temp>, float, Temp>>;
 
-template<floating_point T>
+template<floating_point_c T>
 XME_INLINE constexpr Quaternion<T>::operator Matrix<T, 3>() const noexcept {
     Matrix<T, 3> result{1};
     result[0][0] = 1 - 2 * (y * y + z * z);

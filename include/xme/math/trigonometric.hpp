@@ -6,7 +6,7 @@
 
 // For more information see: https://en.wikipedia.org/wiki/Inverse_trigonometric_functions
 namespace xme::math {
-template<arithmetic T, std::size_t>
+template<arithmetic_c T, std::size_t>
 struct Vector;
 
 template<floating_point_c T>

@@ -3,8 +3,6 @@ module;
 export module xme.math;
 
 export namespace xme::math {
-    using math::CArithmetic;
-
     using math::pi;
     using math::e;
     using math::phi;

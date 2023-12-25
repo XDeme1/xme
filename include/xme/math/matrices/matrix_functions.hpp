@@ -4,9 +4,9 @@
 #include <xme/core/concepts/concepts.hpp>
 
 namespace xme::math {
-template<arithmetic T, std::size_t Size>
+template<arithmetic_c T, std::size_t Size>
 struct Vector;
-template<floating_point T, std::size_t Cols, std::size_t Rows>
+template<floating_point_c T, std::size_t Cols, std::size_t Rows>
 class Matrix;
 
 template<typename T>

@@ -4,7 +4,7 @@
 #include <xme/math/vector.hpp>
 
 namespace xme::math {
-template<floating_point T, std::size_t Cols, std::size_t Rows>
+template<floating_point_c T, std::size_t Cols, std::size_t Rows>
 class Matrix;
 
 template<typename T, typename U>
