@@ -10,6 +10,5 @@
 #include <xme/core/concepts/constructible.hpp>
 #include <xme/core/concepts/boolean_testable.hpp>
 #include <xme/core/concepts/equality_comparable.hpp>
-#include <xme/core/concepts/movable.hpp>
-#include <xme/core/concepts/copyable.hpp>
-#include <xme/core/concepts/regular.hpp>
+#include <xme/core/concepts/totally_ordered.hpp>
+#include <xme/core/concepts/object_concepts.hpp>

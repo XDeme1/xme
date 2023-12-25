@@ -128,4 +128,14 @@ int main() {
         static_assert(xme::equality_comparable_c<float>);
         static_assert(!xme::equality_comparable_c<Foo>);
     }
+
+    {
+        struct Foo {
+            bool operator==(const Foo&) const  = default;
+            auto operator<=>(const Foo&) const = delete;
+        };
+
+        static_assert(!xme::totally_ordered_c<Foo>);
+        static_assert(xme::equality_comparable_c<Foo>);
+    }
 }
