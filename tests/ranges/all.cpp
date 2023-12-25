@@ -103,8 +103,7 @@ void test_owning() {
             { a.data() } -> std::same_as<int*>;
         });
         assert(a.size() == 4);
-        for(std::size_t i = 0; i < 4; ++i)
-            assert(a[i] == v[i]);
+        assert(v.empty());
     }
 }
 

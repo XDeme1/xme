@@ -10,8 +10,8 @@ template<typename T>
 constexpr void swap(T&, T&) = delete;
 
 template<typename T, typename U>
-concept adl_swap = (detail::class_or_enum<std::remove_reference_t<T>>
-                    || detail::class_or_enum<std::remove_reference_t<U>>)&&requires(T& t, U& u) {
+concept adl_swap = (detail::class_or_enum_c<std::remove_reference_t<T>>
+                    || detail::class_or_enum_c<std::remove_reference_t<U>>)&&requires(T& t, U& u) {
     swap(static_cast<T&&>(t), static_cast<U&&>(u));
 };
 

@@ -20,7 +20,7 @@ class RefView : public ViewInterface<RefView<R>> {
 
 public:
     template<typename T>
-        requires(!std::same_as<RefView, std::remove_cvref_t<T>>)
+        requires(!same_as_c<RefView, std::remove_cvref_t<T>>)
                 && convertible_to_c<T, R&> && requires { fun(std::declval<T>()); }
     constexpr RefView(T&& t) noexcept(noexcept(static_cast<R&>(std::declval<T>()))) :
       m_range(std::addressof(static_cast<R&>(std::forward<T>(t)))) {}
@@ -64,11 +64,11 @@ template<typename R>
 RefView(R&) -> RefView<R>;
 
 template<std::ranges::range R>
-    requires(std::movable<R>) && (!detail::is_initializer_list<std::remove_cvref_t<R>>)
+    requires(movable_c<R>) && (!detail::is_initializer_list<std::remove_cvref_t<R>>)
 class OwningView : public ViewInterface<OwningView<R>> {
 public:
     constexpr OwningView()
-        requires(std::default_initializable<R>)
+        requires(default_initializable_c<R>)
     = default;
 
     constexpr OwningView(const OwningView&) = delete;
@@ -155,10 +155,10 @@ private:
 namespace views {
 namespace detail {
 template<typename R>
-concept CRefViewPossible = requires { RefView{std::declval<R>()}; };
+concept ref_view_possible_c = requires { RefView{std::declval<R>()}; };
 
 template<typename R>
-concept COwningViewPossible = requires { OwningView{std::declval<R>()}; };
+concept owning_view_possible_c = requires { OwningView{std::declval<R>()}; };
 
 struct All : XME_RANGE_ADAPTOR_CLOSURE(All) {
 private:
@@ -166,7 +166,7 @@ private:
     static consteval bool is_noexcept() {
         if constexpr(std::ranges::view<std::decay_t<R>>)
             return std::is_nothrow_constructible_v<std::decay_t<R>, R>;
-        else if constexpr(CRefViewPossible<R>)
+        else if constexpr(ref_view_possible_c<R>)
             return noexcept(RefView{std::declval<R>()});
         else
             return noexcept(OwningView{std::declval<R>()});
@@ -174,12 +174,13 @@ private:
 
 public:
     template<std::ranges::viewable_range R>
-        requires std::ranges::view<std::decay_t<R>> || CRefViewPossible<R> || COwningViewPossible<R>
+        requires std::ranges::view<std::decay_t<R>> || ref_view_possible_c<R>
+                 || owning_view_possible_c<R>
     constexpr auto operator()(R&& r) const noexcept(is_noexcept<R>()) {
         if constexpr(std::ranges::view<std::decay_t<R>>) {
             return std::forward<R>(r);
         }
-        else if constexpr(detail::CRefViewPossible<R>) {
+        else if constexpr(detail::ref_view_possible_c<R>) {
             return RefView{std::forward<R>(r)};
         }
         else {
