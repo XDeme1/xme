@@ -118,4 +118,14 @@ int main() {
         static_assert(xme::copy_constructible_c<Foo6&>);
         static_assert(!xme::copy_constructible_c<Foo6&&>);
     }
+
+    {
+        struct Foo {
+            bool operator==(const Foo&) = delete;
+        };
+
+        static_assert(xme::equality_comparable_c<int&&>);
+        static_assert(xme::equality_comparable_c<float>);
+        static_assert(!xme::equality_comparable_c<Foo>);
+    }
 }

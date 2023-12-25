@@ -8,3 +8,8 @@
 #include <xme/core/concepts/swappable.hpp>
 #include <xme/core/concepts/destructible.hpp>
 #include <xme/core/concepts/constructible.hpp>
+#include <xme/core/concepts/boolean_testable.hpp>
+#include <xme/core/concepts/equality_comparable.hpp>
+#include <xme/core/concepts/movable.hpp>
+#include <xme/core/concepts/copyable.hpp>
+#include <xme/core/concepts/regular.hpp>
