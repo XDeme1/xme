@@ -2,8 +2,8 @@
 #include <array>
 #include <cassert>
 #include <cstddef>
-#include <xme/iterators/contiguous_iterator.hpp>
-#include <xme/iterators/reverse_iterator.hpp>
+#include <xme/core/iterators/contiguous_iterator.hpp>
+#include <xme/core/iterators/reverse_iterator.hpp>
 
 namespace xme {
 template<typename T, std::size_t Size>

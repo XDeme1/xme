@@ -3,8 +3,8 @@
 #include <algorithm>
 #include <cassert>
 #include <memory>
-#include <xme/iterators/contiguous_iterator.hpp>
-#include <xme/iterators/reverse_iterator.hpp>
+#include <xme/core/iterators/contiguous_iterator.hpp>
+#include <xme/core/iterators/reverse_iterator.hpp>
 #include <xme/setup.hpp>
 #include <xme/ranges/uninitialized.hpp>
 #include <xme/ranges/destroy.hpp>
