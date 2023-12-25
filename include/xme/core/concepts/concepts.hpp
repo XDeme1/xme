@@ -12,3 +12,4 @@
 #include <xme/core/concepts/equality_comparable.hpp>
 #include <xme/core/concepts/totally_ordered.hpp>
 #include <xme/core/concepts/object_concepts.hpp>
+#include <xme/core/concepts/callable_concepts.hpp>
