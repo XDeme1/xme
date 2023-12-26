@@ -5,7 +5,7 @@ target_sources(xme_modules PUBLIC
     xme.cppm
     container/container.cppm
     core/functional/functional.cppm
-    iterators/iterators.cppm
+    core/iterators/iterators.cppm
     math/math.cppm
     core/utility/utility.cppm)
 

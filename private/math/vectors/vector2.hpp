@@ -100,8 +100,8 @@ struct Vector<T, 2> {
         return math::normalize(*this);
     }
 
-    T x{};
-    T y{};
+    T x;
+    T y;
 };
 }  // namespace xme::math
 

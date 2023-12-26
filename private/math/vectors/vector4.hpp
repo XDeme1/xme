@@ -130,10 +130,10 @@ struct Vector<T, 4> {
         return math::normalize(*this);
     }
 
-    T x{};
-    T y{};
-    T z{};
-    T w{};
+    T x;
+    T y;
+    T z;
+    T w;
 };
 }  // namespace xme::math
 

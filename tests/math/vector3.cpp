@@ -5,6 +5,7 @@
 namespace math = xme::math;
 
 math::vec3 fv3{1.5, 2, 3};
+static_assert(std::is_trivial_v<decltype(fv3)>);
 
 int test_access() {
     int errors = 0;
@@ -291,7 +292,7 @@ int test_operations() {
         auto r3 = math::reflect(v1, math::vec3{0, 0, 1});
 
         bool error =
-            r1 != math::vec3{1, -1, 1} || r2 != math::vec3{-1, 1, 1} || r3 != math::vec3{1, 1, -1};
+          r1 != math::vec3{1, -1, 1} || r2 != math::vec3{-1, 1, 1} || r3 != math::vec3{1, 1, -1};
         if(error) {
             std::cerr << "xme::Vector::reflect error\n";
             ++errors;

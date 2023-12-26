@@ -6,6 +6,7 @@
 namespace math = xme::math;
 
 math::Vector<float, 5> fv5{1.5, 2, 3, 4, 5};
+static_assert(std::is_trivial_v<decltype(fv5)>);
 
 void test_deduction_guide() {
     math::Vector v1{1, 5, 1.5f, 1, 2};
@@ -258,7 +259,7 @@ int test_operations() {
     }
     {
         auto d =
-            math::dot(math::Vector<float, 5>{3, 3, 1, 1, 2}, math::Vector<float, 5>{2, 8, 1, 2, 1});
+          math::dot(math::Vector<float, 5>{3, 3, 1, 1, 2}, math::Vector<float, 5>{2, 8, 1, 2, 1});
 
         bool error = d != 35;
         if(error) {

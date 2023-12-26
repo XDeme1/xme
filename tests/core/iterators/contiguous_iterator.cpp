@@ -1,6 +1,6 @@
 #include <iostream>
-#include <xme/iterators/contiguous_iterator.hpp>
-#include <xme/iterators/reverse_iterator.hpp>
+#include <xme/core/iterators/contiguous_iterator.hpp>
+#include <xme/core/iterators/reverse_iterator.hpp>
 
 template<typename T>
 using iterator = xme::ContiguousIterator<T>;

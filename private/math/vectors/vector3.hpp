@@ -113,9 +113,9 @@ struct Vector<T, 3> {
         return math::normalize(*this);
     }
 
-    T x{};
-    T y{};
-    T z{};
+    T x;
+    T y;
+    T z;
 };
 }  // namespace xme::math
 

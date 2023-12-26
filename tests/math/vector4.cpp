@@ -6,6 +6,7 @@
 namespace math = xme::math;
 
 math::vec4 fv4{1.5, 2, 3, 4};
+static_assert(std::is_trivial_v<decltype(fv4)>);
 
 int test_access() {
     int errors = 0;

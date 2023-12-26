@@ -107,7 +107,7 @@ public:
         return math::normalize(*this);
     }
 
-    std::array<T, Size> m_data{};
+    std::array<T, Size> m_data;
 };
 
 template<typename T, typename... Args>
