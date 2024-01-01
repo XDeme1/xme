@@ -112,53 +112,7 @@ public:
 
 template<typename T, typename... Args>
 Vector(T, Args...) -> Vector<std::common_type_t<T, Args...>, sizeof...(Args) + 1>;
-
-template<std::size_t I, typename T, std::size_t Size>
-[[nodiscard]]
-XME_INLINE constexpr auto get(Vector<T, Size>& v) noexcept -> decltype(auto) {
-    return v[I];
-}
-
-template<std::size_t I, typename T, std::size_t Size>
-[[nodiscard]]
-XME_INLINE constexpr auto get(const Vector<T, Size>& v) noexcept -> decltype(auto) {
-    return v[I];
-}
-
-template<typename T, std::size_t Size>
-[[nodiscard]]
-XME_INLINE constexpr auto begin(Vector<T, Size>& v) noexcept -> T* {
-    return std::addressof(v[0]);
-}
-
-template<typename T, std::size_t Size>
-[[nodiscard]]
-XME_INLINE constexpr auto begin(const Vector<T, Size>& v) noexcept -> const T* {
-    return std::addressof(v[0]);
-}
-
-template<typename T, std::size_t Size>
-[[nodiscard]]
-XME_INLINE constexpr auto end(Vector<T, Size>& v) noexcept -> T* {
-    return std::addressof(v[Size - 1]) + 1;
-}
-
-template<typename T, std::size_t Size>
-[[nodiscard]]
-XME_INLINE constexpr auto end(const Vector<T, Size>& v) noexcept -> const T* {
-    return std::addressof(v[Size - 1]) + 1;
-}
 }  // namespace xme::math
-
-namespace std {
-template<typename T, std::size_t Size>
-struct tuple_size<xme::math::Vector<T, Size>> : integral_constant<std::size_t, Size> {};
-
-template<std::size_t I, typename T, std::size_t Size>
-struct tuple_element<I, xme::math::Vector<T, Size>> {
-    using type = T;
-};
-}  // namespace std
 
 #undef VEC_OP
 #undef VEC_SELF_OP

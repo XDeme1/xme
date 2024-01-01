@@ -27,25 +27,6 @@ int test_access() {
             ++errors;
         }
     }
-    {
-        math::Vector<float, 5> v{2.f};
-        bool error = math::get<0>(v) != 2 || math::get<1>(v) != 2 || math::get<2>(v) != 2
-                     || math::get<3>(v) != 2 || math::get<4>(v) != 2;
-        if(error) {
-            std::cerr << "xme::Vector get error\n";
-            ++errors;
-        }
-    }
-    {
-        math::Vector<int, 5> v{1, 1, 3, 5, 2};
-        auto b     = begin(v);
-        bool error = *(b++) != 1 || *(b++) != 1 || *(b++) != 3 || *(b++) != 5 || *(b++) != 2;
-        error |= b != end(v);
-        if(error) {
-            std::cerr << "xme::Vector begin/end error\n";
-            ++errors;
-        }
-    }
     return errors;
 }
 

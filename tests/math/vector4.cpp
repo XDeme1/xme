@@ -18,25 +18,6 @@ int test_access() {
             ++errors;
         }
     }
-    {
-        math::vec4 v{2};
-        bool error = math::get<0>(v) != 2 || math::get<1>(v) != 2 || math::get<2>(v) != 2
-                     || math::get<3>(v) != 2;
-        if(error) {
-            std::cerr << "xme::Vector get error\n";
-            ++errors;
-        }
-    }
-    {
-        math::vec4 v{1, 5, math::vec2(2, 4)};
-        auto b     = begin(v);
-        bool error = *(b++) != 1 || *(b++) != 5 || *(b++) != 2 || *(b++) != 4;
-        error |= b != end(v);
-        if(error) {
-            std::cerr << "xme::Vector begin/end error\n";
-            ++errors;
-        }
-    }
     return errors;
 }
 

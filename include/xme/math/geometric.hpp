@@ -1,7 +1,7 @@
 #pragma once
 #include <cmath>
 #include <xme/setup.hpp>
-#include <xme/core/concepts/concepts.hpp>
+#include <xme/core/concepts/arithmetic.hpp>
 
 namespace xme::math {
 template<arithmetic_c T, std::size_t Size>
