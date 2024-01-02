@@ -59,14 +59,14 @@ using dmat4x4 = Matrix<double, 4, 4>;
 
 //! Alias for lerp.
 //! For compatibility with glsl mix
-template<std::floating_point T, arithmetic_c U, std::size_t N>
+template<std::floating_point T, CArithmetic U, std::size_t N>
 XME_INLINE constexpr auto mix(const Vector<T, N>& v1, const Vector<T, N>& v2, U percent) {
     return lerp(v1, v2, percent);
 }
 
 //! Alias for lerp.
 //! For compatibility with glsl mix
-template<std::floating_point T, arithmetic_c U, std::size_t N>
+template<std::floating_point T, CArithmetic U, std::size_t N>
 XME_INLINE constexpr auto mix(const Vector<T, N>& v1, const Vector<T, N>& v2,
                               const Vector<U, N>& percent) {
     return lerp(v1, v2, percent);

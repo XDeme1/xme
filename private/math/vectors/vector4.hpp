@@ -42,10 +42,10 @@
     }
 
 namespace xme::math {
-template<arithmetic_c T, std::size_t Size>
+template<CArithmetic T, std::size_t Size>
 struct Vector;
 
-template<arithmetic_c T>
+template<CArithmetic T>
 struct Vector<T, 4> {
     static constexpr std::size_t size = 4;
 

@@ -12,9 +12,6 @@ export namespace xme::math {
     using math::sqrt_three;
 
     using math::Vector;
-    using math::get;
-    using math::begin;
-    using math::end;
 
     using math::Matrix;
     using math::perspective;

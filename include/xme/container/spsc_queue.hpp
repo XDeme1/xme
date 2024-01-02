@@ -12,19 +12,19 @@ namespace xme {
 //!     xme::Capacity<std::size_t>: Creates a compile time sized SPSCQueue.
 //!     Allocator: Creates a runtime sized SPSCQueue.
 template<typename T, typename Policy = std::allocator<T>>
-class SPSCQueue : std::conditional_t<allocator_c<Policy>, detail::DynamicSPSCQueue<T, Policy>,
+class SPSCQueue : std::conditional_t<CAllocator<Policy>, detail::DynamicSPSCQueue<T, Policy>,
                                      detail::StaticSPSCQueue<T, Policy>> {
 private:
-    using super = std::conditional_t<allocator_c<Policy>, detail::DynamicSPSCQueue<T, Policy>,
+    using super = std::conditional_t<CAllocator<Policy>, detail::DynamicSPSCQueue<T, Policy>,
                                      detail::StaticSPSCQueue<T, Policy>>;
 
 public:
     constexpr SPSCQueue()
-        requires(!allocator_c<Policy>)
+        requires(!CAllocator<Policy>)
     = default;
 
     constexpr SPSCQueue(std::size_t capacity)
-        requires(allocator_c<Policy>)
+        requires(CAllocator<Policy>)
       : super(capacity) {
         assert(std::has_single_bit(capacity) && "capacity must be a power of 2");
     }

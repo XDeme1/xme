@@ -6,9 +6,9 @@ int main() {
     int& b  = a;
     int&& c = 2;
     static_assert(requires {
-        { xme::forward_like<int&&>(1) } -> xme::same_as_c<int&&>;
-        { xme::forward_like<int&>(b) } -> xme::same_as_c<int&>;
-        { xme::forward_like<int&&>(b) } -> xme::same_as_c<int&&>;
-        { xme::forward_like<const int&>(c) } -> xme::same_as_c<const int&>;
+        { xme::forward_like<int&&>(1) } -> xme::CSameAs<int&&>;
+        { xme::forward_like<int&>(b) } -> xme::CSameAs<int&>;
+        { xme::forward_like<int&&>(b) } -> xme::CSameAs<int&&>;
+        { xme::forward_like<const int&>(c) } -> xme::CSameAs<const int&>;
     });
 }

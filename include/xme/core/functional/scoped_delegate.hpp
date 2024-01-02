@@ -7,7 +7,7 @@ namespace xme {
 //! @brief Calls a function at the end of this object scope
 //!
 //! The function called must not throw an exception and cannot have parameters
-template<invocable_c F>
+template<CInvocable F>
 class ScopedDelegate {
 public:
     XME_INLINE constexpr ScopedDelegate(F& func) noexcept : m_callable(func) {}

@@ -20,7 +20,7 @@ inline constexpr detail::DestroyA destroy_a;
 
 namespace detail {
 struct DestroyAtA {
-    template<destructible_c T, typename Alloc>
+    template<CDestructible T, typename Alloc>
     constexpr void operator()(T* pos, Alloc& alloc) const noexcept {
         using traits = std::allocator_traits<Alloc>;
         if constexpr(std::is_array_v<T>) {

@@ -4,7 +4,7 @@
 
 namespace xme::ranges {
 template<typename D>
-    requires std::is_class_v<D> && same_as_c<D, std::remove_cv_t<D>>
+    requires std::is_class_v<D> && CSameAs<D, std::remove_cv_t<D>>
 class ViewInterface {
 public:
     template<std::ranges::sized_range R = D>

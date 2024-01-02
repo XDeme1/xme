@@ -20,8 +20,8 @@ class RefView : public ViewInterface<RefView<R>> {
 
 public:
     template<typename T>
-        requires(!same_as_c<RefView, std::remove_cvref_t<T>>)
-                && convertible_to_c<T, R&> && requires { fun(std::declval<T>()); }
+        requires(!CSameAs<RefView, std::remove_cvref_t<T>>)
+                && CConvertibleTo<T, R&> && requires { fun(std::declval<T>()); }
     constexpr RefView(T&& t) noexcept(noexcept(static_cast<R&>(std::declval<T>()))) :
       m_range(std::addressof(static_cast<R&>(std::forward<T>(t)))) {}
 
@@ -64,11 +64,11 @@ template<typename R>
 RefView(R&) -> RefView<R>;
 
 template<std::ranges::range R>
-    requires(movable_c<R>) && (!detail::is_initializer_list<std::remove_cvref_t<R>>)
+    requires(CMovable<R>) && (!detail::is_initializer_list<std::remove_cvref_t<R>>)
 class OwningView : public ViewInterface<OwningView<R>> {
 public:
     constexpr OwningView()
-        requires(default_initializable_c<R>)
+        requires(CDefaultInitializable<R>)
     = default;
 
     constexpr OwningView(const OwningView&) = delete;

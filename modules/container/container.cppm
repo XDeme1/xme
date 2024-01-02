@@ -3,9 +3,9 @@ module;
 export module xme.container;
 
 export namespace xme {
-using xme::allocator_c;
-using xme::tuple_like_c;
-using xme::pair_like_c;
+using xme::CAllocator;
+using xme::CTupleLike;
+using xme::CPairLike;
 
 using xme::AlignedData;
 

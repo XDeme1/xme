@@ -14,7 +14,7 @@ namespace xme {
 //! Array is a contigous container with dynamic size.
 //! @param T the type of the stored element
 //! @param Alloc must be an allocator that satisfies the Allocator concept
-template<typename T, allocator_c Alloc = std::allocator<T>>
+template<typename T, typename Alloc = std::allocator<T>>
 class Array {
 private:
     using alloc_traits = std::allocator_traits<Alloc>;

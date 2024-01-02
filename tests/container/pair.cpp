@@ -2,9 +2,9 @@
 #include <xme/container/tuple.hpp>
 #include <iostream>
 
-static_assert(xme::tuple_like_c<xme::Pair<int, int&>>);
-static_assert(xme::pair_like_c<xme::Pair<int, int&>>);
-static_assert(xme::pair_like_c<const xme::Pair<int, int&>>);
+static_assert(xme::CTupleLike<xme::Pair<int, int&>>);
+static_assert(xme::CPairLike<xme::Pair<int, int&>>);
+static_assert(xme::CPairLike<const xme::Pair<int, int&>>);
 
 static_assert(std::is_aggregate_v<xme::Pair<int, std::string>>);
 

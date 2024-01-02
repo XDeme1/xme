@@ -6,16 +6,16 @@
 
 namespace xme {
 template<typename T>
-concept movable_c =
-  std::is_object_v<T> && move_constructible_c<T> && assignable_from_c<T&, T> && swappable_c<T>;
+concept CMovable =
+  std::is_object_v<T> && CMoveConstructible<T> && CAssignableFrom<T&, T> && CSwappable<T>;
 
 template<typename T>
-concept copyable_c = copy_constructible_c<T> && movable_c<T> && assignable_from_c<T&, T&>
-                     && assignable_from_c<T&, const T&> && assignable_from_c<T&, const T>;
+concept CCopyable = CCopyConstructible<T> && CMovable<T> && CAssignableFrom<T&, T&>
+                    && CAssignableFrom<T&, const T&> && CAssignableFrom<T&, const T>;
 
 template<typename T>
-concept semiregular_c = copyable_c<T> && default_initializable_c<T>;
+concept CSemiregular = CCopyable<T> && CDefaultInitializable<T>;
 
 template<typename T>
-concept regular_c = semiregular_c<T> && equality_comparable_c<T>;
+concept CRegular = CSemiregular<T> && CEqualityComparable<T>;
 }  // namespace xme

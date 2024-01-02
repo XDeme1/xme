@@ -3,5 +3,5 @@
 
 namespace xme {
 template<typename T, typename U>
-concept same_as_c = std::is_same_v<T, U> && std::is_same_v<U, T>;
+concept CSameAs = std::is_same_v<T, U> && std::is_same_v<U, T>;
 }

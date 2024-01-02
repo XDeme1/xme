@@ -18,7 +18,7 @@ public:
     constexpr BindFront(BindFront&&) noexcept = default;
 
     template<typename Fn, typename... BoundArgs>
-        requires(!same_as_c<BindFront, std::decay_t<Fn>>)
+        requires(!CSameAs<BindFront, std::decay_t<Fn>>)
     explicit constexpr BindFront(Fn&& func, BoundArgs&&... args)
       noexcept(std::is_nothrow_constructible_v<F, Fn>
                && (std::is_nothrow_constructible_v<BoundArgs, Args> && ...)) :
@@ -83,7 +83,7 @@ public:
     constexpr BindBack(BindBack&&) noexcept = default;
 
     template<typename Fn, typename... BoundArgs>
-        requires(!same_as_c<BindBack, std::decay_t<Fn>>)
+        requires(!CSameAs<BindBack, std::decay_t<Fn>>)
     explicit constexpr BindBack(Fn&& func, BoundArgs&&... args)
       noexcept(std::is_nothrow_constructible_v<F, Fn>
                && (std::is_nothrow_constructible_v<Args, BoundArgs> && ...)) :

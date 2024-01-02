@@ -5,7 +5,7 @@
 
 namespace xme {
 template<typename Alloc>
-concept allocator_c = requires(Alloc a, typename Alloc::value_type* ptr) {
+concept CAllocator = requires(Alloc a, typename Alloc::value_type* ptr) {
     typename Alloc::value_type;
     typename Alloc::size_type;
     typename Alloc::difference_type;
@@ -15,18 +15,18 @@ concept allocator_c = requires(Alloc a, typename Alloc::value_type* ptr) {
 
 namespace detail {
 template<typename T, std::size_t I>
-concept tuple_element_c = requires(T t) {
+concept CTupleElement = requires(T t) {
     typename std::tuple_element_t<I, std::remove_const_t<T>>;
     { get<I>(t) } -> std::convertible_to<const std::tuple_element_t<I, T>&>;
 };
 
 template<typename T, std::size_t... I>
 constexpr auto tuple_element(std::index_sequence<I...>) noexcept {
-    return (detail::tuple_element_c<T, I> && ...);
+    return (detail::CTupleElement<T, I> && ...);
 }
 
 template<typename T>
-concept tuple_like_impl_c = requires(T t) {
+concept CTupleLikeImpl = requires(T t) {
     typename std::tuple_size<T>::type;
     requires std::derived_from<std::tuple_size<T>,
                                std::integral_constant<std::size_t, std::tuple_size_v<T>>>;
@@ -34,8 +34,8 @@ concept tuple_like_impl_c = requires(T t) {
 }  // namespace detail
 
 template<typename T>
-concept tuple_like_c = detail::tuple_like_impl_c<std::remove_cvref_t<T>>;
+concept CTupleLike = detail::CTupleLikeImpl<std::remove_cvref_t<T>>;
 
 template<typename T>
-concept pair_like_c = tuple_like_c<T> && (std::tuple_size_v<std::remove_cvref_t<T>> == 2);
+concept CPairLike = CTupleLike<T> && (std::tuple_size_v<std::remove_cvref_t<T>> == 2);
 }  // namespace xme

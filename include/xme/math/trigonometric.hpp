@@ -6,37 +6,37 @@
 
 // For more information see: https://en.wikipedia.org/wiki/Inverse_trigonometric_functions
 namespace xme::math {
-template<arithmetic_c T, std::size_t>
+template<CArithmetic T, std::size_t>
 struct Vector;
 
-template<floating_point_c T>
+template<CFloatingPoint T>
 [[nodiscard]]
 XME_INLINE constexpr auto radians(T deg) noexcept -> T {
-    static_assert(std::is_floating_point_v<T>, "T must be a floating point");
+    static_assert(CFloatingPoint<T>, "T must be a floating point");
     return deg * (math::pi_v<T> / 180);
 }
 
-template<floating_point_c T>
+template<CFloatingPoint T>
 [[nodiscard]]
 XME_INLINE constexpr auto degrees(T rad) noexcept -> T {
-    static_assert(std::is_floating_point_v<T>, "T must be a floating point");
+    static_assert(CFloatingPoint<T>, "T must be a floating point");
     return rad * (180 / math::pi_v<T>);
 }
 
-template<floating_point_c T, std::size_t Size>
+template<CFloatingPoint T, std::size_t Size>
 [[nodiscard]]
 XME_INLINE constexpr auto radians(const Vector<T, Size>& deg) noexcept -> Vector<T, Size> {
-    static_assert(std::is_floating_point_v<T>, "T must be a floating point");
+    static_assert(CFloatingPoint<T>, "T must be a floating point");
     Vector<T, Size> result;
     for(std::size_t i = 0; i < Size; ++i)
         result[i] = radians(deg[i]);
     return result;
 }
 
-template<floating_point_c T, std::size_t Size>
+template<CFloatingPoint T, std::size_t Size>
 [[nodiscard]]
 XME_INLINE constexpr auto degrees(const Vector<T, Size>& rad) noexcept -> Vector<T, Size> {
-    static_assert(std::is_floating_point_v<T>, "T must be a floating point");
+    static_assert(CFloatingPoint<T>, "T must be a floating point");
     Vector<T, Size> result;
     for(std::size_t i = 0; i < Size; ++i)
         result[i] = degrees(rad[i]);

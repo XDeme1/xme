@@ -5,10 +5,10 @@
 
 //! http://www.songho.ca/opengl/gl_projectionmatrix.html
 namespace xme::math {
-template<floating_point_c T, std::size_t Cols, std::size_t Rows>
+template<CFloatingPoint T, std::size_t Cols, std::size_t Rows>
 class Matrix;
 
-template<floating_point_c T>
+template<CFloatingPoint T>
 [[nodiscard]]
 XME_INLINE constexpr auto perspective_rh(T fov, T aspect_ratio, T near,
                                          T far) noexcept -> Matrix<T, 4, 4> {
@@ -23,7 +23,7 @@ XME_INLINE constexpr auto perspective_rh(T fov, T aspect_ratio, T near,
     return result;
 }
 
-template<floating_point_c T>
+template<CFloatingPoint T>
 [[nodiscard]]
 XME_INLINE constexpr auto perspective_lh(T fov, T aspect_ratio, T near,
                                          T far) noexcept -> Matrix<T, 4, 4> {
@@ -38,7 +38,7 @@ XME_INLINE constexpr auto perspective_lh(T fov, T aspect_ratio, T near,
     return result;
 }
 
-template<floating_point_c T>
+template<CFloatingPoint T>
 [[nodiscard]]
 XME_INLINE constexpr auto perspective(T fov, T aspect_ratio, T near,
                                       T far) noexcept -> Matrix<T, 4, 4> {
@@ -49,7 +49,7 @@ XME_INLINE constexpr auto perspective(T fov, T aspect_ratio, T near,
 #endif
 }
 
-template<floating_point_c T>
+template<CFloatingPoint T>
 [[nodiscard]]
 XME_INLINE constexpr auto perspective_lh(T left, T right, T bottom, T top, T near,
                                          T far) noexcept -> Matrix<T, 4, 4> {
@@ -64,7 +64,7 @@ XME_INLINE constexpr auto perspective_lh(T left, T right, T bottom, T top, T nea
     return result;
 }
 
-template<floating_point_c T>
+template<CFloatingPoint T>
 [[nodiscard]]
 XME_INLINE constexpr auto perspective_rh(T left, T right, T bottom, T top, T near,
                                          T far) noexcept -> Matrix<T, 4, 4> {
@@ -79,7 +79,7 @@ XME_INLINE constexpr auto perspective_rh(T left, T right, T bottom, T top, T nea
     return result;
 }
 
-template<floating_point_c T>
+template<CFloatingPoint T>
 [[nodiscard]]
 XME_INLINE constexpr auto perspective(T left, T right, T bottom, T top, T near,
                                       T far) noexcept -> Matrix<T, 4, 4> {
@@ -90,7 +90,7 @@ XME_INLINE constexpr auto perspective(T left, T right, T bottom, T top, T near,
 #endif
 }
 
-template<floating_point_c T>
+template<CFloatingPoint T>
 [[nodiscard]]
 XME_INLINE constexpr auto ortho_lh(T left, T right, T bottom, T top, T near,
                                    T far) noexcept -> Matrix<T, 4, 4> {
@@ -104,7 +104,7 @@ XME_INLINE constexpr auto ortho_lh(T left, T right, T bottom, T top, T near,
     return result;
 }
 
-template<floating_point_c T>
+template<CFloatingPoint T>
 [[nodiscard]]
 XME_INLINE constexpr auto ortho_rh(T left, T right, T bottom, T top, T near,
                                    T far) noexcept -> Matrix<T, 4, 4> {
@@ -118,7 +118,7 @@ XME_INLINE constexpr auto ortho_rh(T left, T right, T bottom, T top, T near,
     return result;
 }
 
-template<floating_point_c T>
+template<CFloatingPoint T>
 [[nodiscard]]
 XME_INLINE constexpr auto ortho(T left, T right, T bottom, T top, T near,
                                 T far) noexcept -> Matrix<T, 4, 4> {

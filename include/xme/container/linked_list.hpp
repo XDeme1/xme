@@ -12,7 +12,7 @@ namespace xme {
 //! insert at the middle is O(n).
 //! @param T the type of the stored element
 //! @param Alloc must be an allocator that satisfies the Allocator concept
-template<typename T, allocator_c Alloc = std::allocator<T>>
+template<typename T, typename Alloc = std::allocator<T>>
 class LinkedList {
 private:
     using node_base = detail::LinkedListNodeBase;

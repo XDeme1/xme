@@ -3,7 +3,7 @@
 #include <xme/core/concepts/concepts.hpp>
 
 namespace xme::math {
-template<floating_point_c T>
+template<CFloatingPoint T>
 class Quaternion {
 public:
     constexpr Quaternion() noexcept = default;
