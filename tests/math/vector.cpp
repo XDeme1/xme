@@ -1,6 +1,5 @@
 #include <iostream>
 #include <xme/math/vector.hpp>
-#include <xme/math/normal.hpp>
 #include <xme/math/glsl_mapping.hpp>
 
 namespace math = xme::math;

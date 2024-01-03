@@ -1,6 +1,5 @@
 #pragma once
 #include <cstddef>
-#include <xme/setup.hpp>
 #include <xme/math/vector.hpp>
 
 namespace xme::math {

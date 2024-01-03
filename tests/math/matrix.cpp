@@ -158,8 +158,8 @@ int test_matrix_multiplication() {
     static_assert(std::is_same_v<decltype(math::mat2{} * math::vec2{}), math::vec2>);
     static_assert(std::is_same_v<decltype(math::mat3{} * math::vec3{}), math::vec3>);
     static_assert(std::is_same_v<decltype(math::mat4{} * math::vec4{}), math::vec4>);
-    static_assert(std::is_same_v<decltype(math::Matrix<float, 4, 1>{} * math::vec4{}),
-        math::Vector<float, 1>>);
+    static_assert(
+      std::is_same_v<decltype(math::Matrix<float, 4, 1>{} * math::vec4{}), math::Vector<float, 1>>);
     static_assert(std::is_same_v<decltype(math::mat3x2{} * math::vec3{}), math::vec2>);
     {
         math::mat4 m{2};
@@ -210,7 +210,7 @@ int test_basic_functions() {
             math::vec2{3, 4},
             math::vec2{1, 2}
         };
-        bool error = m.determinant() != 2;
+        bool error = determinant(m) != 2;
 
         if(error) {
             std::cerr << "xme::math::Matrix::determinant 2 error\n";
@@ -223,7 +223,7 @@ int test_basic_functions() {
             math::vec3{7, 3, 4},
             math::vec3{9, 7, 8}
         };
-        bool error = m.determinant() != -58;
+        bool error = determinant(m) != -58;
         if(error) {
             std::cerr << "xme::math::Matrix::determinant 3 error\n";
             ++errors;

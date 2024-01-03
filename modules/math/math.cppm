@@ -34,9 +34,9 @@ export namespace xme::math {
     using math::arccos;
     using math::arctan;
 
-    using math::arcsec;
-    using math::arccsc;
-    using math::arccot;
+//    using math::arcsec;
+ //   using math::arccsc;
+ //   using math::arccot;
 
     using math::bvec2;
     using math::bvec3;

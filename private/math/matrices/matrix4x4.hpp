@@ -1,7 +1,7 @@
 #pragma once
 #include <xme/math/vector.hpp>
-#include <xme/math/matrices/matrix_functions.hpp>
-#include <xme/math/matrices/matrix_transformation.hpp>
+#include <xme/math/matrices/functions.hpp>
+#include <xme/math/matrices/transformation.hpp>
 
 #define MAT_OP1(op)                                               \
     [[nodiscard]]                                                 \

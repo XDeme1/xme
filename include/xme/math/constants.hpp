@@ -1,5 +1,5 @@
 #pragma once
-#include <xme/core/concepts/concepts.hpp>
+#include <xme/core/concepts/arithmetic.hpp>
 
 namespace xme::math {
 //! e

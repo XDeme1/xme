@@ -1,15 +1,16 @@
 #pragma once
 #include <cassert>
 #include <array>
-#include <type_traits>
-#include "geometric.hpp"
+#include <cmath>
+#include <xme/setup.hpp>
+#include <xme/core/concepts/arithmetic.hpp>
 
 #define VEC_OP(op)                                                                  \
     [[nodiscard]]                                                                   \
     constexpr auto operator op(auto s) const noexcept -> Vector {                   \
         Vector result{};                                                            \
         for(std::size_t i = 0; i < Size; ++i)                                       \
-            result[i] = ((*this)[i] op static_cast<T>(s));                          \
+            result[i] = (*this)[i] op static_cast<T>(s);                            \
         return result;                                                              \
     }                                                                               \
     template<typename U>                                                            \
@@ -17,7 +18,7 @@
     constexpr auto operator op(const Vector<U, Size>& v) const noexcept -> Vector { \
         Vector result{};                                                            \
         for(std::size_t i = 0; i < Size; ++i)                                       \
-            result[i] = ((*this)[i] op static_cast<T>(v[i]));                       \
+            result[i] = (*this)[i] op static_cast<T>(v[i]);                         \
         return result;                                                              \
     }
 
@@ -99,12 +100,17 @@ public:
 
     [[nodiscard]]
     constexpr auto length() const noexcept -> T {
-        return math::length(*this);
+        T result{0};
+        for(std::size_t i = 0; i < Size; ++i)
+            result += (*this)[i] * (*this)[i];
+        return std::sqrt(result);
     }
 
     [[nodiscard]]
-    constexpr auto normalize() const noexcept -> Vector {
-        return math::normalize(*this);
+    constexpr auto normalize() const noexcept -> Vector
+        requires(CFloatingPoint<T>)
+    {
+        return (*this) * (1 / length());
     }
 
     std::array<T, Size> m_data;
@@ -120,3 +126,5 @@ Vector(T, Args...) -> Vector<std::common_type_t<T, Args...>, sizeof...(Args) + 1
 #include "../../../private/math/vectors/vector2.hpp"
 #include "../../../private/math/vectors/vector3.hpp"
 #include "../../../private/math/vectors/vector4.hpp"
+#include "vectors/functions.hpp"
+#include "vectors/geometry.hpp"

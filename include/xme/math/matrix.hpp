@@ -1,9 +1,9 @@
 #pragma once
 #include <type_traits>
 #include "vector.hpp"
-#include "matrices/matrix_perspective.hpp"
-#include "matrices/matrix_functions.hpp"
-#include "matrices/matrix_transformation.hpp"
+#include "matrices/perspective.hpp"
+#include "matrices/functions.hpp"
+#include "matrices/transformation.hpp"
 
 #define MAT_OP1(op)                                               \
     [[nodiscard]]                                                 \
@@ -145,16 +145,6 @@ public:
     constexpr auto column(std::size_t column) const noexcept -> column_type {
         return m_data[column];
     };
-
-    [[nodiscard]]
-    constexpr auto determinant() const noexcept -> T {
-        return math::determinant(*this);
-    }
-
-    [[nodiscard]]
-    constexpr auto transpose() const noexcept -> Matrix<T, Rows, Cols> {
-        return math::transpose(*this);
-    }
 
 private:
     std::array<column_type, Cols> m_data{};

@@ -1,11 +1,8 @@
 #pragma once
 #include <cstddef>
-#include <xme/setup.hpp>
-#include <xme/core/concepts/concepts.hpp>
+#include <xme/math/vector.hpp>
 
 namespace xme::math {
-template<CArithmetic T, std::size_t Size>
-struct Vector;
 template<CFloatingPoint T, std::size_t Cols, std::size_t Rows>
 class Matrix;
 
@@ -46,7 +43,7 @@ template<typename T, std::size_t Cols, std::size_t Rows>
 [[nodiscard]]
 XME_INLINE constexpr auto transpose(const Matrix<T, Cols, Rows>& m) noexcept
   -> Matrix<T, Rows, Cols> {
-    Matrix<T, Rows, Cols> result{0};
+    Matrix<T, Rows, Cols> result;
     for(std::size_t i = 0; i < Cols; ++i) {
         for(std::size_t j = 0; j < Rows; ++j) {
             result[j][i] = m[i][j];
@@ -59,7 +56,7 @@ template<typename T, std::size_t N1, std::size_t N2>
 [[nodiscard]]
 XME_INLINE constexpr auto outer_product(const Vector<T, N1>& v1,
                                         const Vector<T, N2>& v2) noexcept -> Matrix<T, N2, N1> {
-    Matrix<T, N2, N1> result{0};
+    Matrix<T, N2, N1> result;
     for(std::size_t i = 0; i < N2; ++i)
         result[i] = v1 * v2[i];
     return result;

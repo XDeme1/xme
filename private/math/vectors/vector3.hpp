@@ -1,7 +1,8 @@
 #pragma once
 #include <cassert>
 #include <cmath>
-#include <xme/math/geometric.hpp>
+#include <xme/setup.hpp>
+#include <xme/core/concepts/arithmetic.hpp>
 
 #define VEC_OP(op)                                                               \
     [[nodiscard]]                                                                \
@@ -105,12 +106,14 @@ struct Vector<T, 3> {
 
     [[nodiscard]]
     constexpr auto length() const noexcept -> T {
-        return math::length(*this);
+        return std::sqrt(x * x + y * y + z * z);
     }
 
     [[nodiscard]]
-    constexpr auto normalize() const noexcept -> Vector {
-        return math::normalize(*this);
+    constexpr auto normalize() const noexcept -> Vector
+        requires(CFloatingPoint<T>)
+    {
+        return (*this) * (1 / length());
     }
 
     T x;
