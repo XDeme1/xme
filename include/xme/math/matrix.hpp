@@ -56,6 +56,7 @@ public:
     template<CArithmetic U>
     explicit constexpr Matrix(U s) noexcept {
         constexpr std::size_t count = std::min(Cols, Rows);
+        std::fill(m_data.begin(), m_data.end(), column_type{0});
         for(std::size_t i = 0; i < count; ++i)
             m_data[i][i] = static_cast<T>(s);
     }
@@ -147,7 +148,7 @@ public:
     };
 
 private:
-    std::array<column_type, Cols> m_data{};
+    std::array<column_type, Cols> m_data;
 };
 
 template<typename T, typename... Args, std::size_t Rows>

@@ -111,7 +111,7 @@ int test_operators() {
 int test_self_operators() {
     int errors = 0;
     {
-        math::mat4 m;
+        math::mat4 m{1};
         m += 3;
 
         bool error = m[0] != math::vec4{4, 3, 3, 3} || m[1] != math::vec4{3, 4, 3, 3}
@@ -127,7 +127,7 @@ int test_self_operators() {
         }
     }
     {
-        math::mat4 m;
+        math::mat4 m{1};
         m -= 3;
 
         bool error = m[0] != math::vec4{-2, -3, -3, -3} || m[1] != math::vec4{-3, -2, -3, -3}
@@ -143,7 +143,7 @@ int test_self_operators() {
         }
     }
     {
-        math::mat4 m;
+        math::mat4 m{1};
         m *= 3;
 
         bool error = m[0] != math::vec4{3, 0, 0, 0} || m[1] != math::vec4{0, 3, 0, 0}
@@ -154,7 +154,7 @@ int test_self_operators() {
         }
     }
     {
-        math::mat4 m;
+        math::mat4 m{1};
         m /= 2;
 
         bool error = m[0] != math::vec4{0.5, 0, 0, 0} || m[1] != math::vec4{0, 0.5, 0, 0}
@@ -170,8 +170,8 @@ int test_self_operators() {
 int test_matrix_multiplication() {
     int errors = 0;
     static_assert(std::is_same_v<decltype(math::mat4{} * math::vec4{}), math::vec4>);
-    static_assert(std::is_same_v<decltype(math::Matrix<float, 4, 1>{} * math::vec4{}),
-        math::Vector<float, 1>>);
+    static_assert(
+      std::is_same_v<decltype(math::Matrix<float, 4, 1>{} * math::vec4{}), math::Vector<float, 1>>);
     static_assert(std::is_same_v<decltype(math::mat4x2{} * math::vec4{}), math::vec2>);
     {
         math::mat4 m{2};
@@ -263,10 +263,10 @@ int test_transformations() {
         auto equal = [](float a, float b) {
             return !(std::abs(a - b) <= std::numeric_limits<float>::epsilon());
         };
-        math::mat4 m{};
+        math::mat4 m{1};
         m = math::rotate(m, math::pi / 2, math::vec3{0, 1, 0});
         bool error =
-            equal(m[0][0], 0) || equal(m[0][1], 0) || equal(m[0][2], -1) || equal(m[0][3], 0);
+          equal(m[0][0], 0) || equal(m[0][1], 0) || equal(m[0][2], -1) || equal(m[0][3], 0);
         error |= equal(m[1][0], 0) || equal(m[1][1], 1) || equal(m[1][2], 0) || equal(m[1][3], 0);
         error |= equal(m[2][0], 1) || equal(m[2][1], 0) || equal(m[2][2], 0) || equal(m[2][3], 0);
         error |= equal(m[3][0], 0) || equal(m[3][1], 0) || equal(m[3][2], 0) || equal(m[3][3], 1);

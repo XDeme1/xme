@@ -1,5 +1,6 @@
 CreateTest(matrix 20)
 CreateTest(matrix4x4 20)
+CreateTest(quaternion 20)
 CreateTest(vector 20)
 CreateTest(vector2 20)
 CreateTest(vector3 20)

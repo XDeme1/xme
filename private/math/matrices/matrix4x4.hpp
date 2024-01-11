@@ -61,8 +61,7 @@ public:
     } {}
 
     template<typename... Args>
-    constexpr Matrix(const Vector<Args, 4>&... args) noexcept :
-      m_data({static_cast<column_type>(args)...}) {}
+    constexpr Matrix(const Vector<Args, 4>&... args) noexcept : m_data({args...}) {}
 
     template<typename U>
     explicit constexpr Matrix(const Matrix<U, 4, 4>& m) noexcept :
@@ -161,7 +160,7 @@ public:
     }
 
 private:
-    std::array<column_type, 4> m_data{};
+    std::array<column_type, 4> m_data;
 };
 }  // namespace xme::math
 
