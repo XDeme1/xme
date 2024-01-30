@@ -1,6 +1,7 @@
 #pragma once
 #include <iterator>
 #include <memory>
+#include <ranges>
 #include <xme/core/concepts/destructible.hpp>
 
 namespace xme::ranges {
@@ -9,9 +10,13 @@ struct DestroyA {
     template<std::forward_iterator Iter, std::sentinel_for<Iter> Sent, typename Alloc>
     constexpr void operator()(Iter first, Sent last, Alloc& alloc) const noexcept {
         using traits = std::allocator_traits<Alloc>;
-        for(; first != last; ++first) {
+        for(; first != last; ++first)
             traits::destroy(alloc, std::addressof(*first));
-        }
+    }
+
+    template<std::ranges::forward_range R, typename Alloc>
+    constexpr void operator()(R&& range, Alloc& alloc) const noexcept {
+        (*this)(std::ranges::begin(range), std::ranges::end(range), alloc);
     }
 };
 }  // namespace detail
@@ -23,12 +28,10 @@ struct DestroyAtA {
     template<CDestructible T, typename Alloc>
     constexpr void operator()(T* pos, Alloc& alloc) const noexcept {
         using traits = std::allocator_traits<Alloc>;
-        if constexpr(std::is_array_v<T>) {
+        if constexpr(std::is_array_v<T>)
             ranges::destroy_a(std::ranges::begin(*pos), std::ranges::end(*pos), alloc);
-        }
-        else {
+        else
             traits::destroy(alloc, pos);
-        }
     }
 };
 }  // namespace detail

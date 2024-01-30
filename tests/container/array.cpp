@@ -80,7 +80,7 @@ int test_move_copy() {
         xme::Array<int> arr1{3, 1};
         arr1.reserve(3);
         xme::Array<int> arr2{std::move(arr1)};
-        bool error = !arr1.is_empty() || arr2.capacity() != 3 || arr2.size() != 2;
+        bool error = !arr1.empty() || arr2.capacity() != 3 || arr2.size() != 2;
         error |= arr2[0] != 3 || arr2[1] != 1;
         if(error) {
             std::cerr << "xme::Array move constructor error\n";
@@ -105,7 +105,7 @@ int test_move_copy() {
         arr1.reserve(3);
         xme::Array<int> arr2{1};
         arr2       = std::move(arr1);
-        bool error = !arr1.is_empty() || arr2.size() != 2 || arr2.capacity() != 3;
+        bool error = !arr1.empty() || arr2.size() != 2 || arr2.capacity() != 3;
         error |= arr2[0] != 5 || arr2[1] != 3;
         if(error) {
             std::cerr << "xme::Array move assignment error\n";

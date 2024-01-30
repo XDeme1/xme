@@ -57,7 +57,7 @@ public:
     //! Allocates and create N elements of the same value.
     constexpr Array(size_type n, const T& value, const allocator_type& alloc = allocator_type()) :
       Array(n, alloc) {
-        m_data.end = xme::ranges::uninitialized_fill_n_a(m_data.begin, n, value, m_allocator);
+        m_data.end = ranges::uninitialized_fill_n_a(m_data.begin, n, value, m_allocator);
     }
 
     constexpr Array(std::initializer_list<T> list, const allocator_type& alloc = allocator_type()) :
@@ -78,7 +78,7 @@ public:
       Array(std::ranges::begin(range), std::ranges::end(range), alloc) {}
 
     constexpr ~Array() noexcept {
-        xme::ranges::destroy_a(m_data.begin, m_data.end, m_allocator);
+        ranges::destroy_a(*this, m_allocator);
         if(m_data.begin) m_allocator.deallocate(m_data.begin, capacity());
     }
 
@@ -195,7 +195,7 @@ public:
     }
 
     [[nodiscard]]
-    constexpr auto back() const noexcept -> reference {
+    constexpr auto back() const noexcept -> const_reference {
         return *(end() - 1);
     }
 
@@ -213,23 +213,21 @@ public:
 
     //! Checks if the underlying storage is empty
     [[nodiscard]]
-    constexpr bool is_empty() const noexcept {
+    constexpr bool empty() const noexcept {
         return m_data.begin == m_data.end;
     }
 
     constexpr void swap(Array& other) noexcept {
-        ranges::swap(m_data, other.m_data);
-        if constexpr(alloc_traits::propagate_on_container_swap::value) {
-            ranges::swap(m_allocator, other.m_allocator);
-        }
-        else {
+        std::ranges::swap(m_data, other.m_data);
+        if constexpr(alloc_traits::propagate_on_container_swap::value)
+            std::ranges::swap(m_allocator, other.m_allocator);
+        else
             static_assert(alloc_traits::is_always_equal::value);
-        }
     }
 
     //! Erases every element, leaving the array empty while keeping its capacity.
     constexpr void clear() noexcept {
-        xme::ranges::destroy_a(m_data.begin, m_data.end, m_allocator);
+        ranges::destroy_a(*this, m_allocator);
         m_data.end = m_data.begin;
     }
 
@@ -342,7 +340,7 @@ public:
     constexpr void pop_back() {
         assert(size() > 0);
         --m_data.end;
-        xme::ranges::destroy_at_a(m_data.end, m_allocator);
+        ranges::destroy_at_a(m_data.end, m_allocator);
     }
 
     //! @returns a reference to the newly inserted element.
@@ -359,7 +357,7 @@ public:
     //! @returns an iterator pointing to the element after it
     constexpr auto erase(const_iterator pos) -> iterator {
         auto p = const_cast<pointer>(pos.operator->());
-        xme::ranges::destroy_at_a(p, m_allocator);
+        ranges::destroy_at_a(p, m_allocator);
         std::move(std::ranges::next(pos), cend(), p);
         --m_data.end;
         return p;
@@ -370,7 +368,7 @@ public:
     constexpr auto erase(const_iterator first, const_iterator last) -> iterator {
         auto p             = const_cast<pointer>(first.operator->());
         size_type elements = std::ranges::distance(first, last);
-        xme::ranges::destroy_n_a(p, elements, m_allocator);
+        ranges::destroy_n_a(p, elements, m_allocator);
         std::move(first + elements, cend(), p);
         m_data.end -= elements;
         return p;
@@ -381,7 +379,7 @@ private:
         const auto old_size = size();
         pointer new_begin   = m_allocator.allocate(n);
 
-        std::move(m_data.begin, m_data.end, new_begin);
+        std::ranges::move(*this, new_begin);
         m_allocator.deallocate(m_data.begin, capacity());
         m_data.begin       = new_begin;
         m_data.end         = new_begin + old_size;
@@ -392,8 +390,8 @@ private:
         size_type elements_to_move = std::min(size(), n);
         pointer new_begin          = m_allocator.allocate(n);
 
-        std::move(begin(), begin() + elements_to_move, new_begin);
-        xme::ranges::destroy_a(m_data.begin + elements_to_move, m_data.end, m_allocator);
+        std::ranges::move(begin(), begin() + elements_to_move, new_begin);
+        ranges::destroy_a(m_data.begin + elements_to_move, m_data.end, m_allocator);
         m_allocator.deallocate(m_data.begin, capacity());
         m_data.begin       = new_begin;
         m_data.end         = new_begin + elements_to_move;
@@ -413,7 +411,7 @@ private:
             std::ranges::move(pos, end(), new_start + elements_before + 1);
         }
         catch(...) {
-            xme::ranges::destroy_at_a(new_start + elements_before, m_allocator);
+            ranges::destroy_at_a(new_start + elements_before, m_allocator);
             m_allocator.deallocate(m_data.begin, capacity());
             throw;
         }

@@ -19,7 +19,7 @@ struct UninitializedCopyA {
             }
         }
         catch(...) {
-            xme::ranges::destroy_a(in_first, out_curr, alloc);
+            ranges::destroy_a(in_first, out_curr, alloc);
             throw;
         }
         return {in_first, out_curr};
