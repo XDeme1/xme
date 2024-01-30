@@ -285,8 +285,8 @@ public:
                 alloc_traits::construct(
                   m_allocator, tmp.m_data.begin + elements_before + n, *first);
 
-            std::move(cbegin(), pos, tmp.begin());
-            std::move(pos, cend(), tmp.begin() + elements_before + elements);
+            std::ranges::move(cbegin(), pos, tmp.begin());
+            std::ranges::move(pos, cend(), tmp.begin() + elements_before + elements);
             tmp.m_data.end = tmp.m_data.begin + size() + elements;
             std::ranges::swap(m_data, tmp.m_data);
 
@@ -358,7 +358,7 @@ public:
     constexpr auto erase(const_iterator pos) -> iterator {
         auto p = const_cast<pointer>(pos.operator->());
         ranges::destroy_at_a(p, m_allocator);
-        std::move(std::ranges::next(pos), cend(), p);
+        std::ranges::move(std::ranges::next(pos), cend(), p);
         --m_data.end;
         return p;
     }
@@ -369,7 +369,7 @@ public:
         auto p             = const_cast<pointer>(first.operator->());
         size_type elements = std::ranges::distance(first, last);
         ranges::destroy_n_a(p, elements, m_allocator);
-        std::move(first + elements, cend(), p);
+        std::ranges::move(first + elements, cend(), p);
         m_data.end -= elements;
         return p;
     }
@@ -380,7 +380,7 @@ private:
         pointer new_begin   = m_allocator.allocate(n);
 
         std::ranges::move(*this, new_begin);
-        m_allocator.deallocate(m_data.begin, capacity());
+        if(m_data.begin) m_allocator.deallocate(m_data.begin, capacity());
         m_data.begin       = new_begin;
         m_data.end         = new_begin + old_size;
         m_data.storage_end = new_begin + n;
@@ -412,7 +412,7 @@ private:
         }
         catch(...) {
             ranges::destroy_at_a(new_start + elements_before, m_allocator);
-            m_allocator.deallocate(m_data.begin, capacity());
+            m_allocator.deallocate(new_start, new_size);
             throw;
         }
         m_allocator.deallocate(m_data.begin, capacity());
