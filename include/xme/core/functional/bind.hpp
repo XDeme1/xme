@@ -1,7 +1,6 @@
 #pragma once
 #include <functional>
 #include <xme/container/tuple.hpp>
-#include <xme/core/concepts/same_as.hpp>
 #include <xme/core/utility/forward_like.hpp>
 
 namespace xme {
@@ -18,7 +17,7 @@ public:
     constexpr BindFront(BindFront&&) noexcept = default;
 
     template<typename Fn, typename... BoundArgs>
-        requires(!CSameAs<BindFront, std::decay_t<Fn>>)
+        requires(!std::same_as<BindFront, std::decay_t<Fn>>)
     explicit constexpr BindFront(Fn&& func, BoundArgs&&... args)
       noexcept(std::is_nothrow_constructible_v<F, Fn>
                && (std::is_nothrow_constructible_v<BoundArgs, Args> && ...)) :
@@ -67,8 +66,7 @@ private:
     [[no_unique_address]]
     F callable;
     [[no_unique_address]]
-    xme::Tuple<Args...>
-      bound_args;
+    xme::Tuple<Args...> bound_args;
 };
 
 template<typename F, typename... Args>
@@ -83,7 +81,7 @@ public:
     constexpr BindBack(BindBack&&) noexcept = default;
 
     template<typename Fn, typename... BoundArgs>
-        requires(!CSameAs<BindBack, std::decay_t<Fn>>)
+        requires(!std::same_as<BindBack, std::decay_t<Fn>>)
     explicit constexpr BindBack(Fn&& func, BoundArgs&&... args)
       noexcept(std::is_nothrow_constructible_v<F, Fn>
                && (std::is_nothrow_constructible_v<Args, BoundArgs> && ...)) :
@@ -132,8 +130,7 @@ private:
     [[no_unique_address]]
     F callable;
     [[no_unique_address]]
-    xme::Tuple<Args...>
-      bound_args;
+    xme::Tuple<Args...> bound_args;
 };
 }  // namespace detail
 

@@ -3,7 +3,6 @@
 #include "concepts.hpp"
 #include <iterator>
 #include <memory>
-#include <xme/ranges/swap.hpp>
 
 namespace xme {
 //! LinkedList is a singly linked list.
@@ -95,7 +94,7 @@ public:
     //! Clears the current elements and transfer elements from other
     constexpr auto operator=(LinkedList&& other) noexcept -> LinkedList& {
         clear();
-        ranges::swap(m_head.next, other.m_head.next);
+        std::ranges::swap(m_head.next, other.m_head.next);
         return *this;
     }
 

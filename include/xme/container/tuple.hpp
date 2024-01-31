@@ -3,7 +3,6 @@
 #include "concepts.hpp"
 #include <functional>
 #include <xme/setup.hpp>
-#include <xme/ranges/swap.hpp>
 
 namespace xme {
 template<typename... T>
@@ -48,7 +47,7 @@ private:
     template<std::size_t... I>
     constexpr void swap(Tuple& tup, std::index_sequence<I...>)
       noexcept((std::is_nothrow_swappable_v<T> && ...)) {
-        (ranges::swap(get<I>(*this), get<I>(tup)), ...);
+        (std::ranges::swap(get<I>(*this), get<I>(tup)), ...);
     }
 };
 

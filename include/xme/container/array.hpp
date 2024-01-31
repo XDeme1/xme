@@ -8,7 +8,6 @@
 #include <xme/setup.hpp>
 #include <xme/ranges/uninitialized.hpp>
 #include <xme/ranges/destroy.hpp>
-#include <xme/ranges/swap.hpp>
 
 namespace xme {
 //! Array is a contigous container with dynamic size.
@@ -431,9 +430,9 @@ private:
         }
 
         constexpr auto operator=(ArrayData&& other) noexcept -> ArrayData& {
-            ranges::swap(begin, other.begin);
-            ranges::swap(end, other.end);
-            ranges::swap(storage_end, other.storage_end);
+            std::ranges::swap(begin, other.begin);
+            std::ranges::swap(end, other.end);
+            std::ranges::swap(storage_end, other.storage_end);
             return *this;
         }
 

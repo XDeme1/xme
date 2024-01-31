@@ -2,8 +2,7 @@
 #include <functional>
 #include <memory>
 #include <array>
-#include <xme/ranges/swap.hpp>
-#include <xme/core/concepts/same_as.hpp>
+#include <concepts>
 
 namespace xme {
 template<typename T>
@@ -120,7 +119,7 @@ public:
     }
 
     template<typename Fn>
-        requires(!CSameAs<Delegate, std::decay_t<Fn>>)
+        requires(!std::same_as<Delegate, std::decay_t<Fn>>)
     constexpr Delegate(Fn&& fn) {
         using Manager = FunctorManager<Fn>;
         if(!is_empty_function(fn)) {
@@ -156,7 +155,7 @@ public:
     }
 
     template<typename Fn>
-        requires(!CSameAs<Delegate, std::decay_t<Fn>>)
+        requires(!std::same_as<Delegate, std::decay_t<Fn>>)
     constexpr auto operator=(Fn&& other) noexcept -> Delegate& {
         Delegate(std::forward<Fn>(other)).swap(*this);
         return *this;
@@ -170,9 +169,9 @@ public:
     }
 
     constexpr void swap(Delegate& other) noexcept {
-        ranges::swap(m_storage, other.m_storage);
-        ranges::swap(m_callable, other.m_callable);
-        ranges::swap(m_manager, other.m_manager);
+        std::ranges::swap(m_storage, other.m_storage);
+        std::ranges::swap(m_callable, other.m_callable);
+        std::ranges::swap(m_manager, other.m_manager);
     }
 
     template<typename Functor>

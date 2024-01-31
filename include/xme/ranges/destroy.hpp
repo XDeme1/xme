@@ -2,7 +2,6 @@
 #include <iterator>
 #include <memory>
 #include <ranges>
-#include <xme/core/concepts/destructible.hpp>
 
 namespace xme::ranges {
 namespace detail {
@@ -25,7 +24,7 @@ inline constexpr detail::DestroyA destroy_a;
 
 namespace detail {
 struct DestroyAtA {
-    template<CDestructible T, typename Alloc>
+    template<std::destructible T, typename Alloc>
     constexpr void operator()(T* pos, Alloc& alloc) const noexcept {
         using traits = std::allocator_traits<Alloc>;
         if constexpr(std::is_array_v<T>)

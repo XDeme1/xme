@@ -1,15 +1,2 @@
 #pragma once
-#include <xme/core/concepts/same_as.hpp>
-#include <xme/core/concepts/derived_from.hpp>
-#include <xme/core/concepts/convertible.hpp>
-#include <xme/core/concepts/common.hpp>
 #include <xme/core/concepts/arithmetic.hpp>
-#include <xme/core/concepts/assignable.hpp>
-#include <xme/core/concepts/swappable.hpp>
-#include <xme/core/concepts/destructible.hpp>
-#include <xme/core/concepts/constructible.hpp>
-#include <xme/core/concepts/boolean_testable.hpp>
-#include <xme/core/concepts/equality_comparable.hpp>
-#include <xme/core/concepts/totally_ordered.hpp>
-#include <xme/core/concepts/object_concepts.hpp>
-#include <xme/core/concepts/callable_concepts.hpp>

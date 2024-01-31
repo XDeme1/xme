@@ -1,6 +1,5 @@
 #pragma once
 #include "array.hpp"
-#include <xme/ranges/swap.hpp>
 
 namespace xme {
 //! Heap is a priority queue stored in a contiguous array.
@@ -76,7 +75,7 @@ public:
     //! O(log(N)) operation
     constexpr void pop() noexcept {
         assert(m_array.size() > 0);
-        ranges::swap(m_array.front(), m_array.back());
+        std::ranges::swap(m_array.front(), m_array.back());
         m_array.pop_back();
         heapfy_down(0);
     }
@@ -119,7 +118,7 @@ private:
         for(auto parent_heap = parent(index); index != 0;) {
             if(!m_compare(m_array[parent_heap], m_array[index])) return;
 
-            ranges::swap(m_array[parent_heap], m_array[index]);
+            std::ranges::swap(m_array[parent_heap], m_array[index]);
             index       = parent_heap;
             parent_heap = parent(parent_heap);
         }
@@ -135,7 +134,7 @@ private:
         if(ridx < m_array.size() && m_compare(m_array[swap_index], m_array[ridx]))
             swap_index = ridx;
         if(swap_index != index) {
-            ranges::swap(m_array[index], m_array[swap_index]);
+            std::ranges::swap(m_array[index], m_array[swap_index]);
             heapfy_down(swap_index);
         }
     }
