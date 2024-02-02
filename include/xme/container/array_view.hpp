@@ -2,7 +2,6 @@
 #include <array>
 #include <cassert>
 #include <cstddef>
-#include <xme/core/iterators/contiguous_iterator.hpp>
 #include <xme/core/iterators/reverse_iterator.hpp>
 
 namespace xme {
@@ -65,8 +64,8 @@ public:
     using const_pointer          = const T*;
     using reference              = T&;
     using const_reference        = const T&;
-    using iterator               = ContiguousIterator<T>;
-    using const_iterator         = ContiguousIterator<const T>;
+    using iterator               = T*;
+    using const_iterator         = const T*;
     using reverse_iterator       = ReverseIterator<iterator>;
     using const_reverse_iterator = ReverseIterator<const_iterator>;
 
@@ -311,8 +310,7 @@ public:
 private:
     T* m_view = nullptr;
     [[no_unique_address]]
-    detail::Extent<Size>
-      m_size;
+    detail::Extent<Size> m_size;
 };
 
 template<typename T, std::size_t N>

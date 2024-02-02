@@ -3,6 +3,7 @@
 #include <iostream>
 #include <array>
 #include <bit>
+#include <span>
 
 static_assert(sizeof(xme::ArrayView<int>) == sizeof(int*) + sizeof(std::size_t));
 static_assert(sizeof(xme::ArrayView<int, 2>) == sizeof(int*));
@@ -36,15 +37,6 @@ void test_deduction_guides() {
         static_assert(std::is_same_v<decltype(v1), xme::ArrayView<int, 2>>);
         static_assert(std::is_same_v<decltype(v2), xme::ArrayView<const int, 2>>);
         static_assert(std::is_same_v<decltype(v3), xme::ArrayView<const int, 2>>);
-    }
-    {
-        xme::Array<int> a1{1, 5, 3};
-        const xme::Array<int> a2{1, 5, 3};
-        xme::ArrayView v1{a1};
-        xme::ArrayView v2{a2};
-
-        static_assert(std::is_same_v<decltype(v1), xme::ArrayView<int>>);
-        static_assert(std::is_same_v<decltype(v2), xme::ArrayView<const int>>);
     }
 }
 

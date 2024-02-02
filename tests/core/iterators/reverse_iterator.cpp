@@ -1,5 +1,4 @@
 #include <iostream>
-#include <xme/core/iterators/contiguous_iterator.hpp>
 #include <xme/core/iterators/reverse_iterator.hpp>
 
 template<typename T>

@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <cassert>
 #include <memory>
-#include <xme/core/iterators/contiguous_iterator.hpp>
 #include <xme/core/iterators/reverse_iterator.hpp>
 #include <xme/setup.hpp>
 #include <xme/ranges/uninitialized.hpp>
@@ -13,10 +12,13 @@ namespace xme {
 //! Array is a contigous container with dynamic size.
 //! @param T the type of the stored element
 //! @param Alloc must be an allocator that satisfies the Allocator concept
-template<typename T, typename Alloc = std::allocator<T>>
+template<typename T, CAllocator Alloc = std::allocator<T>>
 class Array {
 private:
     using alloc_traits = std::allocator_traits<Alloc>;
+
+    template<bool Const>
+    class Iterator;
 
 public:
     static_assert(std::is_same_v<T, std::remove_cv_t<T>>,
@@ -32,8 +34,8 @@ public:
     using const_reference        = const T&;
     using pointer                = T*;
     using const_pointer          = const T*;
-    using iterator               = ContiguousIterator<T>;
-    using const_iterator         = ContiguousIterator<const T>;
+    using iterator               = Iterator<false>;
+    using const_iterator         = Iterator<true>;
     using reverse_iterator       = xme::ReverseIterator<iterator>;
     using const_reverse_iterator = xme::ReverseIterator<const_iterator>;
 
@@ -444,5 +446,81 @@ private:
     ArrayData m_data;
     [[no_unique_address]]
     Alloc m_allocator;
+};
+
+template<typename T, CAllocator Alloc>
+template<bool Const>
+class Array<T, Alloc>::Iterator {
+public:
+    using difference_type   = std::ptrdiff_t;
+    using value_type        = T;
+    using pointer           = T*;
+    using reference         = T&;
+    using iterator_category = std::random_access_iterator_tag;
+    using iterator_concept  = std::contiguous_iterator_tag;
+
+    template<bool>
+    friend class Iterator;
+
+    constexpr Iterator() noexcept = default;
+
+    constexpr Iterator(pointer p) noexcept : m_cursor(p) {}
+
+    constexpr Iterator(const Iterator<!Const>& it) noexcept
+        requires(Const)
+      : m_cursor(it.m_cursor) {}
+
+    constexpr auto operator->() const noexcept -> pointer { return m_cursor; }
+
+    constexpr auto operator*() const noexcept -> reference { return *m_cursor; }
+
+    constexpr auto operator++() noexcept -> Iterator& {
+        ++m_cursor;
+        return *this;
+    }
+
+    constexpr auto operator++(int) noexcept -> Iterator { return m_cursor++; }
+
+    constexpr auto operator--() noexcept -> Iterator& {
+        --m_cursor;
+        return *this;
+    }
+
+    constexpr auto operator--(int) noexcept -> Iterator { return m_cursor--; }
+
+    constexpr auto operator+(difference_type n) const noexcept -> Iterator { return m_cursor + n; }
+
+    friend constexpr auto operator+(difference_type n, const Iterator& it) noexcept -> Iterator {
+        return n + it.m_cursor;
+    }
+
+    constexpr auto operator-(difference_type n) const noexcept -> Iterator { return m_cursor - n; }
+
+    friend constexpr auto operator-(difference_type n, const Iterator& it) noexcept -> Iterator {
+        return n - it.m_cursor;
+    }
+
+    constexpr auto operator-(const Iterator& it) const noexcept -> difference_type {
+        return m_cursor - it.m_cursor;
+    }
+
+    constexpr auto operator+=(difference_type n) noexcept -> Iterator& {
+        m_cursor += n;
+        return *this;
+    }
+
+    constexpr auto operator-=(difference_type n) noexcept -> Iterator& {
+        m_cursor -= n;
+        return *this;
+    }
+
+    constexpr auto operator[](difference_type n) const noexcept -> reference { return m_cursor[n]; }
+
+    constexpr bool operator==(const Iterator& rhs) const noexcept = default;
+
+    constexpr auto operator<=>(const Iterator& rhs) const noexcept = default;
+
+private:
+    pointer m_cursor = nullptr;
 };
 }  // namespace xme
