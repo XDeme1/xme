@@ -454,8 +454,8 @@ class Array<T, Alloc>::Iterator {
 public:
     using difference_type   = std::ptrdiff_t;
     using value_type        = T;
-    using pointer           = T*;
     using reference         = T&;
+    using pointer           = T*;
     using iterator_category = std::random_access_iterator_tag;
     using iterator_concept  = std::contiguous_iterator_tag;
 

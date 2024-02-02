@@ -1,19 +1,24 @@
 #pragma once
 #include <iterator>
-
+#include <concepts>
 namespace xme {
 template<std::bidirectional_iterator It>
 struct ReverseIterator {
 private:
-    using self            = ReverseIterator<It>;
-    using iterator_traits = std::iterator_traits<It>;
+    using self   = ReverseIterator<It>;
+    using traits = std::iterator_traits<It>;
 
 public:
-    using size_type       = std::size_t;
-    using difference_type = std::ptrdiff_t;
-    using value_type      = typename iterator_traits::value_type;
-    using pointer         = typename iterator_traits::pointer;
-    using reference       = typename iterator_traits::reference;
+    using difference_type   = std::iter_difference_t<It>;
+    using value_type        = std::iter_value_t<It>;
+    using reference         = std::iter_reference_t<It>;
+    using pointer           = std::iterator_traits<It>::pointer;
+    using iterator_category = std::conditional_t<
+      std::derived_from<typename traits::iterator_category, std::random_access_iterator_tag>,
+      std::random_access_iterator_tag, typename traits::iterator_category>;
+    using iterator_concept =
+      std::conditional_t<std::random_access_iterator<It>, std::random_access_iterator_tag,
+                         std::bidirectional_iterator_tag>;
 
     template<std::bidirectional_iterator>
     friend struct ReverseIterator;
@@ -94,16 +99,14 @@ public:
         return rhs.m_current - lhs.m_current;
     }
 
-    constexpr auto operator+=(difference_type n) noexcept -> self&
-        requires(std::random_access_iterator<It>)
-    {
+    constexpr auto operator+=(difference_type n) noexcept
+      -> self& requires(std::random_access_iterator<It>) {
         m_current -= n;
         return *this;
     }
 
-    constexpr auto operator-=(difference_type n) noexcept -> self&
-        requires(std::random_access_iterator<It>)
-    {
+    constexpr auto operator-=(difference_type n) noexcept
+      -> self& requires(std::random_access_iterator<It>) {
         m_current += n;
         return *this;
     }
@@ -119,14 +122,14 @@ public:
     constexpr auto operator<=>(const self& rhs) const noexcept = default;
 
     template<typename U>
-    friend constexpr bool operator==(
-        const ReverseIterator<It>& lhs, const ReverseIterator<U>& rhs) noexcept {
+    friend constexpr bool operator==(const ReverseIterator<It>& lhs,
+                                     const ReverseIterator<U>& rhs) noexcept {
         return lhs.operator->() == rhs.operator->();
     }
 
     template<typename U>
-    friend constexpr auto operator<=>(
-        const ReverseIterator<It>& lhs, const ReverseIterator<U>& rhs) noexcept {
+    friend constexpr auto operator<=>(const ReverseIterator<It>& lhs,
+                                      const ReverseIterator<U>& rhs) noexcept {
         return lhs.operator->() <=> rhs.operator->();
     }
 
