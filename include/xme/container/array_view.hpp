@@ -78,7 +78,8 @@ public:
     template<std::contiguous_iterator Iter>
     constexpr ArrayView(Iter it, std::size_t size) noexcept :
       m_view(std::to_address(it)), m_size(size) {
-        if constexpr(Size != dynamic_size) assert(size == Size);
+        if constexpr(Size != dynamic_size)
+            assert(size == Size);
     }
 
     //! Creates an ArrayView pointing to first, up to first + distance(first,

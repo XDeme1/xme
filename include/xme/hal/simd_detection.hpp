@@ -6,63 +6,63 @@
 //!      Detection SIMD Begin
 //! -------------------------------
 #if defined(__MMX__)
-#define XME_HAS_SIMD_MMX true
+#    define XME_HAS_SIMD_MMX true
 #else
-#define XME_HAS_SIMD_MMX false
+#    define XME_HAS_SIMD_MMX false
 #endif
 
 #if defined(__SSE__)
-#define XME_HAS_SIMD_SSE true
+#    define XME_HAS_SIMD_SSE true
 #else
-#define XME_HAS_SIMD_SSE false
+#    define XME_HAS_SIMD_SSE false
 #endif
 
 #if defined(__SSE2__)
-#define XME_HAS_SIMD_SSE2 true
+#    define XME_HAS_SIMD_SSE2 true
 #else
-#define XME_HAS_SIMD_SSE2 false
+#    define XME_HAS_SIMD_SSE2 false
 #endif
 
 #if defined(__SSE3__)
-#define XME_HAS_SIMD_SSE3 true
+#    define XME_HAS_SIMD_SSE3 true
 #else
-#define XME_HAS_SIMD_SSE3 false
+#    define XME_HAS_SIMD_SSE3 false
 #endif
 
 #if defined(__SSSE3__)
-#define XME_HAS_SIMD_SSSE3 true
+#    define XME_HAS_SIMD_SSSE3 true
 #else
-#define XME_HAS_SIMD_SSSE3 false
+#    define XME_HAS_SIMD_SSSE3 false
 #endif
 
 #if defined(__SSE4_1__)
-#define XME_HAS_SIMD_SSE41 true
+#    define XME_HAS_SIMD_SSE41 true
 #else
-#define XME_HAS_SIMD_SSE41 false
+#    define XME_HAS_SIMD_SSE41 false
 #endif
 
 #if defined(__SSE4_2__)
-#define XME_HAS_SIMD_SSE42 true
+#    define XME_HAS_SIMD_SSE42 true
 #else
-#define XME_HAS_SIMD_SSE42 false
+#    define XME_HAS_SIMD_SSE42 false
 #endif
 
 #if defined(__AVX__)
-#define XME_HAS_SIMD_AVX true
+#    define XME_HAS_SIMD_AVX true
 #else
-#define XME_HAS_SIMD_AVX false
+#    define XME_HAS_SIMD_AVX false
 #endif
 
 #if defined(__AVX2__)
-#define XME_HAS_SIMD_AVX2 true
+#    define XME_HAS_SIMD_AVX2 true
 #else
-#define XME_HAS_SIMD_AVX2 false
+#    define XME_HAS_SIMD_AVX2 false
 #endif
 
 #if defined(__AVX512F__)
-#define XME_HAS_SIMD_AVX512F true
+#    define XME_HAS_SIMD_AVX512F true
 #else
-#define XME_HAS_SIMD_AVX512F false
+#    define XME_HAS_SIMD_AVX512F false
 #endif
 //! ------------------------------
 //!      Detection SIMD End
@@ -72,72 +72,72 @@
 //!      Enable SIMD Begin
 //! ------------------------------
 #if defined(XME_ENABLE_SIMD_AVX512F)
-#define XME_ENABLE_SIMD_AVX2
-#define XME_USE_SIMD_AVX512F true
+#    define XME_ENABLE_SIMD_AVX2
+#    define XME_USE_SIMD_AVX512F true
 #else
-#define XME_USE_SIMD_AVX512F false
+#    define XME_USE_SIMD_AVX512F false
 #endif
 
 #if defined(XME_ENABLE_SIMD_AVX2)
-#define XME_ENABLE_SIMD_AVX
-#define XME_USE_SIMD_AVX2 true
+#    define XME_ENABLE_SIMD_AVX
+#    define XME_USE_SIMD_AVX2 true
 #else
-#define XME_USE_SIMD_AVX2 false
+#    define XME_USE_SIMD_AVX2 false
 #endif
 
 #if defined(XME_ENABLE_SIMD_AVX)
-#define XME_ENABLE_SIMD_SSE42
-#define XME_USE_SIMD_AVX true
+#    define XME_ENABLE_SIMD_SSE42
+#    define XME_USE_SIMD_AVX true
 #else
-#define XME_USE_SIMD_AVX false
+#    define XME_USE_SIMD_AVX false
 #endif
 
 #if defined(XME_ENABLE_SIMD_SSE42)
-#define XME_ENABLE_SIMD_SSE41
-#define XME_USE_SIMD_SSE42 true
+#    define XME_ENABLE_SIMD_SSE41
+#    define XME_USE_SIMD_SSE42 true
 #else
-#define XME_USE_SIMD_SSE42 false
+#    define XME_USE_SIMD_SSE42 false
 #endif
 
 #if defined(XME_ENABLE_SIMD_SSE41)
-#define XME_ENABLE_SIMD_SSSE3
-#define XME_USE_SIMD_SSE41 true
+#    define XME_ENABLE_SIMD_SSSE3
+#    define XME_USE_SIMD_SSE41 true
 #else
-#define XME_USE_SIMD_SSE41 false
+#    define XME_USE_SIMD_SSE41 false
 #endif
 
 #if defined(XME_ENABLE_SIMD_SSSE3)
-#define XME_ENABLE_SIMD_SSE3
-#define XME_USE_SIMD_SSSE3 true
+#    define XME_ENABLE_SIMD_SSE3
+#    define XME_USE_SIMD_SSSE3 true
 #else
-#define XME_USE_SIMD_SSSE3 false
+#    define XME_USE_SIMD_SSSE3 false
 #endif
 
 #if defined(XME_ENABLE_SIMD_SSE3)
-#define XME_ENABLE_SIMD_SSE2
-#define XME_USE_SIMD_SSE3 true
+#    define XME_ENABLE_SIMD_SSE2
+#    define XME_USE_SIMD_SSE3 true
 #else
-#define XME_USE_SIMD_SSE3 false
+#    define XME_USE_SIMD_SSE3 false
 #endif
 
 #if defined(XME_ENABLE_SIMD_SSE2)
-#define XME_ENABLE_SIMD_SSE
-#define XME_USE_SIMD_SSE2 true
+#    define XME_ENABLE_SIMD_SSE
+#    define XME_USE_SIMD_SSE2 true
 #else
-#define XME_USE_SIMD_SSE2 false
+#    define XME_USE_SIMD_SSE2 false
 #endif
 
 #if defined(XME_ENABLE_SIMD_SSE)
-#define XME_ENABLE_SIMD_MMX
-#define XME_USE_SIMD_SSE true
+#    define XME_ENABLE_SIMD_MMX
+#    define XME_USE_SIMD_SSE true
 #else
-#define XME_USE_SIMD_SSE false
+#    define XME_USE_SIMD_SSE false
 #endif
 
 #if defined(XME_ENABLE_SIMD_MMX)
-#define XME_USE_SIMD_MMX true
+#    define XME_USE_SIMD_MMX true
 #else
-#define XME_USE_SIMD_MMX false
+#    define XME_USE_SIMD_MMX false
 #endif
 //! ------------------------------
 //!       Enable SIMD End
@@ -154,19 +154,19 @@
 #define XME_SIMD_AVX2    0x0000'0100
 #define XME_SIMD_AVX512F 0x0000'0200
 
-#define XME_SUPPORTED_SIMD                                                          \
-    (XME_HAS_SIMD_MMX * XME_SIMD_MMX | XME_HAS_SIMD_SSE * XME_SIMD_SSE              \
-        | XME_HAS_SIMD_SSE2 * XME_SIMD_SSE2 | XME_HAS_SIMD_SSE3 * XME_SIMD_SSE3     \
-        | XME_HAS_SIMD_SSSE3 * XME_SIMD_SSSE3 | XME_HAS_SIMD_SSE41 * XME_SIMD_SSE41 \
-        | XME_HAS_SIMD_SSE42 * XME_SIMD_SSE42 | XME_HAS_SIMD_AVX * XME_SIMD_AVX     \
-        | XME_HAS_SIMD_AVX2 * XME_SIMD_AVX2 | XME_HAS_SIMD_AVX512F * XME_SIMD_AVX512F)
+#define XME_SUPPORTED_SIMD                                                       \
+    (XME_HAS_SIMD_MMX * XME_SIMD_MMX | XME_HAS_SIMD_SSE * XME_SIMD_SSE           \
+     | XME_HAS_SIMD_SSE2 * XME_SIMD_SSE2 | XME_HAS_SIMD_SSE3 * XME_SIMD_SSE3     \
+     | XME_HAS_SIMD_SSSE3 * XME_SIMD_SSSE3 | XME_HAS_SIMD_SSE41 * XME_SIMD_SSE41 \
+     | XME_HAS_SIMD_SSE42 * XME_SIMD_SSE42 | XME_HAS_SIMD_AVX * XME_SIMD_AVX     \
+     | XME_HAS_SIMD_AVX2 * XME_SIMD_AVX2 | XME_HAS_SIMD_AVX512F * XME_SIMD_AVX512F)
 
-#define XME_ENABLED_SIMD                                                            \
-    (XME_USE_SIMD_MMX * XME_SIMD_MMX | XME_USE_SIMD_SSE * XME_SIMD_SSE              \
-        | XME_USE_SIMD_SSE2 * XME_SIMD_SSE2 | XME_USE_SIMD_SSE3 * XME_SIMD_SSE3     \
-        | XME_USE_SIMD_SSSE3 * XME_SIMD_SSSE3 | XME_USE_SIMD_SSE41 * XME_SIMD_SSE41 \
-        | XME_USE_SIMD_SSE42 * XME_SIMD_SSE42 | XME_USE_SIMD_AVX * XME_SIMD_AVX     \
-        | XME_USE_SIMD_AVX2 * XME_SIMD_AVX2 | XME_USE_SIMD_AVX512F * XME_SIMD_AVX512F)
+#define XME_ENABLED_SIMD                                                         \
+    (XME_USE_SIMD_MMX * XME_SIMD_MMX | XME_USE_SIMD_SSE * XME_SIMD_SSE           \
+     | XME_USE_SIMD_SSE2 * XME_SIMD_SSE2 | XME_USE_SIMD_SSE3 * XME_SIMD_SSE3     \
+     | XME_USE_SIMD_SSSE3 * XME_SIMD_SSSE3 | XME_USE_SIMD_SSE41 * XME_SIMD_SSE41 \
+     | XME_USE_SIMD_SSE42 * XME_SIMD_SSE42 | XME_USE_SIMD_AVX * XME_SIMD_AVX     \
+     | XME_USE_SIMD_AVX2 * XME_SIMD_AVX2 | XME_USE_SIMD_AVX512F * XME_SIMD_AVX512F)
 
 namespace xme::hal {
 enum class ESimd : std::uint32_t {

@@ -130,7 +130,8 @@ public:
     }
 
     constexpr ~Delegate() noexcept {
-        if(m_manager) m_manager(m_storage, m_storage, EOperation::destroy);
+        if(m_manager)
+            m_manager(m_storage, m_storage, EOperation::destroy);
     }
 
     explicit constexpr operator bool() const noexcept { return !!m_manager; }

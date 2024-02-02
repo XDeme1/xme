@@ -6,7 +6,7 @@
 using std_homo = std::tuple<std::int16_t, std::int16_t, std::int16_t, std::int16_t>;
 
 using xme_homo = xme::Tuple<std::int16_t, std::int16_t, std::int16_t, std::int16_t>;
-                        
+
 static_assert(sizeof(std_homo) == 8);
 static_assert(sizeof(xme_homo) == 8);
 

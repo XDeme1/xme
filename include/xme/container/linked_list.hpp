@@ -241,7 +241,8 @@ public:
 
     //! Reverses the linked list, making the last element the first
     constexpr void reverse() noexcept {
-        if(m_head.next == nullptr) return;
+        if(m_head.next == nullptr)
+            return;
 
         node_base* tail = m_head.next;
         while(node_base* tmp = tail->next) {

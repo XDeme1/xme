@@ -7,7 +7,7 @@
 using std_homo = std::pair<std::int32_t, std::int32_t>;
 
 using xme_homo = xme::Pair<std::int32_t, std::int32_t>;
-                        
+
 static_assert(sizeof(std_homo) == 8);
 static_assert(sizeof(xme_homo) == 8);
 

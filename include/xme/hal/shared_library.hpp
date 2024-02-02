@@ -4,7 +4,7 @@
 
 #if XME_PLATFORM_WINDOWS
 #elif XME_PLATFORM_LINUX || XME_PLATFORM_MAC
-#include <dlfcn.h>
+#    include <dlfcn.h>
 #endif
 
 namespace xme::hal {
@@ -28,10 +28,14 @@ public:
     constexpr SharedLibrary(std::string_view lib_name) noexcept { open(lib_name); }
 
     constexpr ~SharedLibrary() {
-        if(m_library) close();
+        if(m_library)
+            close();
     }
 
-    [[nodiscard]] constexpr bool is_open() const noexcept { return m_library != nullptr; }
+    [[nodiscard]]
+    constexpr bool is_open() const noexcept {
+        return m_library != nullptr;
+    }
 
     constexpr void open(std::string_view lib_name) {
 #if XME_PLATFORM_WINDOWS
@@ -48,7 +52,8 @@ public:
     }
 
     template<typename T>
-    [[nodiscard]] constexpr auto proc_address(std::string_view function) const noexcept -> void* {
+    [[nodiscard]]
+    constexpr auto proc_address(std::string_view function) const noexcept -> void* {
 #if XME_PLATFORM_WINDOWS
 #elif XME_PLATFORM_LINUX || XME_PLATFORM_MAC
         return (T)dlsym(m_library, function.data());

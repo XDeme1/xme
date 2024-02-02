@@ -6,7 +6,7 @@
 using std_hetero = std::tuple<std::int8_t, std::int8_t, std::int16_t, std::int32_t>;
 
 using xme_hetero = xme::Tuple<std::int8_t, std::int8_t, std::int16_t, std::int32_t>;
-                        
+
 static_assert(sizeof(std_hetero) == 8);
 static_assert(sizeof(xme_hetero) == 8);
 

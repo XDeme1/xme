@@ -33,7 +33,8 @@ struct TupleElement {
 
     static constexpr T declval(std::integral_constant<std::size_t, I>);
 
-    [[no_unique_address]] T value;
+    [[no_unique_address]]
+    T value;
 };
 
 template<typename... TupElem>

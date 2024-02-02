@@ -116,7 +116,8 @@ private:
 
     constexpr void heapfy_up(size_type index) noexcept {
         for(auto parent_heap = parent(index); index != 0;) {
-            if(!m_compare(m_array[parent_heap], m_array[index])) return;
+            if(!m_compare(m_array[parent_heap], m_array[index]))
+                return;
 
             std::ranges::swap(m_array[parent_heap], m_array[index]);
             index       = parent_heap;

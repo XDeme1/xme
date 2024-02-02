@@ -99,14 +99,16 @@ public:
         return rhs.m_current - lhs.m_current;
     }
 
-    constexpr auto operator+=(difference_type n) noexcept
-      -> self& requires(std::random_access_iterator<It>) {
+    constexpr auto operator+=(difference_type n) noexcept -> self&
+        requires(std::random_access_iterator<It>)
+    {
         m_current -= n;
         return *this;
     }
 
-    constexpr auto operator-=(difference_type n) noexcept
-      -> self& requires(std::random_access_iterator<It>) {
+    constexpr auto operator-=(difference_type n) noexcept -> self&
+        requires(std::random_access_iterator<It>)
+    {
         m_current += n;
         return *this;
     }

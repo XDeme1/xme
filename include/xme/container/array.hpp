@@ -80,7 +80,8 @@ public:
 
     constexpr ~Array() noexcept {
         ranges::destroy_a(*this, m_allocator);
-        if(m_data.begin) m_allocator.deallocate(m_data.begin, capacity());
+        if(m_data.begin)
+            m_allocator.deallocate(m_data.begin, capacity());
     }
 
     constexpr auto operator=(const Array& other) -> Array& {
@@ -235,7 +236,8 @@ public:
     //! Grows the Array capacity,
     //! If the argument is lower than the current capacity, nothing happens,
     constexpr void reserve(size_type n) {
-        if(capacity() < n) grow_storage(n);
+        if(capacity() < n)
+            grow_storage(n);
     }
 
     //! Grows or shrinks the Array capacity.
@@ -347,7 +349,8 @@ public:
     //! @returns a reference to the newly inserted element.
     template<typename... Args>
     constexpr auto emplace_back(Args&&... args) -> reference {
-        if(m_data.end == m_data.storage_end) grow_storage(size() + std::max(size(), size_type(1)));
+        if(m_data.end == m_data.storage_end)
+            grow_storage(size() + std::max(size(), size_type(1)));
 
         alloc_traits::construct(m_allocator, m_data.end, std::forward<Args>(args)...);
         ++m_data.end;
@@ -381,7 +384,8 @@ private:
         pointer new_begin   = m_allocator.allocate(n);
 
         std::ranges::move(*this, new_begin);
-        if(m_data.begin) m_allocator.deallocate(m_data.begin, capacity());
+        if(m_data.begin)
+            m_allocator.deallocate(m_data.begin, capacity());
         m_data.begin       = new_begin;
         m_data.end         = new_begin + old_size;
         m_data.storage_end = new_begin + n;
