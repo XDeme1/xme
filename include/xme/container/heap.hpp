@@ -19,7 +19,7 @@ public:
     using const_reference = const T&;
     using pointer         = T*;
     using const_pointer   = const T*;
-    using const_iterator  = Container::const_iterator;
+    using const_iterator  = typename Container::const_iterator;
 
     constexpr Heap() = default;
 

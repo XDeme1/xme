@@ -12,7 +12,7 @@ public:
     using difference_type   = std::iter_difference_t<It>;
     using value_type        = std::iter_value_t<It>;
     using reference         = std::iter_reference_t<It>;
-    using pointer           = std::iterator_traits<It>::pointer;
+    using pointer           = typename std::iterator_traits<It>::pointer;
     using iterator_category = std::conditional_t<
       std::derived_from<typename traits::iterator_category, std::random_access_iterator_tag>,
       std::random_access_iterator_tag, typename traits::iterator_category>;
