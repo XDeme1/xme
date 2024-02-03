@@ -31,12 +31,20 @@ public:
 
     constexpr ConstIterator() noexcept = default;
 
-    constexpr ConstIterator(const It& it) noexcept : m_current(it) {}
+    constexpr ConstIterator(It it) noexcept : m_current(it) {}
 
-    constexpr auto operator->() const noexcept -> auto* {
+    template<std::convertible_to<It> U>
+    constexpr ConstIterator(ConstIterator<U> other) noexcept : m_current{other} {}
+
+    template<CDifferentFrom<ConstIterator> T>
+        requires std::convertible_to<T, It>
+    constexpr ConstIterator(T&& it) noexcept : m_current(std::forward<T>(it)) {}
+
+    constexpr auto operator->() const noexcept -> const auto* {
         if constexpr(std::contiguous_iterator<It>)
             return std::to_address(m_current);
-        return std::addressof(*m_current);
+        else
+            return std::addressof(*m_current);
     }
 
     constexpr auto operator*() const noexcept -> reference { return *m_current; }
@@ -69,11 +77,10 @@ public:
         return tmp;
     }
 
-    friend constexpr auto operator+(const ConstIterator& it,
-                                    difference_type n) noexcept -> ConstIterator
+    constexpr auto operator+(difference_type n) const noexcept -> ConstIterator
         requires std::random_access_iterator<It>
     {
-        return it.m_current + n;
+        return m_current + n;
     }
 
     friend constexpr auto operator+(difference_type n,
@@ -83,22 +90,19 @@ public:
         return n + rhs.m_current;
     }
 
-    friend constexpr auto operator-(const ConstIterator& it,
-                                    difference_type n) noexcept -> ConstIterator
+    constexpr auto operator-(difference_type n) const noexcept -> ConstIterator
         requires std::random_access_iterator<It>
     {
-        return it.m_current - n;
+        return m_current - n;
     }
 
     template<std::sized_sentinel_for<It> Sent>
-    friend constexpr auto operator-(const ConstIterator& it,
-                                    const Sent& sent) noexcept -> difference_type
-        requires std::random_access_iterator<It>
-    {
-        return it.m_current - sent;
+    constexpr auto operator-(const Sent& sent) const noexcept -> difference_type {
+        return m_current - sent;
     }
 
-    template<std::sized_sentinel_for<It> Sent>
+    template<CDifferentFrom<ConstIterator> Sent>
+        requires std::sized_sentinel_for<Sent, It>
     friend constexpr auto operator-(const Sent& sent,
                                     const ConstIterator& it) noexcept -> difference_type {
         return sent - it.m_current;
@@ -188,7 +192,7 @@ public:
         return m_current <=> it;
     }
 
-public:
+private:
     It m_current{};
 };
 }  // namespace xme
