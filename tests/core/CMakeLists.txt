@@ -1,1 +1,1 @@
-add_unittest(CoreTest iterators.cpp utility.cpp)
+add_unittest(CoreTest concepts.cpp iterators.cpp type_traits.cpp utility.cpp)

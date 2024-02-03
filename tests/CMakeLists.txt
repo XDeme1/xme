@@ -28,8 +28,6 @@ endfunction()
 
 add_subdirectory(core)
 add_subdirectory(core/functional)
-add_subdirectory(core/utility)
-add_subdirectory(core/type_traits)
 add_subdirectory(container)
 add_subdirectory(math)
 add_subdirectory(ranges)
