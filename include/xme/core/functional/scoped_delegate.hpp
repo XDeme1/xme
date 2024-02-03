@@ -1,6 +1,5 @@
 #pragma once
 #include <utility>
-#include <xme/setup.hpp>
 
 namespace xme {
 //! @brief Calls a function at the end of this object scope
@@ -9,11 +8,11 @@ namespace xme {
 template<std::invocable F>
 class ScopedDelegate {
 public:
-    XME_INLINE constexpr ScopedDelegate(F& func) noexcept : m_callable(func) {}
+    constexpr ScopedDelegate(F& func) noexcept : m_callable(func) {}
 
-    XME_INLINE constexpr ScopedDelegate(F&& func) noexcept : m_callable(std::move(func)) {}
+    constexpr ScopedDelegate(F&& func) noexcept : m_callable(std::move(func)) {}
 
-    XME_INLINE constexpr ~ScopedDelegate() noexcept { m_callable(); }
+    constexpr ~ScopedDelegate() noexcept { m_callable(); }
 
     constexpr auto operator=(const ScopedDelegate&) = delete;
 

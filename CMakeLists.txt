@@ -17,7 +17,7 @@ set_property(TARGET xme PROPERTY LINKER_LANGUAGE CXX)
 target_include_directories(xme PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>)
 
-if((${PROJECT_IS_TOP_LEVEL} OR ${XME_BUILD_MODULES}))
+if((${XME_BUILD_MODULES}))
     if(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang" AND ${CMAKE_CXX_COMPILER_VERSION} VERSION_GREATER_EQUAL "18.0.0")
         add_subdirectory(modules)
     endif()

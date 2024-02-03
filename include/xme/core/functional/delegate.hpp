@@ -3,6 +3,7 @@
 #include <memory>
 #include <array>
 #include <concepts>
+#include <xme/core/concepts/different_from.hpp>
 
 namespace xme {
 template<typename T>
@@ -99,6 +100,19 @@ public:
         }
     };
 
+    //! Pointer to function
+    constexpr static bool is_empty_function(auto* fn) { return fn == nullptr; }
+
+    //! Pointer to member function
+    template<typename C, typename T>
+    constexpr static bool is_empty_function(T C::*ptr) {
+        return ptr == nullptr;
+    }
+
+    //! Functors.
+    //! Lambdas are never null and functors need to handle nullptr themselves
+    constexpr static bool is_empty_function(const auto&) { return false; }
+
 public:
     constexpr Delegate() = default;
 
@@ -118,8 +132,7 @@ public:
         }
     }
 
-    template<typename Fn>
-        requires(!std::same_as<Delegate, std::decay_t<Fn>>)
+    template<CDifferentFromSelf<Delegate> Fn>
     constexpr Delegate(Fn&& fn) {
         using Manager = FunctorManager<Fn>;
         if(!is_empty_function(fn)) {
@@ -155,8 +168,7 @@ public:
         return *this;
     }
 
-    template<typename Fn>
-        requires(!std::same_as<Delegate, std::decay_t<Fn>>)
+    template<CDifferentFromSelf<Delegate> Fn>
     constexpr auto operator=(Fn&& other) noexcept -> Delegate& {
         Delegate(std::forward<Fn>(other)).swap(*this);
         return *this;
@@ -183,22 +195,41 @@ public:
         return nullptr;
     }
 
-    //! Pointer to function
-    constexpr static bool is_empty_function(auto* fn) { return fn == nullptr; }
-
-    //! Pointer to member function
-    template<typename C, typename T>
-    constexpr static bool is_empty_function(T C::*ptr) {
-        return ptr == nullptr;
-    }
-
-    //! Functors.
-    //! Lambdas are never null and functors need to handle nullptr themselves
-    constexpr static bool is_empty_function(const auto&) { return false; }
-
 private:
     AnyData m_storage{};
     R (*m_callable)(const AnyData&, Args...)          = nullptr;
     void (*m_manager)(AnyData&, AnyData&, EOperation) = nullptr;
 };
+
+namespace detail {
+template<typename>
+struct FunctionGuideHelper {};
+
+template<typename R, typename T, bool NoExcept, typename... Args>
+struct FunctionGuideHelper<R (T::*)(Args...) noexcept(NoExcept)> {
+    using type = R(Args...);
+};
+
+template<typename R, typename T, bool NoExcept, typename... Args>
+struct FunctionGuideHelper<R (T::*)(Args...) & noexcept(NoExcept)> {
+    using type = R(Args...);
+};
+
+template<typename R, typename T, bool NoExcept, typename... Args>
+struct FunctionGuideHelper<R (T::*)(Args...) const noexcept(NoExcept)> {
+    using type = R(Args...);
+};
+
+template<typename R, typename T, bool NoExcept, typename... Args>
+struct FunctionGuideHelper<R (T::*)(Args...) const & noexcept(NoExcept)> {
+    using type = R(Args...);
+};
+}  // namespace detail
+
+template<typename R, typename... Args>
+Delegate(R (*)(Args...)) -> Delegate<R(Args...)>;
+
+template<typename Fn,
+         typename Signature = detail::FunctionGuideHelper<decltype(&Fn::operator())>::type>
+Delegate(Fn) -> Delegate<Signature>;
 }  // namespace xme
