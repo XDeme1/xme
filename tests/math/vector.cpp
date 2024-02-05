@@ -384,6 +384,9 @@ TEST_F(VectorTests, Functions) {
     vec3 expected{};
     EXPECT_EQ(dot(v1, v2), 22);
 
+    expected = {-1, 9, -22};
+    EXPECT_EQ(cross(v1, v2), expected);
+
     expected = vec3{3, 4, 1.5};
     EXPECT_EQ(lerp(v1, v2, 0.5), expected);
     EXPECT_EQ(lerp(v1, v2, 0), v1);
@@ -391,5 +394,15 @@ TEST_F(VectorTests, Functions) {
 
     expected = vec3{5, 5, 1.5};
     EXPECT_EQ(lerp(v1, v2, vec3{1, 0, 0.5}), expected);
+
+    EXPECT_FLOAT_EQ(distance(v1, v1), 0);
+    EXPECT_FLOAT_EQ(distance(v1, v2), std::sqrt(21));
+
+    expected = {1, 5, 2};
+    EXPECT_EQ(faceforward(v1, {1, -1, 0}, {0, 1, 0}), expected);
+    EXPECT_EQ(faceforward(v1, {1, 1, 0}, {0, 1, 0}), -expected);
+
+    expected = {-1, 1, 1};
+    EXPECT_EQ(reflect(vec3{1, 1, 1}, vec3{1, 0, 0}), expected);
 }
 }  // namespace

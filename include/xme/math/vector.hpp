@@ -126,8 +126,8 @@ Vector(T, Args...) -> Vector<std::common_type_t<T, Args...>, sizeof...(Args) + 1
 #undef VEC_OP
 #undef VEC_SELF_OP
 
-#include "../../../private/math/vectors/vector2.hpp"
-#include "../../../private/math/vectors/vector3.hpp"
-#include "../../../private/math/vectors/vector4.hpp"
+#include "vectors/vector2.hpp"
+#include "vectors/vector3.hpp"
+#include "vectors/vector4.hpp"
 #include "vectors/functions.hpp"
 #include "vectors/geometry.hpp"

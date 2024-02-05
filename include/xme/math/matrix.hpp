@@ -162,4 +162,4 @@ Matrix(Vector<T, Rows>,
 #undef MAT_SELF_OP1
 #undef MAT_SELF_OP2
 
-#include "../../../private/math/matrices/matrix4x4.hpp"
+#include "matrices/matrix4x4.hpp"
