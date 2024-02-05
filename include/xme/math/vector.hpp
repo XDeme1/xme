@@ -49,8 +49,9 @@ public:
     }
 
     template<typename... Args>
-    constexpr Vector(auto s1, auto s2, Args... args) noexcept :
-      m_data({static_cast<T>(s1), static_cast<T>(s2), static_cast<T>(args)...}) {}
+    constexpr Vector(Args... args) noexcept
+        requires(Size > 1)
+      : m_data({static_cast<T>(args)...}) {}
 
     template<typename U>
     constexpr Vector(const Vector<U, Size>& v) noexcept {

@@ -288,7 +288,9 @@ TEST_F(VectorTests, Vector4) {
 }
 
 TEST_F(VectorTests, Vector5) {
+#if !defined(__clang__)  // Clang concepts needs to implement DR1496 for this pass in clang
     EXPECT_TRUE(std::is_trivial_v<decltype(v5)>);
+#endif
     using vec5  = Vector<float, 5>;
     using dvec5 = Vector<double, 5>;
     vec5 expected{};
