@@ -43,7 +43,10 @@ public:
 
     constexpr Vector() noexcept = default;
 
-    constexpr Vector(auto s) noexcept { m_data.fill(s); }
+    template<CArithmetic U>
+    constexpr Vector(U s) noexcept {
+        m_data.fill(s);
+    }
 
     template<typename... Args>
     constexpr Vector(auto s1, auto s2, Args... args) noexcept :

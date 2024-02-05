@@ -1,310 +1,395 @@
-#include <iostream>
-#include <xme/math/vector.hpp>
+#include <gtest/gtest.h>
 #include <xme/math/glsl_mapping.hpp>
+#include <xme/math/math.hpp>
 
-namespace math = xme::math;
+namespace {
+using namespace xme::math;
 
-math::Vector<float, 5> fv5{1.5, 2, 3, 4, 5};
-static_assert(std::is_trivial_v<decltype(fv5)>);
+class VectorTests : public testing::Test {
+public:
+    vec2 v2{5, 3};
+    vec3 v3{3, 1, 7};
+    vec4 v4{2, 1, 0, 4};
+    Vector<float, 5> v5{2, 1, 0, 4, 8};
+};
 
-void test_deduction_guide() {
-    math::Vector v1{1, 5, 1.5f, 1, 2};
-    math::Vector v2{2ul, 2ul, 2, 2, 2};
-    math::Vector v3{v1};
-    static_assert(std::is_same_v<decltype(v1), math::Vector<float, 5>>);
-    static_assert(std::is_same_v<decltype(v2), math::Vector<unsigned long, 5>>);
-    static_assert(std::is_same_v<decltype(v3), decltype(v1)>);
+TEST_F(VectorTests, Vector2) {
+    EXPECT_TRUE(std::is_trivial_v<decltype(v2)>);
+
+    EXPECT_EQ(v2.x, 5);
+    EXPECT_EQ(v2.y, 3);
+
+    {
+        vec2 tmp = -v2;
+        EXPECT_EQ(tmp[0], -5);
+        EXPECT_EQ(tmp[1], -3);
+
+        tmp = v2 + 1;
+        EXPECT_EQ(tmp[0], 6);
+        EXPECT_EQ(tmp[1], 4);
+
+        tmp = v2 + vec2{1, 2};
+        EXPECT_EQ(tmp[0], 6);
+        EXPECT_EQ(tmp[1], 5);
+
+        tmp = v2 - 1;
+        EXPECT_EQ(tmp[0], 4);
+        EXPECT_EQ(tmp[1], 2);
+
+        tmp = v2 - vec2{2, 3};
+        EXPECT_EQ(tmp[0], 3);
+        EXPECT_EQ(tmp[1], 0);
+
+        tmp = v2 * 2;
+        EXPECT_EQ(tmp[0], 10);
+        EXPECT_EQ(tmp[1], 6);
+
+        tmp = v2 * vec2{2, 5};
+        EXPECT_EQ(tmp[0], 10);
+        EXPECT_EQ(tmp[1], 15);
+
+        tmp = v2 / 2;
+        EXPECT_FLOAT_EQ(tmp[0], 2.5);
+        EXPECT_FLOAT_EQ(tmp[1], 1.5);
+
+        tmp = v2 / vec2{2, 1};
+        EXPECT_FLOAT_EQ(tmp[0], 2.5);
+        EXPECT_FLOAT_EQ(tmp[1], 3);
+    }
+
+    v2 += 2;
+    EXPECT_EQ(v2[0], 7);
+    EXPECT_EQ(v2[1], 5);
+
+    v2 += vec2{5, 3};
+    EXPECT_EQ(v2[0], 12);
+    EXPECT_EQ(v2[1], 8);
+
+    v2 -= 2;
+    EXPECT_EQ(v2[0], 10);
+    EXPECT_EQ(v2[1], 6);
+
+    v2 -= vec2{1, 2};
+    EXPECT_EQ(v2[0], 9);
+    EXPECT_EQ(v2[1], 4);
+
+    v2 *= 2;
+    EXPECT_EQ(v2[0], 18);
+    EXPECT_EQ(v2[1], 8);
+
+    v2 *= vec2{0.5, 2};
+    EXPECT_EQ(v2[0], 9);
+    EXPECT_EQ(v2[1], 16);
+
+    v2 /= 2;
+    EXPECT_EQ(v2[0], 4.5);
+    EXPECT_EQ(v2[1], 8);
+
+    v2 /= vec2{2, 4};
+    EXPECT_EQ(v2[0], 2.25);
+    EXPECT_EQ(v2[1], 2);
+
+    v2 = dvec2{2, 7};
+    EXPECT_EQ(v2[0], 2);
+    EXPECT_EQ(v2[1], 7);
+
+    const float len = std::sqrt(53.f);
+    EXPECT_FLOAT_EQ(v2.length(), len);
+
+    const auto norm = v2.normalize();
+    EXPECT_FLOAT_EQ(norm[0], 2 / len);
+    EXPECT_FLOAT_EQ(norm[1], 7 / len);
 }
 
-int test_access() {
-    int errors = 0;
+TEST_F(VectorTests, Vector3) {
+    EXPECT_TRUE(std::is_trivial_v<decltype(v3)>);
+
+    vec3 expected{};
+
+    EXPECT_EQ(v3.x, 3);
+    EXPECT_EQ(v3.y, 1);
+    EXPECT_EQ(v3.z, 7);
+
     {
-        math::Vector<float, 5> v{1, 5, 3, 2, 2};
-        bool error = v[0] != 1 || v[1] != 5 || v[2] != 3 || v[3] != 2 || v[4] != 2;
-        if(error) {
-            std::cerr << "xme::Vector::operator[] error\n";
-            ++errors;
-        }
+        vec3 tmp      = -v3;
+        vec3 expected = {-3, -1, -7};
+        EXPECT_EQ(tmp, expected);
+
+        tmp      = v3 + 1;
+        expected = {4, 2, 8};
+        EXPECT_EQ(tmp, expected);
+
+        tmp      = v3 + vec3{1, 2, 1};
+        expected = {4, 3, 8};
+        EXPECT_EQ(tmp, expected);
+
+        tmp      = v3 - 1;
+        expected = {2, 0, 6};
+        EXPECT_EQ(tmp, expected);
+
+        tmp      = v3 - vec3{2, 3, 1};
+        expected = {1, -2, 6};
+        EXPECT_EQ(tmp, expected);
+
+        tmp      = v3 * 2;
+        expected = {6, 2, 14};
+        EXPECT_EQ(tmp, expected);
+
+        tmp      = v3 * vec3{2, 5, 2};
+        expected = {6, 5, 14};
+        EXPECT_EQ(tmp, expected);
+
+        tmp      = v3 / 2;
+        expected = {1.5, 0.5, 3.5};
+        EXPECT_EQ(tmp, expected);
+
+        tmp      = v3 / vec3{2, 1, 2};
+        expected = {1.5, 1, 3.5};
+        EXPECT_EQ(tmp, expected);
     }
-    return errors;
+
+    v3 += 2;
+    expected = {5, 3, 9};
+    EXPECT_EQ(v3, expected);
+
+    v3 += vec3{2, 1, 1};
+    expected = {7, 4, 10};
+    EXPECT_EQ(v3, expected);
+
+    v3 -= 2;
+    expected = {5, 2, 8};
+    EXPECT_EQ(v3, expected);
+
+    v3 -= vec3{5, 3, 4};
+    expected = {0, -1, 4};
+    EXPECT_EQ(v3, expected);
+
+    v3 *= 2;
+    expected = {0, -2, 8};
+    EXPECT_EQ(v3, expected);
+
+    v3 *= vec3{1, 3, 2};
+    expected = {0, -6, 16};
+    EXPECT_EQ(v3, expected);
+
+    v3 /= 2;
+    expected = {0, -3, 8};
+    EXPECT_EQ(v3, expected);
+
+    v3 /= vec3{1, 2, 4};
+    expected = {0, -1.5, 2};
+    EXPECT_EQ(v3, expected);
+
+    v3       = dvec3{2, 7, 4};
+    expected = {2, 7, 4};
+    EXPECT_EQ(v3, expected);
+
+    const float len = std::sqrt(69.f);
+    EXPECT_FLOAT_EQ(v3.length(), len);
+
+    const auto norm = v3.normalize();
+    EXPECT_FLOAT_EQ(norm[0], 2 / len);
+    EXPECT_FLOAT_EQ(norm[1], 7 / len);
+    EXPECT_FLOAT_EQ(norm[2], 4 / len);
 }
 
-int test_unary() {
-    int errors = 0;
+TEST_F(VectorTests, Vector4) {
+    EXPECT_TRUE(std::is_trivial_v<decltype(v4)>);
+
+    vec4 expected{};
+
+    EXPECT_EQ(v4.x, 2);
+    EXPECT_EQ(v4.y, 1);
+    EXPECT_EQ(v4.z, 0);
+    EXPECT_EQ(v4.w, 4);
+
     {
-        auto v     = -fv5;
-        bool error = v[0] != -1.5 || v[1] != -2 || v[2] != -3 || v[3] != -4 || v[4] != -5;
-        if(error) {
-            std::cerr << "xme::Vector unary - error\n";
-            ++errors;
-        }
+        vec4 tmp = -v4;
+        vec4 expected{-2, -1, 0, -4};
+        EXPECT_EQ(tmp, expected);
+
+        tmp      = v4 + 1;
+        expected = {3, 2, 1, 5};
+        EXPECT_EQ(tmp, expected);
+
+        tmp      = v4 + vec4{1, 2, 3, 0};
+        expected = {3, 3, 3, 4};
+        EXPECT_EQ(tmp, expected);
+
+        tmp      = v4 - 1;
+        expected = {1, 0, -1, 3};
+        EXPECT_EQ(tmp, expected);
+
+        tmp      = v4 - vec4{2, 3, 1, 2};
+        expected = {0, -2, -1, 2};
+        EXPECT_EQ(tmp, expected);
+
+        tmp      = v4 * 2;
+        expected = {4, 2, 0, 8};
+        EXPECT_EQ(tmp, expected);
+
+        tmp      = v4 * vec4{2, 5, 2, 1};
+        expected = {4, 5, 0, 4};
+        EXPECT_EQ(tmp, expected);
+
+        tmp      = v4 / 2;
+        expected = {1, 0.5, 0, 2};
+        EXPECT_EQ(tmp, expected);
+
+        tmp      = v4 / vec4{2, 1, 2, 1};
+        expected = {1, 1, 0, 4};
+        EXPECT_EQ(tmp, expected);
     }
-    return errors;
+
+    v4 += 2;
+    expected = {4, 3, 2, 6};
+    EXPECT_EQ(v4, expected);
+
+    v4 += vec4{2, 1, 4, 1};
+    expected = {6, 4, 6, 7};
+    EXPECT_EQ(v4, expected);
+
+    v4 -= 2;
+    expected = {4, 2, 4, 5};
+    EXPECT_EQ(v4, expected);
+
+    v4 -= vec4{5, 3, 3, 1};
+    expected = {-1, -1, 1, 4};
+    EXPECT_EQ(v4, expected);
+
+    v4 *= 2;
+    expected = {-2, -2, 2, 8};
+    EXPECT_EQ(v4, expected);
+
+    v4 *= vec4{1, 3, 2, 0.5};
+    expected = {-2, -6, 4, 4};
+    EXPECT_EQ(v4, expected);
+
+    v4 /= 2;
+    expected = {-1, -3, 2, 2};
+    EXPECT_EQ(v4, expected);
+
+    v4 /= vec4{-2, 3, 1, 2};
+    expected = {0.5, -1, 2, 1};
+    EXPECT_EQ(v4, expected);
+
+    v4       = dvec4{2, 7, 4, 1};
+    expected = {2, 7, 4, 1};
+    EXPECT_EQ(v4, expected);
+
+    const float len = std::sqrt(70.f);
+    EXPECT_FLOAT_EQ(v4.length(), len);
+
+    const auto norm = v4.normalize();
+    EXPECT_FLOAT_EQ(norm[0], 2 / len);
+    EXPECT_FLOAT_EQ(norm[1], 7 / len);
+    EXPECT_FLOAT_EQ(norm[2], 4 / len);
+    EXPECT_FLOAT_EQ(norm[3], 1 / len);
 }
 
-int test_arithmetic() {
-    int errors = 0;
+TEST_F(VectorTests, Vector5) {
+    EXPECT_TRUE(std::is_trivial_v<decltype(v5)>);
+    using vec5  = Vector<float, 5>;
+    using dvec5 = Vector<double, 5>;
+    vec5 expected{};
+
     {
-        math::Vector<float, 5> v{fv5 + 2.f};
-        bool error = v[0] != 3.5 || v[1] != 4 || v[2] != 5 || v[3] != 6 || v[4] != 7;
-        if(error) {
-            std::cerr << "xme::Vector::operator+ 1 error\n";
-            ++errors;
-        }
+        vec5 tmp = -v5;
+        vec5 expected{-2, -1, 0, -4, -8};
+        EXPECT_EQ(tmp, expected);
+
+        tmp      = v5 + 1;
+        expected = {3, 2, 1, 5, 9};
+        EXPECT_EQ(tmp, expected);
+
+        tmp      = v5 + vec5{1, 2, 3, 0, 5};
+        expected = {3, 3, 3, 4, 13};
+        EXPECT_EQ(tmp, expected);
+
+        tmp      = v5 - 1;
+        expected = {1, 0, -1, 3, 7};
+        EXPECT_EQ(tmp, expected);
+
+        tmp      = v5 - vec5{2, 3, 1, 2, 3};
+        expected = {0, -2, -1, 2, 5};
+        EXPECT_EQ(tmp, expected);
+
+        tmp      = v5 * 2;
+        expected = {4, 2, 0, 8, 16};
+        EXPECT_EQ(tmp, expected);
+
+        tmp      = v5 * vec5{2, 5, 2, 1, 1.5};
+        expected = {4, 5, 0, 4, 12};
+        EXPECT_EQ(tmp, expected);
+
+        tmp      = v5 / 2;
+        expected = {1, 0.5, 0, 2, 4};
+        EXPECT_EQ(tmp, expected);
+
+        tmp      = v5 / vec5{2, 1, 2, 1, 4};
+        expected = {1, 1, 0, 4, 2};
+        EXPECT_EQ(tmp, expected);
     }
-    {
-        math::Vector<float, 5> v{fv5 + fv5};
-        bool error = v[0] != 3 || v[1] != 4 || v[2] != 6 || v[3] != 8 || v[4] != 10;
-        if(error) {
-            std::cerr << "xme::Vector::operator+ 2 error\n";
-            ++errors;
-        }
-    }
-    {
-        math::Vector<float, 5> v{fv5 - 2.f};
-        bool error = v[0] != -0.5 || v[1] != 0 || v[2] != 1 || v[3] != 2 || v[4] != 3;
-        if(error) {
-            std::cerr << "xme::Vector::operator- 1 error\n";
-            ++errors;
-        }
-    }
-    {
-        math::Vector<float, 5> v{
-            fv5 - math::Vector<float, 5>{5, 1, 3, 1, 5}
-        };
-        bool error = v[0] != -3.5 || v[1] != 1 || v[2] != 0 || v[3] != 3 || v[4] != 0;
-        if(error) {
-            std::cerr << "xme::Vector::operator- 2 error\n";
-            ++errors;
-        }
-    }
-    {
-        math::Vector<float, 5> v{fv5 * 3.f};
-        bool error = v[0] != 4.5 || v[1] != 6 || v[2] != 9 || v[3] != 12 || v[4] != 15;
-        if(error) {
-            std::cerr << "xme::Vector::operator* 1 error\n";
-            ++errors;
-        }
-    }
-    {
-        math::Vector<float, 5> v{
-            fv5 * math::Vector<float, 5>{5, 3, 1, 2, 1}
-        };
-        bool error = v[0] != 7.5 || v[1] != 6 || v[2] != 3 || v[3] != 8 || v[4] != 5;
-        if(error) {
-            std::cerr << "xme::Vector::operator* 2 error\n";
-            ++errors;
-        }
-    }
-    {
-        math::Vector<float, 5> v1{5, 10, 15, 5, 20};
-        math::Vector<float, 5> v{v1 / 5.f};
-        bool error = v[0] != 1 || v[1] != 2 || v[2] != 3 || v[3] != 1 || v[4] != 4;
-        if(error) {
-            std::cerr << "xme::Vector::operator/ 1 error\n";
-            ++errors;
-        }
-    }
-    {
-        math::Vector<float, 5> v{
-            fv5 / math::Vector<float, 5>{1.5, 1, 3, 2, 5}
-        };
-        bool error = v[0] != 1 || v[1] != 2 || v[2] != 1 || v[3] != 2 || v[4] != 1;
-        if(error) {
-            std::cerr << "xme::Vector::operator/ 2 error\n";
-            ++errors;
-        }
-    }
-    return errors;
+
+    v5 += 2;
+    expected = {4, 3, 2, 6, 10};
+    EXPECT_EQ(v5, expected);
+
+    v5 += vec5{2, 1, 4, 1, 4};
+    expected = {6, 4, 6, 7, 14};
+    EXPECT_EQ(v5, expected);
+
+    v5 -= 2;
+    expected = {4, 2, 4, 5, 12};
+    EXPECT_EQ(v5, expected);
+
+    v5 -= vec5{5, 3, 3, 1, 5};
+    expected = {-1, -1, 1, 4, 7};
+    EXPECT_EQ(v5, expected);
+
+    v5 *= 2;
+    expected = {-2, -2, 2, 8, 14};
+    EXPECT_EQ(v5, expected);
+
+    v5 *= vec5{1, 3, 2, 0.5, 0.25};
+    expected = {-2, -6, 4, 4, 3.5};
+    EXPECT_EQ(v5, expected);
+
+    v5 /= 2;
+    expected = {-1, -3, 2, 2, 1.75};
+    EXPECT_EQ(v5, expected);
+
+    v5 /= vec5{-2, 3, 1, 2, 0.5};
+    expected = {0.5, -1, 2, 1, 3.5};
+    EXPECT_EQ(v5, expected);
+
+    v5       = dvec5{2, 7, 4, 1, 3};
+    expected = {2, 7, 4, 1, 3};
+    EXPECT_EQ(v5, expected);
+
+    const float len = std::sqrt(79.f);
+    EXPECT_FLOAT_EQ(v5.length(), len);
+
+    const auto norm = v5.normalize();
+    EXPECT_FLOAT_EQ(norm[0], 2 / len);
+    EXPECT_FLOAT_EQ(norm[1], 7 / len);
+    EXPECT_FLOAT_EQ(norm[2], 4 / len);
+    EXPECT_FLOAT_EQ(norm[3], 1 / len);
+    EXPECT_FLOAT_EQ(norm[4], 3 / len);
 }
 
-int test_self() {
-    int errors = 0;
-    {
-        math::Vector<float, 5> v{2, 5, 1, 2, 1};
-        v          = math::Vector<float, 5>{3, 1, 6, 3, 2};
-        bool error = v[0] != 3 || v[1] != 1 || v[2] != 6 || v[3] != 3 || v[4] != 2;
-        if(error) {
-            std::cerr << "xme::Vector assignment error\n";
-            ++errors;
-        }
-    }
-    {
-        math::Vector<float, 5> v{2, 5, 3, 1, 2};
-        v += 4.f;
-        bool error = v[0] != 6 || v[1] != 9 || v[2] != 7 || v[3] != 5 || v[4] != 6;
-        if(error) {
-            std::cerr << "xme::Vector::operator+= 1 error\n";
-            ++errors;
-        }
-    }
-    {
-        math::Vector<float, 5> v{2, 2, 5, 3, 7};
-        v += math::Vector<float, 5>{1, 2, 2, 1, 3};
-        bool error = v[0] != 3 || v[1] != 4 || v[2] != 7 || v[3] != 4 || v[4] != 10;
-        if(error) {
-            std::cerr << "xme::Vector::operator+= 2 error\n";
-            ++errors;
-        }
-    }
-    {
-        math::Vector<float, 5> v{2, 2, 5, 3, 3};
-        v -= 2.f;
-        bool error = v[0] != 0 || v[1] != 0 || v[2] != 3 || v[3] != 1 || v[4] != 1;
-        if(error) {
-            std::cerr << "xme::Vector::operator-= 1 error\n";
-            ++errors;
-        }
-    }
-    {
-        math::Vector<float, 5> v{2, 5, 3, 2, 8};
-        v -= math::Vector<float, 5>{2, 3, 7, 1, 5};
-        bool error = v[0] != 0 || v[1] != 2 || v[2] != -4 || v[3] != 1 || v[4] != 3;
-        if(error) {
-            std::cerr << "xme::Vector::operator-= 2 error\n";
-            ++errors;
-        }
-    }
-    {
-        math::Vector<float, 5> v{2, -2, 3, 1, 5};
-        v *= 3.f;
-        bool error = v[0] != 6 || v[1] != -6 || v[2] != 9 || v[3] != 3 || v[4] != 15;
-        if(error) {
-            std::cerr << "xme::Vector::operator*= 1 error\n";
-            ++errors;
-        }
-    }
-    {
-        math::Vector<float, 5> v{1, 5, 3, 1, 4};
-        v *= math::Vector<float, 5>{-2, 3, 3, -1, 2};
-        bool error = v[0] != -2 || v[1] != 15 || v[2] != 9 || v[3] != -1 || v[4] != 8;
-        if(error) {
-            std::cerr << "xme::Vector::operator*= 2 error\n";
-            ++errors;
-        }
-    }
-    {
-        math::Vector<float, 5> v{7, 14, 21, 28, 35};
-        v /= 7.f;
-        bool error = v[0] != 1 || v[1] != 2 || v[2] != 3 || v[3] != 4 || v[4] != 5;
-        if(error) {
-            std::cerr << "xme::Vector::operator/= 1 error\n";
-            ++errors;
-        }
-    }
-    {
-        math::Vector<float, 5> v{8, 14, 3, 10, 5};
-        v /= math::Vector<float, 5>{2, 4, 3, 2, 5};
-        bool error = v[0] != 4 || v[1] != 3.5 || v[2] != 1 || v[3] != 5 || v[4] != 1;
-        if(error) {
-            std::cerr << "xme::Vector::operator/= 2 error\n";
-            ++errors;
-        }
-    }
-    return errors;
+TEST_F(VectorTests, Functions) {
+    vec3 v1{1, 5, 2};
+    vec3 v2{5, 3, 1};
+    vec3 expected{};
+    EXPECT_EQ(dot(v1, v2), 22);
+
+    expected = vec3{3, 4, 1.5};
+    EXPECT_EQ(lerp(v1, v2, 0.5), expected);
+    EXPECT_EQ(lerp(v1, v2, 0), v1);
+    EXPECT_EQ(lerp(v1, v2, 1), v2);
+
+    expected = vec3{5, 5, 1.5};
+    EXPECT_EQ(lerp(v1, v2, vec3{1, 0, 0.5}), expected);
 }
-
-int test_equality() {
-    int errors = 0;
-    {
-        math::Vector<float, 5> v1{5.f};
-        math::Vector<float, 5> v2{7.f};
-        bool error = v1 == v2;
-        if(error) {
-            std::cerr << "xme::Vector::operator== Error\n";
-            ++errors;
-        }
-    }
-    {
-        math::Vector<float, 5> v1{2, 2, 2, 2, 2};
-        math::Vector<float, 5> v2{2, 2, 2, 2, 2};
-        bool error = v1 != v2;
-        if(error) {
-            std::cerr << "xme::Vector::operator!= Error\n";
-            ++errors;
-        }
-    }
-    return errors;
-}
-
-int test_operations() {
-    int errors = 0;
-    {
-        auto l     = math::Vector<double, 5>(4, 4, 5, 3, 1).length();
-        bool error = l != std::sqrt(67);
-        if(error) {
-            std::cerr << "xme::Vector::length error\n";
-            ++errors;
-        }
-    }
-    {
-        auto d =
-          math::dot(math::Vector<float, 5>{3, 3, 1, 1, 2}, math::Vector<float, 5>{2, 8, 1, 2, 1});
-
-        bool error = d != 35;
-        if(error) {
-            std::cerr << "xme::Vector::dot error\n";
-            ++errors;
-        }
-    }
-    {
-        auto d1 = math::distance(math::Vector<float, 5>{}, math::Vector<float, 5>{4, 3, 0, 1, 2});
-        auto d2 = math::distance(math::Vector<float, 5>{4, 3, 0, 1, 2}, math::Vector<float, 5>{});
-        bool error = d1 != std::sqrt(30.f) || d2 != std::sqrt(30.f);
-        if(error) {
-            std::cerr << "xme::Vector::distance error\n";
-            ++errors;
-        }
-    }
-    {
-        math::Vector<float, 5> v1{1.f, 1.f, 1.f, 1.f, 1.f};
-        auto r1 = math::reflect(v1, math::Vector<float, 5>{0, 1, 0, 0, 0});
-        auto r2 = math::reflect(v1, math::Vector<float, 5>{1, 0, 0, 0, 0});
-        auto r3 = math::reflect(v1, math::Vector<float, 5>{0, 0, 1, 0, 0});
-
-        bool error = r1 != math::Vector<float, 5>{1, -1, 1, 1, 1}
-                     || r2 != math::Vector<float, 5>{-1, 1, 1, 1, 1};
-        error |= r3 != math::Vector<float, 5>{1, 1, -1, 1, 1};
-        if(error) {
-            std::cerr << "xme::Vector::reflect error\n";
-            ++errors;
-        }
-    }
-
-    return errors;
-}
-
-int test_normal() {
-    int errors = 0;
-    {
-        auto r1    = math::lerp(math::vec3{3}, math::vec3{2}, 0.5L);
-        auto r2    = math::lerp(math::vec3{5}, math::vec3{1}, math::Vector<bool, 3>{1, 0, 1});
-        bool error = r2 != math::vec3{1, 5, 1};
-        error |= r1 != math::vec3{2.5};
-        if(error) {
-            std::cerr << "xme::math::lerp error\n";
-            ++errors;
-        }
-    }
-    {
-        auto r     = math::sign(math::vec4{1, 0, -1, INFINITY});
-        bool error = r != math::vec4{1, 0, -1, 1};
-        if(error) {
-            std::cerr << "xme::math::sign error\n";
-            ++errors;
-        }
-        return errors;
-    }
-}
-
-int main() {
-    int errors = 0;
-    test_deduction_guide();
-    errors += test_access();
-    errors += test_arithmetic();
-    errors += test_self();
-    errors += test_equality();
-    errors += test_operations();
-    errors += test_normal();
-    return errors;
-}
+}  // namespace
