@@ -12,16 +12,19 @@ public:
       w(static_cast<T>(_w)), x(static_cast<T>(_x)), y(static_cast<T>(_y)), z(static_cast<T>(_z)) {}
 
     template<typename U>
+    [[nodiscard]]
     constexpr auto operator+(const Quaternion<U>& q) const noexcept -> Quaternion {
         return {w + q.w, x + q.x, y + q.y, z + q.z};
     }
 
     template<typename U>
+    [[nodiscard]]
     constexpr auto operator-(const Quaternion<U>& q) const noexcept -> Quaternion {
         return {w - q.w, x - q.x, y - q.y, z - q.z};
     }
 
     template<typename U>
+    [[nodiscard]]
     constexpr auto operator*(const Quaternion<U>& q) const noexcept -> Quaternion {
         return {
             w * q.w - x * q.x - y * q.y - z * q.z,
@@ -31,8 +34,21 @@ public:
         };
     }
 
-    constexpr auto operator[](std::size_t i) noexcept -> T& { return (&w)[i]; }
-    constexpr auto operator[](std::size_t i) const noexcept -> const T& { return (&w)[i]; }
+    [[nodiscard]]
+    constexpr auto operator[](std::size_t i) noexcept -> T& {
+        return (&w)[i];
+    }
+
+    [[nodiscard]]
+    constexpr auto operator[](std::size_t i) const noexcept -> const T& {
+        return (&w)[i];
+    }
+
+    [[nodiscard]]
+    constexpr bool operator==(const Quaternion&) const noexcept = default;
+
+    [[nodiscard]]
+    constexpr auto operator<=>(const Quaternion&) const noexcept = default;
 
     T w;
     T x;

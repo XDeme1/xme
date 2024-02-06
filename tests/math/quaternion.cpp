@@ -1,34 +1,30 @@
-#include <iostream>
-#include <xme/math/quaternion.hpp>
+#include <gtest/gtest.h>
+#include <xme/math/math.hpp>
+#include <xme/math/glsl_mapping.hpp>
 
-namespace math = xme::math;
+namespace {
+using namespace xme::math;
 
-int main() {
-    int errors = 0;
+class QuaternionTests : public testing::Test {};
+
+TEST_F(QuaternionTests, Quaternion) {
+    Quaternion<float> quat{1, 5, 3, 4};
+
+    EXPECT_EQ(quat.w, 1);
+    EXPECT_EQ(quat.x, 5);
+    EXPECT_EQ(quat.y, 3);
+    EXPECT_EQ(quat.z, 4);
+
     {
-        math::Quaternion<float> q1{5, 3, 1, 6};
-        math::Quaternion<float> q2{-3, 1, 2, 1};
-        auto result = q1 + q2;
-        bool error  = result.w != 2 || result.x != 4 || result.y != 3 || result.z != 7;
-        if(error) {
-            std::cerr << "xme::math::Quaternion addition error\n";
-            ++errors;
-        }
-    }
-    {
-        math::Quaternion<float> q1{1, 2, -1, -1};
-        math::Quaternion<float> q2{-1, -2, 3, -5};
-        auto result = q1 * q2;
-        bool error  = result.w != 1 || result.x != 4 || result.y != 16 || result.z != 0;
-        if(error) {
-            std::cerr << "xme::math::Quaternion multiplication error\n";
-            ++errors;
-        }
-    }
-    struct Foo {
-        int a;
-        int b;
-    };
+        Quaternion<float> tmp{3, 1, 0, 3};
+        Quaternion<float> expected{4, 6, 3, 7};
+        EXPECT_EQ(quat + tmp, expected);
 
-    return errors;
+        expected = {-2, 4, 3, 1};
+        EXPECT_EQ(quat - tmp, expected);
+
+        expected = {-14, 25, -2, 12};
+        EXPECT_EQ(quat * tmp, expected);
+    }
 }
+}  // namespace
