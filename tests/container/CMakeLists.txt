@@ -6,3 +6,6 @@ CreateTest(linked_list 20)
 CreateTest(pair 20)
 CreateTest(spsc 20)
 CreateTest(tuple 20)
+
+add_unittest(ContainerTest
+    icontainer.cpp)
