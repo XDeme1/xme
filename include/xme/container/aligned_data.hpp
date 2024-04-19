@@ -1,6 +1,8 @@
 #pragma once
 #include <array>
 #include <bit>
+#include <concepts>
+#include <ranges>
 #include <xme/setup.hpp>
 
 namespace xme {
@@ -20,6 +22,15 @@ public:
     using const_reference = const T&;
     using pointer         = T*;
     using const_pointer   = const T*;
+
+    constexpr AlignedData() noexcept
+        requires std::default_initializable<T>
+    = default;
+
+    template<typename... Args>
+    constexpr AlignedData(Args&&... args) noexcept {
+        std::construct_at(data(), std::forward<Args>(args)...);
+    }
 
     //! Returns a void pointer to the address of the object
     [[nodiscard]]

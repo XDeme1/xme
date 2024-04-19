@@ -3,6 +3,7 @@
 #include <utility>
 
 #include <xme/setup.hpp>
+#include <xme/core/utility/forward_like.hpp>
 
 namespace xme::detail {
 template<typename... T>
@@ -15,17 +16,29 @@ constexpr auto operator+(TypeList<T...>, TypeList<U...>) {
 
 template<std::size_t I, typename T>
 struct TupleElement {
+#if defined(__cpp_explicit_this_parameter)
+    template<typename Self>
+    [[nodiscard]]
+    constexpr auto operator[](this Self&& self,
+                              std::integral_constant<std::size_t, I>) noexcept -> auto&& {
+        return xme::forward_like<Self>(self).value;
+    }
+#else
+    [[nodiscard]]
     constexpr auto operator[](std::integral_constant<std::size_t, I>) & noexcept -> T& {
         return value;
     }
 
+    [[nodiscard]]
     constexpr auto operator[](std::integral_constant<std::size_t, I>) const& noexcept -> const T& {
         return value;
     }
 
+    [[nodiscard]]
     constexpr auto operator[](std::integral_constant<std::size_t, I>) && noexcept -> T&& {
         return static_cast<TupleElement&&>(*this).value;
     }
+#endif
 
     XME_CONSTEXPR20 auto operator<=>(const TupleElement&) const = default;
 

@@ -15,6 +15,21 @@ public:
         return *this;
     }
 
+#if defined(__cpp_explicit_this_parameter)
+    template<typename Self>
+    [[nodiscard]]
+    constexpr auto operator[](this Self&& self,
+                              std::integral_constant<std::size_t, 0>) noexcept -> auto&& {
+        return xme::forward_like<Self>(self).first;
+    }
+
+    template<typename Self>
+    [[nodiscard]]
+    constexpr auto operator[](this Self&& self,
+                              std::integral_constant<std::size_t, 1>) noexcept -> auto&& {
+        return xme::forward_like<Self>(self).second;
+    }
+#else
     [[nodiscard]]
     constexpr auto operator[](std::integral_constant<std::size_t, 0>) & noexcept -> T& {
         return first;
@@ -44,6 +59,7 @@ public:
     constexpr auto operator[](std::integral_constant<std::size_t, 1>) && noexcept -> U&& {
         return static_cast<Pair&&>(*this).second;
     }
+#endif
 
     [[nodiscard]]
     XME_CONSTEXPR20 bool operator==(const Pair&) const noexcept = default;
