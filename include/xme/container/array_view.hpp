@@ -1,4 +1,5 @@
 #pragma once
+#include "xme/container/icontainer.hpp"
 #include <array>
 #include <cassert>
 #include <cstddef>
@@ -52,7 +53,7 @@ namespace xme {
 //! @param T the type of element to view in a container
 //! @param Size Specifies the size of the container
 template<typename T, std::size_t Size = static_cast<std::size_t>(-1)>
-class ArrayView {
+class ArrayView : public IContainer<ArrayView<T, Size>> {
 private:
     static constexpr std::size_t dynamic_size = -1;
 
@@ -117,32 +118,6 @@ public:
     constexpr ArrayView(const std::array<U, Lenght>& arr) noexcept :
       ArrayView(static_cast<pointer>(arr.data()), Lenght) {}
 
-    //! returns a reference to an element in the view
-    [[nodiscard]]
-    constexpr auto operator[](size_type i) noexcept -> reference {
-        assert(i < size());
-        return m_view[i];
-    }
-
-    //! returns a reference to an element in the view
-    [[nodiscard]]
-    constexpr auto operator[](size_type i) const noexcept -> const_reference {
-        assert(i < size());
-        return m_view[i];
-    }
-
-    //! Returns a raw pointer to beggining of the view
-    [[nodiscard]]
-    constexpr auto data() noexcept -> pointer {
-        return m_view;
-    }
-
-    //! Returns a raw pointer to beggining of the view
-    [[nodiscard]]
-    constexpr auto data() const noexcept -> const_pointer {
-        return m_view;
-    }
-
     //! Returns an iterator to the first element of the view
     [[nodiscard]]
     constexpr auto begin() noexcept -> iterator {
@@ -167,78 +142,6 @@ public:
         return m_view + size();
     }
 
-    //! Returns a const iterator to the first element of the view
-    [[nodiscard]]
-    constexpr auto cbegin() const noexcept -> const_iterator {
-        return m_view;
-    }
-
-    //! Returns a const iterator to one past the last element of the view
-    [[nodiscard]]
-    constexpr auto cend() const noexcept -> const_iterator {
-        return m_view + size();
-    }
-
-    //! Returns a reverse iterator to one past the last element of the view
-    [[nodiscard]]
-    constexpr auto rbegin() noexcept -> reverse_iterator {
-        return end();
-    }
-
-    //! Returns a reverse iterator to the first element of the view
-    [[nodiscard]]
-    constexpr auto rend() noexcept -> reverse_iterator {
-        return begin();
-    }
-
-    //! Returns a reverse iterator to one past the last element of the view
-    [[nodiscard]]
-    constexpr auto rbegin() const noexcept -> const_reverse_iterator {
-        return end();
-    }
-
-    //! Returns a reverse iterator to the first element of the view
-    [[nodiscard]]
-    constexpr auto rend() const noexcept -> const_reverse_iterator {
-        return begin();
-    }
-
-    //! Returns a const reverse iterator to one past the last element of the view
-    [[nodiscard]]
-    constexpr auto crbegin() const noexcept -> const_reverse_iterator {
-        return end();
-    }
-
-    //! Returns a reverse iterator to the first element of the view
-    [[nodiscard]]
-    constexpr auto crend() const noexcept -> const_reverse_iterator {
-        return begin();
-    }
-
-    //! Returns a reference to the first element of the view
-    [[nodiscard]]
-    constexpr auto front() noexcept -> reference {
-        return *m_view;
-    }
-
-    //! Returns a reference to the last element of the view
-    [[nodiscard]]
-    constexpr auto back() noexcept -> reference {
-        return m_view[size() - 1];
-    }
-
-    //! Returns a reference to the first element of the view
-    [[nodiscard]]
-    constexpr auto front() const noexcept -> const_reference {
-        return *m_view;
-    }
-
-    //! Returns a reference to the last element of the view
-    [[nodiscard]]
-    constexpr auto back() const noexcept -> const_reference {
-        return m_view[size() - 1];
-    }
-
     //! Returns the size of the view
     [[nodiscard]]
     constexpr auto size() const noexcept -> size_type {
@@ -249,12 +152,6 @@ public:
     [[nodiscard]]
     constexpr auto size_bytes() const noexcept -> size_type {
         return m_size.size() * sizeof(T);
-    }
-
-    //! Returns true is the view is empty
-    [[nodiscard]]
-    constexpr bool is_empty() const noexcept {
-        return m_size.size() == 0;
     }
 
     //! Creates a new ArrayView containing a part of the view
