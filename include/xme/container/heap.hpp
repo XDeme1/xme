@@ -1,5 +1,6 @@
 #pragma once
 #include "array.hpp"
+#include "xme/container/icontainer.hpp"
 
 namespace xme {
 //! Heap is a priority queue stored in a contiguous array.
@@ -9,7 +10,7 @@ namespace xme {
 //! @param T the type of the stored element
 //! @param Alloc must be an allocator that satisfies the Allocator concept
 template<typename T, std::ranges::contiguous_range Container = Array<T>, typename Cmp = std::less<>>
-class Heap {
+class Heap : public IContainer<Heap<T, Container, Cmp>> {
 public:
     using container_type  = Container;
     using size_type       = std::size_t;
@@ -54,21 +55,6 @@ public:
     [[nodiscard]]
     constexpr auto end() const noexcept -> const_iterator {
         return m_array.cend();
-    }
-
-    [[nodiscard]]
-    constexpr auto front() const noexcept -> const_reference {
-        return *begin();
-    }
-
-    [[nodiscard]]
-    constexpr bool is_empty() const noexcept {
-        return m_array.isEmpty();
-    }
-
-    [[nodiscard]]
-    constexpr auto size() const noexcept -> size_type {
-        return m_array.size();
     }
 
     //! Pop the front element and rearrange elements to keep a week sort.

@@ -1,6 +1,6 @@
 #pragma once
 #include "../../../private/container/linked_list_base.hpp"
-#include "concepts.hpp"
+#include "xme/container/icontainer.hpp"
 #include <iterator>
 #include <memory>
 
@@ -12,8 +12,9 @@ namespace xme {
 //! @param T the type of the stored element
 //! @param Alloc must be an allocator that satisfies the Allocator concept
 template<typename T, typename Alloc = std::allocator<T>>
-class LinkedList {
+class LinkedList : public IContainer<LinkedList<T, Alloc>> {
 private:
+    using super     = IContainer<LinkedList<T, Alloc>>;
     using node_base = detail::LinkedListNodeBase;
     using node      = detail::LinkedListNode<T>;
 
@@ -121,19 +122,6 @@ public:
 
     //! Returns a const iterator to the head
     constexpr auto cbefore_begin() const noexcept -> const_iterator { return &m_head; }
-
-    //! Returns a const iterator to the first element
-    constexpr auto cbegin() const noexcept -> const_iterator { return m_head.next; }
-    //! Returns a const iterator representing the end of the LinkedList
-    constexpr auto cend() const noexcept -> const_iterator { return nullptr; }
-
-    //! Returns a reference to the first element
-    constexpr auto front() noexcept -> reference { return *begin(); }
-    //! Returns a reference to the first element
-    constexpr auto front() const noexcept -> reference { return *begin(); }
-
-    //! Returns true if there are no elements in the LinkedList
-    constexpr bool is_empty() const noexcept { return m_head.next == nullptr; }
 
     //! Erases every element in the LinkedList
     constexpr void clear() noexcept { erase_after(before_begin(), nullptr); }

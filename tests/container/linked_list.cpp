@@ -117,7 +117,7 @@ int test_erase() {
     {
         xme::LinkedList<int> l{5, 3, 1};
         l.clear();
-        bool error = !l.is_empty() || l.begin() != l.end();
+        bool error = !l.empty() || l.begin() != l.end();
         if(error) {
             std::cerr << "xme::LinkedList::clear error\n";
             ++errors;
@@ -132,7 +132,7 @@ int test_copy_move() {
         xme::LinkedList<int> tmp{1, 5};
         xme::LinkedList<int> l{std::move(tmp)};
         auto begin = l.begin();
-        bool error = !tmp.is_empty() || *(begin++) != 1 || *(begin++) != 5;
+        bool error = !tmp.empty() || *(begin++) != 1 || *(begin++) != 5;
         error |= begin != l.end();
         if(error) {
             std::cerr << "xme::LinkedList move constructor error\n";
@@ -144,7 +144,7 @@ int test_copy_move() {
         xme::LinkedList<int> l{1};
         l          = std::move(tmp);
         auto begin = l.begin();
-        bool error = !tmp.is_empty() || *(begin++) != 5 || *(begin++) != 3;
+        bool error = !tmp.empty() || *(begin++) != 5 || *(begin++) != 3;
         error |= begin != l.end();
         if(error) {
             std::cerr << "xme::LinkedList move assignment error\n";
