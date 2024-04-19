@@ -1,4 +1,5 @@
 #pragma once
+#include <algorithm>
 #include <cstddef>
 #include <iterator>
 #include <memory>
@@ -62,6 +63,66 @@ public:
     [[nodiscard]]
     constexpr auto cend() const noexcept {
         return std::ranges::cend(static_cast<const Container&>(*this));
+    }
+
+    [[nodiscard]]
+    constexpr auto rbegin() noexcept
+        requires requires { typename Container::reverse_iterator; }
+    {
+        return
+          typename Container::reverse_iterator(std::ranges::end(static_cast<Container&>(*this)));
+    }
+
+    [[nodiscard]]
+    constexpr auto rbegin() const noexcept
+        requires requires { typename Container::const_reverse_iterator; }
+    {
+        return Container::const_reverse_iterator(
+          std::ranges::end(static_cast<const Container&>(*this)));
+    }
+
+    [[nodiscard]]
+    constexpr auto rend() noexcept
+        requires requires { typename Container::reverse_iterator; }
+    {
+        return
+          typename Container::reverse_iterator(std::ranges::begin(static_cast<Container&>(*this)));
+    }
+
+    [[nodiscard]]
+    constexpr auto rend() const noexcept
+        requires requires { typename Container::const_reverse_iterator; }
+    {
+        return Container::const_reverse_iterator(
+          std::ranges::begin(static_cast<const Container&>(*this)));
+    }
+
+    [[nodiscard]]
+    constexpr auto crbegin() noexcept
+        requires requires { typename Container::const_reverse_iterator; }
+    {
+        return Container::const_reverse_iterator(cend());
+    }
+
+    [[nodiscard]]
+    constexpr auto crbegin() const noexcept
+        requires requires { typename Container::const_reverse_iterator; }
+    {
+        return Container::const_reverse_iterator(cend());
+    }
+
+    [[nodiscard]]
+    constexpr auto crend() noexcept
+        requires requires { typename Container::const_reverse_iterator; }
+    {
+        return Container::const_reverse_iterator(cbegin());
+    }
+
+    [[nodiscard]]
+    constexpr auto crend() const noexcept
+        requires requires { typename Container::const_reverse_iterator; }
+    {
+        return Container::const_reverse_iterator(cbegin());
     }
 
     [[nodiscard]]
