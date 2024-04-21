@@ -1,5 +1,5 @@
 #pragma once
-#include "xme/container/icontainer.hpp"
+#include "xme/container/iview.hpp"
 #include <array>
 #include <cassert>
 #include <cstddef>
@@ -53,7 +53,8 @@ namespace xme {
 //! @param T the type of element to view in a container
 //! @param Size Specifies the size of the container
 template<typename T, std::size_t Size = static_cast<std::size_t>(-1)>
-class ArrayView : public IContainer<ArrayView<T, Size>> {
+class ArrayView : public IView<ArrayView<T, Size>>,
+                  public IReverseView<ArrayView<T, Size>> {
 private:
     static constexpr std::size_t dynamic_size = -1;
 

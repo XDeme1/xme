@@ -1,8 +1,8 @@
 #include <vector>
-#include <xme/container/icontainer.hpp>
+#include <xme/container/iview.hpp>
 #include <gtest/gtest.h>
 
-struct Container : public xme::IContainer<Container> {
+struct Container : public xme::IView<Container> {
     constexpr auto begin() noexcept { return v.begin(); }
     constexpr auto begin() const noexcept { return v.begin(); }
 

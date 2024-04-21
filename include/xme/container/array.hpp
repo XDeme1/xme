@@ -1,6 +1,6 @@
 #pragma once
 #include "concepts.hpp"
-#include "xme/container/icontainer.hpp"
+#include "xme/container/iview.hpp"
 #include <algorithm>
 #include <cassert>
 #include <memory>
@@ -14,10 +14,10 @@ namespace xme {
 //! @param T the type of the stored element
 //! @param Alloc must be an allocator that satisfies the Allocator concept
 template<typename T, CAllocator Alloc = std::allocator<T>>
-class Array : public IContainer<Array<T, Alloc>> {
+class Array : public IView<Array<T, Alloc>>,
+              public IReverseView<Array<T, Alloc>> {
 private:
     using alloc_traits = std::allocator_traits<Alloc>;
-    using super        = IContainer<Array<T, Alloc>>;
 
     template<bool Const>
     class Iterator;
@@ -164,7 +164,7 @@ public:
     template<std::convertible_to<T> U>
     constexpr auto insert(const_iterator pos, U&& value) -> iterator {
         auto p = const_cast<pointer>(pos.operator->());
-        if(pos == super::cend()) {
+        if(pos == this->cend()) {
             emplace_back(std::forward<U>(value));
             return end() - 1;
         }
@@ -186,7 +186,7 @@ public:
     constexpr auto insert(const_iterator pos, Iter first, Sent last) -> iterator {
         auto p             = const_cast<pointer>(pos.operator->());
         size_type elements = std::ranges::distance(first, last);
-        if(super::size() + elements > capacity()) {
+        if(this->size() + elements > capacity()) {
             Array tmp(capacity() == 0 ? elements : capacity() + elements);
             size_type elements_before = std::ranges::distance(begin(), pos);
 
@@ -196,15 +196,15 @@ public:
                 alloc_traits::construct(
                   m_allocator, tmp.m_data.begin + elements_before + n, *first);
 
-            std::ranges::move(super::cbegin(), pos, tmp.begin());
-            std::ranges::move(pos, super::cend(), tmp.begin() + elements_before + elements);
-            tmp.m_data.end = tmp.m_data.begin + super::size() + elements;
+            std::ranges::move(this->cbegin(), pos, tmp.begin());
+            std::ranges::move(pos, this->cend(), tmp.begin() + elements_before + elements);
+            tmp.m_data.end = tmp.m_data.begin + this->size() + elements;
             std::ranges::swap(m_data, tmp.m_data);
 
             return begin() + elements_before;
         }
 
-        std::move_backward(pos, super::cend(), end() + elements);
+        std::move_backward(pos, this->cend(), end() + elements);
         m_data.end += elements;
         for(std::size_t n = 0; first != last; ++first, ++n)
             alloc_traits::construct(m_allocator, p + n, *first);
@@ -230,7 +230,7 @@ public:
     //! Pushes [first, last) to the end of the array.
     template<std::input_iterator Iter, std::sentinel_for<Iter> Sent>
     constexpr void push_back(Iter first, Sent last) {
-        size_type new_capacity = super::size() + std::ranges::distance(first, last);
+        size_type new_capacity = this->size() + std::ranges::distance(first, last);
         if(new_capacity > capacity()) {
             grow_storage(new_capacity);
         }
@@ -249,7 +249,7 @@ public:
 
     //! Destroys the last element in the array.
     constexpr void pop_back() {
-        assert(super::size() > 0);
+        assert(this->size() > 0);
         --m_data.end;
         ranges::destroy_at_a(m_data.end, m_allocator);
     }
@@ -258,11 +258,11 @@ public:
     template<typename... Args>
     constexpr auto emplace_back(Args&&... args) -> reference {
         if(m_data.end == m_data.storage_end)
-            grow_storage(super::size() + std::max(super::size(), size_type(1)));
+            grow_storage(this->size() + std::max(this->size(), size_type(1)));
 
         alloc_traits::construct(m_allocator, m_data.end, std::forward<Args>(args)...);
         ++m_data.end;
-        return super::back();
+        return this->back();
     }
 
     //! Erases the element in pos
@@ -270,7 +270,7 @@ public:
     constexpr auto erase(const_iterator pos) -> iterator {
         auto p = const_cast<pointer>(pos.operator->());
         ranges::destroy_at_a(p, m_allocator);
-        std::ranges::move(std::ranges::next(pos), super::cend(), p);
+        std::ranges::move(std::ranges::next(pos), this->cend(), p);
         --m_data.end;
         return p;
     }
@@ -281,14 +281,14 @@ public:
         auto p             = const_cast<pointer>(first.operator->());
         size_type elements = std::ranges::distance(first, last);
         ranges::destroy_n_a(p, elements, m_allocator);
-        std::ranges::move(first + elements, super::cend(), p);
+        std::ranges::move(first + elements, this->cend(), p);
         m_data.end -= elements;
         return p;
     }
 
 private:
     constexpr void grow_storage(size_type n) {
-        const auto old_size = super::size();
+        const auto old_size = this->size();
         pointer new_begin   = m_allocator.allocate(n);
 
         std::ranges::move(*this, new_begin);
@@ -300,7 +300,7 @@ private:
     }
 
     constexpr void shrink_storage(size_type n) {
-        size_type elements_to_move = std::min(super::size(), n);
+        size_type elements_to_move = std::min(this->size(), n);
         pointer new_begin          = m_allocator.allocate(n);
 
         std::ranges::move(begin(), begin() + elements_to_move, new_begin);
@@ -314,8 +314,8 @@ private:
     template<typename... Args>
     constexpr auto realloc_insert(iterator pos, Args&&... args) -> iterator {
         const size_type elements_before = pos - begin();
-        const size_type new_size        = super::size() + std::max(super::size(), size_type(1));
-        const size_type curr_size       = super::size();
+        const size_type new_size        = this->size() + std::max(this->size(), size_type(1));
+        const size_type curr_size       = this->size();
         pointer new_start               = m_allocator.allocate(new_size);
         try {
             alloc_traits::construct(

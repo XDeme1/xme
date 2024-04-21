@@ -1,6 +1,6 @@
 #pragma once
 #include "array.hpp"
-#include "xme/container/icontainer.hpp"
+#include "xme/container/iview.hpp"
 
 namespace xme {
 //! Heap is a priority queue stored in a contiguous array.
@@ -10,7 +10,7 @@ namespace xme {
 //! @param T the type of the stored element
 //! @param Alloc must be an allocator that satisfies the Allocator concept
 template<typename T, std::ranges::contiguous_range Container = Array<T>, typename Cmp = std::less<>>
-class Heap : public IContainer<Heap<T, Container, Cmp>> {
+class Heap : public IView<Heap<T, Container, Cmp>> {
 public:
     using container_type  = Container;
     using size_type       = std::size_t;

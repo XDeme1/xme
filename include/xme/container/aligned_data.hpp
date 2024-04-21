@@ -2,7 +2,6 @@
 #include <array>
 #include <bit>
 #include <concepts>
-#include <ranges>
 #include <xme/setup.hpp>
 
 namespace xme {

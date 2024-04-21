@@ -1,6 +1,6 @@
 #pragma once
 #include "../../../private/container/linked_list_base.hpp"
-#include "xme/container/icontainer.hpp"
+#include "xme/container/iview.hpp"
 #include <iterator>
 #include <memory>
 
@@ -12,9 +12,9 @@ namespace xme {
 //! @param T the type of the stored element
 //! @param Alloc must be an allocator that satisfies the Allocator concept
 template<typename T, typename Alloc = std::allocator<T>>
-class LinkedList : public IContainer<LinkedList<T, Alloc>> {
+class LinkedList : public IView<LinkedList<T, Alloc>> {
 private:
-    using super     = IContainer<LinkedList<T, Alloc>>;
+    using super     = IView<LinkedList<T, Alloc>>;
     using node_base = detail::LinkedListNodeBase;
     using node      = detail::LinkedListNode<T>;
 

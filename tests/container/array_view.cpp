@@ -1,5 +1,6 @@
 #include <cstddef>
 #include <gtest/gtest.h>
+#include <ranges>
 #include <xme/container/array_view.hpp>
 #include <xme/container/array.hpp>
 #include <array>

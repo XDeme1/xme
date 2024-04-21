@@ -1,3 +1,4 @@
+#include <ranges>
 #include <xme/container/linked_list.hpp>
 #include <iostream>
 #include <vector>
