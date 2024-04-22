@@ -1,11 +1,39 @@
+#include "xme/ranges/access/ssize.hpp"
+#include <concepts>
 #include <gtest/gtest.h>
+#include <ranges>
 #include <vector>
 #include <xme/ranges/access.hpp>
 
+struct Container1 {
+    int a[3]{7, 3, 1};
+};
+struct Container2 {
+    int a[3]{8, 56, 1};
+};
+
+constexpr auto begin(Container1& c) {
+    return c.a;
+}
+constexpr auto end(Container1& c) {
+    return c.a + 3;
+}
+
+constexpr auto size(Container2& c) -> std::size_t {
+    return (c.a + 3) - c.a;
+}
+
 class AccessTest : public ::testing::Test {
 public:
-    int a[3]{1, 5, 3};
+#ifdef __SIZEOF_INT128__
+    __int128
+#else
+    int
+#endif
+      a[3]{1, 5, 3};
     std::vector<int> v{5, 3, 8};
+    Container1 c1;
+    Container2 c2;
 };
 
 TEST_F(AccessTest, begin) {
@@ -20,6 +48,12 @@ TEST_F(AccessTest, begin) {
         EXPECT_EQ(*(b++), 1);
         EXPECT_EQ(*(b++), 5);
         EXPECT_EQ(*(b++), 3);
+    }
+    {
+        auto b = xme::ranges::begin(c1);
+        EXPECT_EQ(*(b++), 7);
+        EXPECT_EQ(*(b++), 3);
+        EXPECT_EQ(*(b++), 1);
     }
 }
 
@@ -36,9 +70,46 @@ TEST_F(AccessTest, end) {
         EXPECT_EQ(*(--e), 5);
         EXPECT_EQ(*(--e), 1);
     }
+    {
+        auto e = xme::ranges::end(c1);
+        EXPECT_EQ(*(--e), 1);
+        EXPECT_EQ(*(--e), 3);
+        EXPECT_EQ(*(--e), 7);
+    }
 }
 
 TEST_F(AccessTest, size) {
+    static_assert(std::is_unsigned_v<decltype(xme::ranges::size(v))>);
+    static_assert(std::is_unsigned_v<decltype(xme::ranges::size(a))>);
+    static_assert(std::is_unsigned_v<decltype(xme::ranges::size(c1))>);
+    static_assert(std::is_unsigned_v<decltype(xme::ranges::size(c2))>);
     EXPECT_EQ(xme::ranges::size(v), 3);
     EXPECT_EQ(xme::ranges::size(a), 3);
+    EXPECT_EQ(xme::ranges::size(c1), 3);
+    EXPECT_EQ(xme::ranges::size(c2), 3);
+}
+
+TEST_F(AccessTest, ssize) {
+    static_assert(std::is_signed_v<decltype(xme::ranges::ssize(v))>);
+    static_assert(std::is_signed_v<decltype(xme::ranges::ssize(a))>);
+    static_assert(std::is_signed_v<decltype(xme::ranges::ssize(c1))>);
+    static_assert(std::is_signed_v<decltype(xme::ranges::ssize(c2))>);
+    EXPECT_EQ(xme::ranges::ssize(v), 3);
+    EXPECT_EQ(xme::ranges::ssize(a), 3);
+    EXPECT_EQ(xme::ranges::ssize(c1), 3);
+    EXPECT_EQ(xme::ranges::ssize(c2), 3);
+}
+
+TEST_F(AccessTest, empty) {
+    EXPECT_EQ(xme::ranges::empty(v), false);
+    EXPECT_EQ(xme::ranges::empty(a), false);
+    EXPECT_EQ(xme::ranges::empty(c1), false);
+    EXPECT_EQ(xme::ranges::empty(c2), false);
+    EXPECT_EQ(xme::ranges::empty(std::vector<int>{}), true);
+}
+
+TEST_F(AccessTest, data) {
+    EXPECT_EQ(xme::ranges::data(v), std::to_address(xme::ranges::begin(v)));
+    EXPECT_EQ(xme::ranges::data(a), std::to_address(xme::ranges::begin(a)));
+    EXPECT_EQ(xme::ranges::data(c1), std::to_address(xme::ranges::begin(c1)));
 }
