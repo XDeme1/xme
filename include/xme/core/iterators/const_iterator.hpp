@@ -1,5 +1,9 @@
 #pragma once
+#include <concepts>
+#include <iterator>
 #include "iterator_traits.hpp"
+#include "xme/setup.hpp"
+#include "xme/core/concepts/constant_iterator.hpp"
 #include <xme/core/concepts/different_from.hpp>
 
 namespace xme {
@@ -195,4 +199,20 @@ public:
 private:
     It m_current{};
 };
+
+template<std::input_iterator It>
+XME_INLINE constexpr auto make_const_iterator(It it) noexcept {
+    if constexpr(CConstantIterator<It>)
+        return it;
+    else
+        return ConstIterator<It>(it);
+}
+
+template<std::semiregular It>
+XME_INLINE constexpr auto make_const_sentinel(It it) noexcept {
+    if constexpr(std::input_iterator<It>)
+        return xme::make_const_iterator(it);
+    else
+        return it;
+}
 }  // namespace xme

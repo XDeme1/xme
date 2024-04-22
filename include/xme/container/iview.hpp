@@ -3,6 +3,7 @@
 #include <iterator>
 #include <memory>
 #include <ranges>
+#include <xme/ranges/access.hpp>
 
 namespace xme {
 template<typename D>
@@ -17,14 +18,14 @@ public:
     constexpr auto operator[](std::ptrdiff_t i) noexcept -> decltype(auto)
         requires(std::ranges::random_access_range<D>)
     {
-        return std::ranges::begin(derived())[i];
+        return ranges::begin(derived())[i];
     }
 
     [[nodiscard]]
     constexpr auto operator[](std::ptrdiff_t i) const noexcept -> decltype(auto)
         requires(std::ranges::random_access_range<const D>)
     {
-        return std::ranges::begin(derived())[i];
+        return ranges::begin(derived())[i];
     }
 
     [[nodiscard]]
@@ -32,9 +33,9 @@ public:
         requires(std::ranges::forward_range<D>)
     {
         if constexpr(std::ranges::sized_range<D>) {
-            return std::ranges::size(derived()) == 0;
+            return ranges::size(derived()) == 0;
         }
-        return std::ranges::begin(derived()) == std::ranges::end(derived());
+        return ranges::begin(derived()) == ranges::end(derived());
     }
 
     [[nodiscard]]
@@ -42,9 +43,9 @@ public:
         requires(std::ranges::forward_range<const D>)
     {
         if constexpr(std::ranges::sized_range<const D>) {
-            return std::ranges::size(derived()) == 0;
+            return ranges::size(derived()) == 0;
         }
-        return std::ranges::begin(derived()) == std::ranges::end(derived());
+        return ranges::begin(derived()) == ranges::end(derived());
     }
 
     [[nodiscard]]
@@ -75,14 +76,14 @@ public:
     constexpr auto data() noexcept
         requires(std::contiguous_iterator<std::ranges::iterator_t<D>>)
     {
-        return std::to_address(std::ranges::begin(derived()));
+        return std::to_address(ranges::begin(derived()));
     }
 
     [[nodiscard]]
     constexpr auto data() const noexcept
         requires(std::contiguous_iterator<std::ranges::iterator_t<const D>>)
     {
-        return std::to_address(std::ranges::begin(derived()));
+        return std::to_address(ranges::begin(derived()));
     }
 
     [[nodiscard]]
@@ -90,7 +91,7 @@ public:
         requires std::ranges::forward_range<D>
                  && std::sized_sentinel_for<std::ranges::sentinel_t<D>, std::ranges::iterator_t<D>>
     {
-        return std::ranges::end(derived()) - std::ranges::begin(derived());
+        return ranges::end(derived()) - ranges::begin(derived());
     }
 
     [[nodiscard]]
@@ -99,35 +100,35 @@ public:
                  && std::sized_sentinel_for<std::ranges::sentinel_t<const D>,
                                             std::ranges::iterator_t<const D>>
     {
-        return std::ranges::end(derived()) - std::ranges::begin(derived());
+        return ranges::end(derived()) - ranges::begin(derived());
     }
 
     [[nodiscard]]
     constexpr auto front() noexcept -> decltype(auto)
         requires(std::ranges::forward_range<D>)
     {
-        return *std::ranges::begin(derived());
+        return *ranges::begin(derived());
     }
 
     [[nodiscard]]
     constexpr auto front() const noexcept -> decltype(auto)
         requires(std::ranges::forward_range<const D>)
     {
-        return *std::ranges::begin(derived());
+        return *ranges::begin(derived());
     }
 
     [[nodiscard]]
     constexpr auto back() noexcept -> decltype(auto)
         requires(std::ranges::bidirectional_range<D>)
     {
-        return *std::ranges::prev(std::ranges::end(derived()));
+        return *std::ranges::prev(ranges::end(derived()));
     }
 
     [[nodiscard]]
     constexpr auto back() const noexcept -> decltype(auto)
         requires(std::ranges::bidirectional_range<const D>)
     {
-        return *std::ranges::prev(std::ranges::end(derived()));
+        return *std::ranges::prev(ranges::end(derived()));
     }
 };
 
@@ -143,28 +144,28 @@ public:
     constexpr auto rbegin() noexcept
         requires requires { typename D::reverse_iterator; }
     {
-        return typename D::reverse_iterator(std::ranges::end(derived()));
+        return typename D::reverse_iterator(ranges::end(derived()));
     }
 
     [[nodiscard]]
     constexpr auto rbegin() const noexcept
         requires requires { typename D::const_reverse_iterator; }
     {
-        return D::const_reverse_iterator(std::ranges::end(derived()));
+        return D::const_reverse_iterator(ranges::end(derived()));
     }
 
     [[nodiscard]]
     constexpr auto rend() noexcept
         requires requires { typename D::reverse_iterator; }
     {
-        return typename D::reverse_iterator(std::ranges::begin(derived()));
+        return typename D::reverse_iterator(ranges::begin(derived()));
     }
 
     [[nodiscard]]
     constexpr auto rend() const noexcept
         requires requires { typename D::const_reverse_iterator; }
     {
-        return D::const_reverse_iterator(std::ranges::begin(derived()));
+        return D::const_reverse_iterator(ranges::begin(derived()));
     }
 
     [[nodiscard]]

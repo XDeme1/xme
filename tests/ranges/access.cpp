@@ -1,8 +1,11 @@
-#include "xme/ranges/access/ssize.hpp"
 #include <concepts>
-#include <gtest/gtest.h>
+#include <iterator>
 #include <ranges>
+#include <type_traits>
 #include <vector>
+#include <gtest/gtest.h>
+#include "xme/core/iterators/const_iterator.hpp"
+#include "xme/core/iterators/reverse_iterator.hpp"
 #include <xme/ranges/access.hpp>
 
 struct Container1 {
@@ -78,6 +81,148 @@ TEST_F(AccessTest, end) {
     }
 }
 
+TEST_F(AccessTest, cbegin) {
+    {
+        auto b = xme::ranges::cbegin(v);
+        static_assert(std::same_as<decltype(v)::const_iterator, decltype(b)>);
+        EXPECT_EQ(*(b++), 5);
+        EXPECT_EQ(*(b++), 3);
+        EXPECT_EQ(*(b++), 8);
+    }
+    {
+        auto b = xme::ranges::cbegin(a);
+        static_assert(std::is_const_v<std::remove_pointer_t<decltype(b)>>);
+        EXPECT_EQ(*(b++), 1);
+        EXPECT_EQ(*(b++), 5);
+        EXPECT_EQ(*(b++), 3);
+    }
+    {
+        auto b = xme::ranges::cbegin(c1);
+        static_assert(std::same_as<xme::ConstIterator<int*>, decltype(b)>);
+        EXPECT_EQ(*(b++), 7);
+        EXPECT_EQ(*(b++), 3);
+        EXPECT_EQ(*(b++), 1);
+    }
+}
+
+TEST_F(AccessTest, cend) {
+    {
+        auto e = xme::ranges::cend(v);
+        static_assert(std::same_as<decltype(v)::const_iterator, decltype(e)>);
+        EXPECT_EQ(*(--e), 8);
+        EXPECT_EQ(*(--e), 3);
+        EXPECT_EQ(*(--e), 5);
+    }
+    {
+        auto e = xme::ranges::cend(a);
+        static_assert(std::is_const_v<std::remove_pointer_t<decltype(e)>>);
+        EXPECT_EQ(*(--e), 3);
+        EXPECT_EQ(*(--e), 5);
+        EXPECT_EQ(*(--e), 1);
+    }
+    {
+        auto e = xme::ranges::cend(c1);
+        static_assert(std::same_as<xme::ConstIterator<int*>, decltype(e)>);
+        EXPECT_EQ(*(--e), 1);
+        EXPECT_EQ(*(--e), 3);
+        EXPECT_EQ(*(--e), 7);
+    }
+}
+
+TEST_F(AccessTest, rbegin) {
+    {
+        auto b = xme::ranges::rbegin(v);
+        static_assert(std::same_as<std::reverse_iterator<decltype(v)::iterator>, decltype(b)>);
+        EXPECT_EQ(*(b++), 8);
+        EXPECT_EQ(*(b++), 3);
+        EXPECT_EQ(*(b++), 5);
+    }
+    {
+        auto b = xme::ranges::rbegin(a);
+        EXPECT_EQ(*(b++), 3);
+        EXPECT_EQ(*(b++), 5);
+        EXPECT_EQ(*(b++), 1);
+    }
+    {
+        auto b = xme::ranges::rbegin(c1);
+        static_assert(std::same_as<xme::ReverseIterator<int*>, decltype(b)>);
+        EXPECT_EQ(*(b++), 1);
+        EXPECT_EQ(*(b++), 3);
+        EXPECT_EQ(*(b++), 7);
+    }
+}
+
+TEST_F(AccessTest, rend) {
+    {
+        auto e = xme::ranges::rend(v);
+        static_assert(std::same_as<std::reverse_iterator<decltype(v)::iterator>, decltype(e)>);
+        EXPECT_EQ(*(--e), 5);
+        EXPECT_EQ(*(--e), 3);
+        EXPECT_EQ(*(--e), 8);
+    }
+    {
+        auto e = xme::ranges::rend(a);
+        EXPECT_EQ(*(--e), 1);
+        EXPECT_EQ(*(--e), 5);
+        EXPECT_EQ(*(--e), 3);
+    }
+    {
+        auto e = xme::ranges::rend(c1);
+        static_assert(std::same_as<xme::ReverseIterator<int*>, decltype(e)>);
+        EXPECT_EQ(*(--e), 7);
+        EXPECT_EQ(*(--e), 3);
+        EXPECT_EQ(*(--e), 1);
+    }
+}
+
+TEST_F(AccessTest, crbegin) {
+    {
+        auto b = xme::ranges::crbegin(v);
+        static_assert(
+          std::same_as<std::reverse_iterator<decltype(v)::const_iterator>, decltype(b)>);
+        EXPECT_EQ(*(b++), 8);
+        EXPECT_EQ(*(b++), 3);
+        EXPECT_EQ(*(b++), 5);
+    }
+    {
+        auto b = xme::ranges::crbegin(a);
+        EXPECT_EQ(*(b++), 3);
+        EXPECT_EQ(*(b++), 5);
+        EXPECT_EQ(*(b++), 1);
+    }
+    {
+        auto b = xme::ranges::crbegin(c1);
+        static_assert(std::same_as<xme::ConstIterator<xme::ReverseIterator<int*>>, decltype(b)>);
+        EXPECT_EQ(*(b++), 1);
+        EXPECT_EQ(*(b++), 3);
+        EXPECT_EQ(*(b++), 7);
+    }
+}
+
+TEST_F(AccessTest, crend) {
+    {
+        auto e = xme::ranges::crend(v);
+        static_assert(
+          std::same_as<std::reverse_iterator<decltype(v)::const_iterator>, decltype(e)>);
+        EXPECT_EQ(*(--e), 5);
+        EXPECT_EQ(*(--e), 3);
+        EXPECT_EQ(*(--e), 8);
+    }
+    {
+        auto e = xme::ranges::crend(a);
+        EXPECT_EQ(*(--e), 1);
+        EXPECT_EQ(*(--e), 5);
+        EXPECT_EQ(*(--e), 3);
+    }
+    {
+        auto e = xme::ranges::crend(c1);
+        static_assert(std::same_as<xme::ConstIterator<xme::ReverseIterator<int*>>, decltype(e)>);
+        EXPECT_EQ(*(--e), 7);
+        EXPECT_EQ(*(--e), 3);
+        EXPECT_EQ(*(--e), 1);
+    }
+}
+
 TEST_F(AccessTest, size) {
     static_assert(std::is_unsigned_v<decltype(xme::ranges::size(v))>);
     static_assert(std::is_unsigned_v<decltype(xme::ranges::size(a))>);
@@ -112,4 +257,12 @@ TEST_F(AccessTest, data) {
     EXPECT_EQ(xme::ranges::data(v), std::to_address(xme::ranges::begin(v)));
     EXPECT_EQ(xme::ranges::data(a), std::to_address(xme::ranges::begin(a)));
     EXPECT_EQ(xme::ranges::data(c1), std::to_address(xme::ranges::begin(c1)));
+}
+TEST_F(AccessTest, cdata) {
+    static_assert(std::is_const_v<std::remove_pointer_t<decltype(xme::ranges::cdata(v))>>);
+    static_assert(std::is_const_v<std::remove_pointer_t<decltype(xme::ranges::cdata(a))>>);
+    static_assert(std::is_const_v<std::remove_pointer_t<decltype(xme::ranges::cdata(c1))>>);
+    EXPECT_EQ(xme::ranges::cdata(v), std::to_address(xme::ranges::cbegin(v)));
+    EXPECT_EQ(xme::ranges::cdata(a), std::to_address(xme::ranges::cbegin(a)));
+    EXPECT_EQ(xme::ranges::cdata(c1), std::to_address(xme::ranges::cbegin(c1)));
 }

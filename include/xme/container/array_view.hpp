@@ -1,9 +1,10 @@
 #pragma once
-#include "xme/container/iview.hpp"
 #include <array>
 #include <cassert>
 #include <cstddef>
 #include <xme/core/iterators/reverse_iterator.hpp>
+#include <xme/container/iview.hpp>
+#include <xme/ranges/access.hpp>
 
 namespace xme {
 template<typename T, std::size_t Size>
@@ -96,8 +97,7 @@ public:
                 && (!detail::is_std_array<std::remove_cvref_t<R>>)
                 && (!std::is_array_v<std::remove_cvref_t<R>>)
                 && (!detail::is_array_view<std::remove_cvref_t<R>>)
-    constexpr ArrayView(R&& range) noexcept :
-      ArrayView(std::ranges::data(range), std::ranges::size(range)) {}
+    constexpr ArrayView(R&& range) noexcept : ArrayView(ranges::data(range), ranges::size(range)) {}
 
     //! Create an ArrayView pointing to a C-Style array
     template<std::size_t Lenght>
