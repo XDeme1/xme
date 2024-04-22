@@ -1,6 +1,7 @@
 #pragma once
 #include "concepts.hpp"
 #include "xme/container/iview.hpp"
+#include "xme/ranges/access.hpp"
 #include <algorithm>
 #include <cassert>
 #include <memory>
@@ -78,7 +79,7 @@ public:
         requires(std::convertible_to<std::ranges::range_reference_t<R>, T>)
                 && (!std::is_same_v<Array, std::decay_t<R>>)
     explicit constexpr Array(R&& range, const allocator_type& alloc = allocator_type()) :
-      Array(std::ranges::begin(range), std::ranges::end(range), alloc) {}
+      Array(ranges::begin(range), ranges::end(range), alloc) {}
 
     constexpr ~Array() noexcept {
         ranges::destroy_a(*this, m_allocator);
@@ -218,7 +219,7 @@ public:
     template<std::ranges::input_range R>
         requires(std::convertible_to<std::ranges::range_reference_t<R>, T>)
     constexpr auto insert(const_iterator pos, R&& range) -> iterator {
-        return insert(pos, std::ranges::begin(range), std::ranges::end(range));
+        return insert(pos, ranges::begin(range), ranges::end(range));
     }
 
     //! Pushes a `value` to the end of the array.
@@ -244,7 +245,7 @@ public:
     template<std::ranges::input_range R>
         requires(std::convertible_to<std::ranges::range_reference_t<R>, T>)
     constexpr void push_back(R&& range) {
-        push_back(std::ranges::begin(range), std::ranges::end(range));
+        push_back(ranges::begin(range), ranges::end(range));
     }
 
     //! Destroys the last element in the array.
