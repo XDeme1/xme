@@ -55,7 +55,7 @@ int test_insertion() {
     {
         std::vector<int> a{5, 3};
         xme::LinkedList<int> l{a.begin(), a.end()};
-        l.emplace_after(xme::ranges::cend(l), -6);
+        l.emplace_after(xme::ranges::cbegin(l), -6);
         auto begin = l.begin();
         bool error = *(begin++) != 5 || *(begin++) != -6 || *(begin++) != 3;
         error |= begin != xme::ranges::cend(l);

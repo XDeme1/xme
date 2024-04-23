@@ -24,7 +24,7 @@ if((${XME_BUILD_MODULES}))
 endif()
 
 if(${PROJECT_IS_TOP_LEVEL} OR ${XME_BUILD_TESTS})
-    include(CTest)
+    enable_testing()
     add_subdirectory(tests)
 endif()
 
