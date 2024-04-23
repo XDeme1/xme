@@ -36,7 +36,7 @@ void bench_insert(benchmark::State& state) {
     for(auto&& _ : state) {
         if constexpr(l == ELib::xme) {
             xme::Array<T> arr;
-            arr.insert(arr.cbegin(), T());
+            arr.insert(xme::ranges::cbegin(arr), T());
             benchmark::DoNotOptimize(arr.data());
         }
         else {

@@ -2,6 +2,8 @@
 #include <iterator>
 #include <memory>
 #include <ranges>
+#include <xme/ranges/access.hpp>
+#include "xme/ranges/concepts.hpp"
 
 namespace xme::ranges {
 struct {
@@ -11,9 +13,9 @@ struct {
             std::allocator_traits<Alloc>::destroy(alloc, std::addressof(*first));
     }
 
-    template<std::ranges::forward_range R, typename Alloc>
+    template<ranges::CForwardRange R, typename Alloc>
     constexpr void operator()(R&& range, Alloc& alloc) const noexcept {
-        (*this)(std::ranges::begin(range), std::ranges::end(range), alloc);
+        (*this)(ranges::begin(range), ranges::end(range), alloc);
     }
 } inline constexpr destroy_a;
 
@@ -21,7 +23,7 @@ struct {
     template<std::destructible T, typename Alloc>
     constexpr void operator()(T* pos, Alloc& alloc) const noexcept {
         if constexpr(std::is_array_v<T>)
-            ranges::destroy_a(std::ranges::begin(*pos), std::ranges::end(*pos), alloc);
+            ranges::destroy_a(ranges::begin(*pos), ranges::end(*pos), alloc);
         else
             std::allocator_traits<Alloc>::destroy(alloc, pos);
     }

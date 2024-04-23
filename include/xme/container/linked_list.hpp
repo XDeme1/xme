@@ -1,6 +1,6 @@
 #pragma once
 #include "../../../private/container/linked_list_base.hpp"
-#include "xme/container/iview.hpp"
+#include "xme/container/icontainer.hpp"
 #include <iterator>
 #include <memory>
 
@@ -12,9 +12,9 @@ namespace xme {
 //! @param T the type of the stored element
 //! @param Alloc must be an allocator that satisfies the Allocator concept
 template<typename T, typename Alloc = std::allocator<T>>
-class LinkedList : public IView<LinkedList<T, Alloc>> {
+class LinkedList : public IContainer<LinkedList<T, Alloc>> {
 private:
-    using super     = IView<LinkedList<T, Alloc>>;
+    using super     = IContainer<LinkedList<T, Alloc>>;
     using node_base = detail::LinkedListNodeBase;
     using node      = detail::LinkedListNode<T>;
 
@@ -72,10 +72,10 @@ public:
     }
 
     //! Constructs a LinkedList from [begin(range), end(range)) range
-    template<std::ranges::input_range R>
-        requires(std::convertible_to<std::ranges::range_reference_t<R>, T>)
+    template<ranges::CInputRange R>
+        requires(std::convertible_to<ranges::range_reference_t<R>, T>)
     explicit constexpr LinkedList(R&& range) {
-        range_initialize(std::ranges::begin(range), std::ranges::end(range));
+        range_initialize(ranges::begin(range), ranges::end(range));
     }
 
     //! Constructs a LinkedList by transfering elements from other
@@ -150,10 +150,10 @@ public:
 
     //! Clears the current LinkedList and copy elements from a [begin(range), end(range))
     //! range
-    template<std::ranges::input_range R>
-        requires(std::convertible_to<std::ranges::range_reference_t<R>, T>)
+    template<ranges::CInputRange R>
+        requires(std::convertible_to<ranges::range_reference_t<R>, T>)
     constexpr void assign(R&& range) {
-        assign(std::ranges::begin(range), std::ranges::end(range));
+        assign(ranges::begin(range), ranges::end(range));
     }
 
     //! Creates a node at the front by copying value
@@ -189,10 +189,10 @@ public:
 
     //! Inserts a [begin(range), end(range)) range of nodes after pos
     //! @returns an iterator to the last inserted element.
-    template<std::ranges::input_range R>
-        requires(std::is_convertible_v<std::ranges::range_reference_t<R>, T>)
+    template<ranges::CInputRange R>
+        requires(std::is_convertible_v<ranges::range_reference_t<R>, T>)
     constexpr auto insert_after(const_iterator pos, R&& range) -> iterator {
-        return insert_after(pos, std::ranges::begin(range), std::ranges::end(range));
+        return insert_after(pos, ranges::begin(range), ranges::end(range));
     }
 
     //! Constructs a node after pos by forward args.

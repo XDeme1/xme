@@ -1,6 +1,5 @@
 // IWYU pragma: private, include <xme/ranges/access.hpp>
 #pragma once
-#include <type_traits>
 #include <xme/ranges/base.hpp>
 
 namespace xme::ranges {

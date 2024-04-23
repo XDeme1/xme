@@ -1,10 +1,9 @@
 #pragma once
+#include "xme/container/icontainer.hpp"
 #include <array>
 #include <cassert>
 #include <cstddef>
 #include <xme/core/iterators/reverse_iterator.hpp>
-#include <xme/container/iview.hpp>
-#include <xme/ranges/access.hpp>
 
 namespace xme {
 template<typename T, std::size_t Size>
@@ -54,8 +53,7 @@ namespace xme {
 //! @param T the type of element to view in a container
 //! @param Size Specifies the size of the container
 template<typename T, std::size_t Size = static_cast<std::size_t>(-1)>
-class ArrayView : public IView<ArrayView<T, Size>>,
-                  public IReverseView<ArrayView<T, Size>> {
+class ArrayView : public IContainer<ArrayView<T, Size>> {
 private:
     static constexpr std::size_t dynamic_size = -1;
 
@@ -92,8 +90,8 @@ public:
       ArrayView(first, std::ranges::distance(first, last)) {}
 
     //! Create an ArrayView pointing to begin(range) up to end(range)
-    template<std::ranges::contiguous_range R>
-        requires(std::ranges::sized_range<R>) && (std::ranges::borrowed_range<R>)
+    template<ranges::CContiguousRange R>
+        requires(std::ranges::sized_range<R>) && (ranges::CBorrowedRange<R>)
                 && (!detail::is_std_array<std::remove_cvref_t<R>>)
                 && (!std::is_array_v<std::remove_cvref_t<R>>)
                 && (!detail::is_array_view<std::remove_cvref_t<R>>)
@@ -224,8 +222,8 @@ ArrayView(const std::array<T, N>&) -> ArrayView<const T, N>;
 template<std::contiguous_iterator Iter, typename End>
 ArrayView(Iter, End) -> ArrayView<std::remove_reference_t<std::iter_reference_t<Iter>>>;
 
-template<std::ranges::contiguous_range R>
-ArrayView(R&&) -> ArrayView<std::remove_reference_t<std::ranges::range_reference_t<R>>>;
+template<ranges::CContiguousRange R>
+ArrayView(R&&) -> ArrayView<std::remove_reference_t<ranges::range_reference_t<R>>>;
 
 //! Creates a readonly byte ArrayView of any ArrayView
 template<typename T, std::size_t Size>

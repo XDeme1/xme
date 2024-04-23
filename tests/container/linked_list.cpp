@@ -33,9 +33,9 @@ int test_insertion() {
     {
         xme::LinkedList<int> l(2);
         l.push_front(3);
-        auto begin = l.cbegin();
+        auto begin = xme::ranges::cbegin(l);
         bool error = *(begin++) != 3 || *(begin++) != 0 || *(begin++) != 0;
-        error |= begin != l.cend();
+        error |= begin != xme::ranges::cend(l);
         if(error) {
             std::cerr << "xme::LinkedList::pushFront error\n";
             ++errors;
@@ -44,9 +44,9 @@ int test_insertion() {
     {
         xme::LinkedList<int> l(2, 1);
         l.emplace_front(5);
-        auto begin = l.cbegin();
+        auto begin = xme::ranges::cbegin(l);
         bool error = *(begin++) != 5 || *(begin++) != 1 || *(begin++) != 1;
-        error |= begin != l.cend();
+        error |= begin != xme::ranges::cend(l);
         if(error) {
             std::cerr << "xme::LinkedList::emplaceFront error\n";
             ++errors;
@@ -55,10 +55,10 @@ int test_insertion() {
     {
         std::vector<int> a{5, 3};
         xme::LinkedList<int> l{a.begin(), a.end()};
-        l.emplace_after(l.cbegin(), -6);
+        l.emplace_after(xme::ranges::cend(l), -6);
         auto begin = l.begin();
         bool error = *(begin++) != 5 || *(begin++) != -6 || *(begin++) != 3;
-        error |= begin != l.cend();
+        error |= begin != xme::ranges::cend(l);
         if(error) {
             std::cerr << "xme::LinkedList::emplaceAfter error\n";
             ++errors;
