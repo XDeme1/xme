@@ -1,2 +1,3 @@
 add_unittest(RangesTest
-    access.cpp)
+    access.cpp
+    views.cpp)

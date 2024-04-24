@@ -9,7 +9,7 @@ find_or_fetch(GTest https://github.com/google/googletest.git main)
 function(add_unittest test_name)
     add_executable(${test_name} ${ARGN})
     target_link_libraries(${test_name} PRIVATE xme GTest::gtest_main)
-    target_compile_features(${test_name} PRIVATE cxx_std_23)
+    target_compile_features(${test_name} PRIVATE cxx_std_20)
     gtest_discover_tests(${test_name})
 endfunction()
 

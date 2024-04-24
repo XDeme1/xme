@@ -28,7 +28,7 @@ template<typename R>
 concept CSizedRange = CRange<R> && requires(R& r) { ranges::size(r); };
 
 template<typename R>
-concept CView = CRange<R> && std::movable<R> || enable_view<R>;
+concept CView = CRange<R> && std::movable<R> && enable_view<R>;
 
 template<typename R>
 concept CInputRange = CRange<R> && std::input_iterator<ranges::iterator_t<R>>;
