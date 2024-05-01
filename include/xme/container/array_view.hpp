@@ -90,8 +90,8 @@ public:
       ArrayView(first, std::ranges::distance(first, last)) {}
 
     //! Create an ArrayView pointing to begin(range) up to end(range)
-    template<ranges::CContiguousRange R>
-        requires(std::ranges::sized_range<R>) && (ranges::CBorrowedRange<R>)
+    template<ranges::contiguous_range R>
+        requires(ranges::sized_range<R>) && (ranges::borrowed_range<R>)
                 && (!detail::is_std_array<std::remove_cvref_t<R>>)
                 && (!std::is_array_v<std::remove_cvref_t<R>>)
                 && (!detail::is_array_view<std::remove_cvref_t<R>>)
@@ -222,7 +222,7 @@ ArrayView(const std::array<T, N>&) -> ArrayView<const T, N>;
 template<std::contiguous_iterator Iter, typename End>
 ArrayView(Iter, End) -> ArrayView<std::remove_reference_t<std::iter_reference_t<Iter>>>;
 
-template<ranges::CContiguousRange R>
+template<ranges::contiguous_range R>
 ArrayView(R&&) -> ArrayView<std::remove_reference_t<ranges::range_reference_t<R>>>;
 
 //! Creates a readonly byte ArrayView of any ArrayView

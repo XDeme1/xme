@@ -1,19 +1,20 @@
 cmake_minimum_required(VERSION 3.20...3.28)
 project(xme)
 
-set(CMAKE_CXX_EXTENSIONS OFF)
-
 option(XME_BUILD_BENCHMARK "Enables Benchmark" OFF)
 option(XME_BUILD_TESTS "Enables Tests" OFF)
 option(XME_BUILD_MODULES "Enable modules" OFF)
 
 include(cmake/utils.cmake)
 
+find_or_fetch(ranges-v3 https://github.com/ericniebler/range-v3.git master)
+
 add_library(xme)
 
 target_sources(xme PUBLIC include/xme/core/utility/forward_like.hpp)
 set_property(TARGET xme PROPERTY LINKER_LANGUAGE CXX)
 
+target_link_libraries(xme PUBLIC range-v3)
 target_include_directories(xme PUBLIC
     $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>)
 

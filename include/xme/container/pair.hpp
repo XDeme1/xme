@@ -2,6 +2,7 @@
 #include "concepts.hpp"
 #include <xme/setup.hpp>
 #include <xme/core/utility/forward_like.hpp>
+#include <range/v3/range.hpp>
 
 namespace xme {
 template<typename T, typename U>
@@ -69,8 +70,8 @@ public:
 
     constexpr void swap(Pair& p)
       noexcept(std::is_nothrow_swappable_v<T> && std::is_nothrow_swappable_v<U>) {
-        std::ranges::swap(first, p.first);
-        std::ranges::swap(second, p.second);
+        ::ranges::swap(first, p.first);
+        ::ranges::swap(second, p.second);
     }
 
     [[no_unique_address]]

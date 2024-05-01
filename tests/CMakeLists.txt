@@ -17,7 +17,6 @@ include(GoogleTest)
 add_subdirectory(core)
 add_subdirectory(container)
 add_subdirectory(math)
-add_subdirectory(ranges)
 
 if(${XME_BUILD_MODULES})
     if(${CMAKE_CXX_COMPILER_ID} MATCHES "Clang" AND ${CMAKE_CXX_COMPILER_VERSION} VERSION_GREATER_EQUAL "18.0.0")

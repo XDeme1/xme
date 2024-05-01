@@ -65,10 +65,10 @@ TEST_F(ArrayViewTest, access) {
     {
         const std::array<int, 2> arr{3, 2};
         xme::ArrayView<const int> view{arr};
-        auto rbegin = xme::ranges::rbegin(view);
+        auto rbegin = ranges::rbegin(view);
         EXPECT_EQ(*rbegin++, 2);
         EXPECT_EQ(*rbegin++, 3);
-        EXPECT_EQ(rbegin, xme::ranges::rend(view));
+        EXPECT_EQ(rbegin, ranges::rend(view));
     }
     {
         std::array<const int, 2> arr{5, 4};

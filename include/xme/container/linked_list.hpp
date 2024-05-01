@@ -72,10 +72,10 @@ public:
     }
 
     //! Constructs a LinkedList from [begin(range), end(range)) range
-    template<ranges::CInputRange R>
-        requires(std::convertible_to<ranges::range_reference_t<R>, T>)
+    template<ranges::input_range R>
+        requires(std::convertible_to<::ranges::range_reference_t<R>, T>)
     explicit constexpr LinkedList(R&& range) {
-        range_initialize(ranges::begin(range), ranges::end(range));
+        range_initialize(::ranges::begin(range), ::ranges::end(range));
     }
 
     //! Constructs a LinkedList by transfering elements from other
@@ -95,7 +95,7 @@ public:
     //! Clears the current elements and transfer elements from other
     constexpr auto operator=(LinkedList&& other) noexcept -> LinkedList& {
         clear();
-        std::ranges::swap(m_head.next, other.m_head.next);
+        ::ranges::swap(m_head.next, other.m_head.next);
         return *this;
     }
 
@@ -150,10 +150,10 @@ public:
 
     //! Clears the current LinkedList and copy elements from a [begin(range), end(range))
     //! range
-    template<ranges::CInputRange R>
-        requires(std::convertible_to<ranges::range_reference_t<R>, T>)
+    template<::ranges::input_range R>
+        requires(std::convertible_to<::ranges::range_reference_t<R>, T>)
     constexpr void assign(R&& range) {
-        assign(ranges::begin(range), ranges::end(range));
+        assign(::ranges::begin(range), ranges::end(range));
     }
 
     //! Creates a node at the front by copying value
@@ -189,10 +189,10 @@ public:
 
     //! Inserts a [begin(range), end(range)) range of nodes after pos
     //! @returns an iterator to the last inserted element.
-    template<ranges::CInputRange R>
+    template<::ranges::input_range R>
         requires(std::is_convertible_v<ranges::range_reference_t<R>, T>)
     constexpr auto insert_after(const_iterator pos, R&& range) -> iterator {
-        return insert_after(pos, ranges::begin(range), ranges::end(range));
+        return insert_after(pos, ::ranges::begin(range), ::ranges::end(range));
     }
 
     //! Constructs a node after pos by forward args.

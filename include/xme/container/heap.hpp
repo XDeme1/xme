@@ -1,5 +1,6 @@
 #pragma once
 #include "array.hpp"
+#include "range/v3/range/concepts.hpp"
 
 namespace xme {
 //! Heap is a priority queue stored in a contiguous array.
@@ -8,7 +9,7 @@ namespace xme {
 //! Pushing and poping is O(log(N))
 //! @param T the type of the stored element
 //! @param Alloc must be an allocator that satisfies the Allocator concept
-template<typename T, ranges::CContiguousRange Container = Array<T>, typename Cmp = std::less<>>
+template<typename T, ::ranges::contiguous_range Container = Array<T>, typename Cmp = std::less<>>
 class Heap : public IContainer<Heap<T, Container, Cmp>> {
 public:
     using container_type  = Container;
@@ -34,13 +35,13 @@ public:
     }
 
     //! Creates a heap with [begin(range), end(range)) elements.
-    template<ranges::CInputRange R>
-        requires(std::convertible_to<ranges::range_reference_t<R>, T>)
+    template<::ranges::input_range R>
+        requires(std::convertible_to<::ranges::range_reference_t<R>, T>)
                 && (!std::is_same_v<Heap, std::remove_cvref_t<R>>)
     constexpr Heap(R&& range) {
-        m_array.reserve(ranges::size(range));
-        auto first = ranges::begin(range);
-        auto last  = ranges::end(range);
+        m_array.reserve(::ranges::size(range));
+        auto first = ::ranges::begin(range);
+        auto last  = ::ranges::end(range);
         for(; first != last; ++first) {
             push(*first);
         }
@@ -48,12 +49,12 @@ public:
 
     [[nodiscard]]
     constexpr auto begin() const noexcept -> const_iterator {
-        return ranges::cbegin(m_array);
+        return ::ranges::cbegin(m_array);
     }
 
     [[nodiscard]]
     constexpr auto end() const noexcept -> const_iterator {
-        return ranges::cend(m_array);
+        return ::ranges::cend(m_array);
     }
 
     //! Pop the front element and rearrange elements to keep a week sort.

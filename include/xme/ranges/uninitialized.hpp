@@ -1,8 +1,5 @@
 #pragma once
 #include "destroy.hpp"
-#include "xme/ranges/concepts.hpp"
-#include <iterator>
-#include <memory>
 #include <xme/container/concepts.hpp>
 #include <xme/container/pair.hpp>
 
@@ -26,11 +23,11 @@ struct {
         return {in_first, out_curr};
     }
 
-    template<ranges::CForwardRange InR, ranges::CForwardRange OutR, typename Alloc>
+    template<::ranges::forward_range InR, ::ranges::forward_range OutR, typename Alloc>
     constexpr auto operator()(InR&& in, OutR&& out, Alloc& alloc) const
       -> xme::Pair<std::ranges::borrowed_iterator_t<InR>, std::ranges::borrowed_iterator_t<OutR>> {
         return (*this)(
-          ranges::begin(in), ranges::end(in), ranges::begin(out), ranges::end(out), alloc);
+          ::ranges::begin(in), ::ranges::end(in), ::ranges::begin(out), ::ranges::end(out), alloc);
     }
 } inline constexpr uninitialized_copy_a;
 

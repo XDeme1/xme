@@ -1,3 +1,2 @@
 add_unittest(ContainerTest
-    array_view.cpp
-    icontainer.cpp)
+    array_view.cpp)

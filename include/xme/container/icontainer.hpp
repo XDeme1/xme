@@ -1,5 +1,5 @@
 #pragma once
-#include <xme/ranges/concepts.hpp>
+#include <range/v3/range.hpp>
 
 namespace xme {
 template<typename D>
@@ -12,95 +12,95 @@ private:
 public:
     [[nodiscard]]
     constexpr auto operator[](std::ptrdiff_t i) noexcept -> decltype(auto)
-        requires(ranges::CRandomAccessRange<D>)
+        requires(::ranges::random_access_range<D>)
     {
-        return ranges::begin(derived())[i];
+        return ::ranges::begin(derived())[i];
     }
 
     [[nodiscard]]
     constexpr auto operator[](std::ptrdiff_t i) const noexcept -> decltype(auto)
-        requires(ranges::CRandomAccessRange<const D>)
+        requires(::ranges::random_access_range<const D>)
     {
-        return ranges::begin(derived())[i];
+        return ::ranges::begin(derived())[i];
     }
 
     [[nodiscard]]
     constexpr bool empty() noexcept
-        requires(ranges::CForwardRange<D>)
+        requires(::ranges::forward_range<D>)
     {
-        if constexpr(ranges::CSizedRange<D>) {
-            return ranges::size(derived()) == 0;
+        if constexpr(::ranges::sized_range<D>) {
+            return ::ranges::size(derived()) == 0;
         }
-        return ranges::begin(derived()) == ranges::end(derived());
+        return ::ranges::begin(derived()) == ::ranges::end(derived());
     }
 
     [[nodiscard]]
     constexpr bool empty() const noexcept
-        requires(ranges::CForwardRange<const D>)
+        requires(::ranges::forward_range<const D>)
     {
-        if constexpr(ranges::CSizedRange<const D>) {
-            return ranges::size(derived()) == 0;
+        if constexpr(::ranges::sized_range<const D>) {
+            return ::ranges::size(derived()) == 0;
         }
-        return ranges::begin(derived()) == ranges::end(derived());
+        return ::ranges::begin(derived()) == ::ranges::end(derived());
     }
 
     [[nodiscard]]
     constexpr auto data() noexcept
-        requires(std::contiguous_iterator<ranges::iterator_t<D>>)
+        requires(::ranges::contiguous_iterator<::ranges::iterator_t<D>>)
     {
-        return std::to_address(ranges::begin(derived()));
+        return std::to_address(::ranges::begin(derived()));
     }
 
     [[nodiscard]]
     constexpr auto data() const noexcept
-        requires(std::contiguous_iterator<ranges::iterator_t<const D>>)
+        requires(::ranges::contiguous_iterator<::ranges::iterator_t<const D>>)
     {
-        return std::to_address(ranges::begin(derived()));
+        return std::to_address(::ranges::begin(derived()));
     }
 
     [[nodiscard]]
     constexpr auto size() noexcept -> std::size_t
-        requires ranges::CForwardRange<D>
-                 && std::sized_sentinel_for<ranges::sentinel_t<D>, ranges::iterator_t<D>>
+        requires ::ranges::forward_range<D>
+                 && ::ranges::sized_sentinel_for<::ranges::sentinel_t<D>, ::ranges::iterator_t<D>>
     {
-        return ranges::end(derived()) - ranges::begin(derived());
+        return ::ranges::end(derived()) - ::ranges::begin(derived());
     }
 
     [[nodiscard]]
     constexpr auto size() const noexcept -> std::size_t
-        requires ranges::CForwardRange<const D>
-                 && std::sized_sentinel_for<ranges::sentinel_t<const D>,
-                                            ranges::iterator_t<const D>>
+        requires ::ranges::forward_range<const D>
+                 && ::ranges::sized_sentinel_for<::ranges::sentinel_t<const D>,
+                                            ::ranges::iterator_t<const D>>
     {
-        return ranges::end(derived()) - ranges::begin(derived());
+        return ::ranges::end(derived()) - ::ranges::begin(derived());
     }
 
     [[nodiscard]]
     constexpr auto front() noexcept -> decltype(auto)
-        requires(ranges::CForwardRange<D>)
+        requires(::ranges::forward_range<D>)
     {
-        return *ranges::begin(derived());
+        return *::ranges::begin(derived());
     }
 
     [[nodiscard]]
     constexpr auto front() const noexcept -> decltype(auto)
-        requires(ranges::CForwardRange<const D>)
+        requires(::ranges::forward_range<const D>)
     {
-        return *ranges::begin(derived());
+        return *::ranges::begin(derived());
     }
 
     [[nodiscard]]
     constexpr auto back() noexcept -> decltype(auto)
-        requires(ranges::CBidirectionalRange<D>)
+        requires(::ranges::bidirectional_range<D>)
     {
-        return *std::ranges::prev(ranges::end(derived()));
+        return *::ranges::prev(::ranges::end(derived()));
     }
 
     [[nodiscard]]
     constexpr auto back() const noexcept -> decltype(auto)
-        requires(ranges::CBidirectionalRange<const D>)
+        requires(::ranges::bidirectional_range<const D>)
     {
-        return *std::ranges::prev(ranges::end(derived()));
+        return *::ranges::prev(::ranges::end(derived()));
     }
 };
 }  // namespace xme

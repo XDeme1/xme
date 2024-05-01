@@ -1,14 +1,11 @@
 #pragma once
 #include "concepts.hpp"
+#include "range/v3/iterator/traits.hpp"
 #include "xme/container/icontainer.hpp"
-#include <algorithm>
 #include <cassert>
-#include <cstddef>
-#include <memory>
 #include <xme/core/iterators/reverse_iterator.hpp>
-#include <xme/setup.hpp>
-#include <xme/ranges/uninitialized.hpp>
 #include <xme/ranges/destroy.hpp>
+#include <xme/ranges/uninitialized.hpp>
 
 namespace xme {
 //! Array is a contigous container with dynamic size.
@@ -72,11 +69,11 @@ public:
         m_data.end = out;
     }
 
-    template<ranges::CInputRange R>
-        requires(std::convertible_to<ranges::range_reference_t<R>, T>)
+    template<::ranges::input_range R>
+        requires(std::convertible_to<::ranges::range_reference_t<R>, T>)
                 && (!std::is_same_v<Array, std::decay_t<R>>)
     explicit constexpr Array(R&& range, const allocator_type& alloc = allocator_type()) :
-      Array(ranges::begin(range), ranges::end(range), alloc) {}
+      Array(::ranges::begin(range), ::ranges::end(range), alloc) {}
 
     constexpr ~Array() noexcept {
         ranges::destroy_a(*this, m_allocator);
@@ -162,7 +159,7 @@ public:
     template<std::convertible_to<T> U>
     constexpr auto insert(const_iterator pos, U&& value) -> iterator {
         auto p = const_cast<pointer>(pos.operator->());
-        if(pos == ranges::cend(*this)) {
+        if(pos == ::ranges::cend(*this)) {
             emplace_back(std::forward<U>(value));
             return end() - 1;
         }
@@ -194,15 +191,15 @@ public:
                 alloc_traits::construct(
                   m_allocator, tmp.m_data.begin + elements_before + n, *first);
 
-            std::ranges::move(ranges::cbegin(*this), pos, tmp.begin());
-            std::ranges::move(pos, ranges::cend(*this), tmp.begin() + elements_before + elements);
+            std::ranges::move(::ranges::cbegin(*this), pos, tmp.begin());
+            std::ranges::move(pos, ::ranges::cend(*this), tmp.begin() + elements_before + elements);
             tmp.m_data.end = tmp.m_data.begin + this->size() + elements;
             std::ranges::swap(m_data, tmp.m_data);
 
             return begin() + elements_before;
         }
 
-        std::move_backward(pos, ranges::cend(*this), end() + elements);
+        std::move_backward(pos, ::ranges::cend(*this), end() + elements);
         m_data.end += elements;
         for(std::size_t n = 0; first != last; ++first, ++n)
             alloc_traits::construct(m_allocator, p + n, *first);
@@ -213,10 +210,10 @@ public:
     //! If the copy/move constructor throw, the state is unspecified.
     //! It is recommended to never throw on move construcor/assignment.
     //! @returns an iterator to the first inserted element.
-    template<ranges::CInputRange R>
-        requires(std::convertible_to<ranges::range_reference_t<R>, T>)
+    template<::ranges::input_range R>
+        requires(std::convertible_to<::ranges::range_reference_t<R>, T>)
     constexpr auto insert(const_iterator pos, R&& range) -> iterator {
-        return insert(pos, ranges::begin(range), ranges::end(range));
+        return insert(pos, ::ranges::begin(range), ::ranges::end(range));
     }
 
     //! Pushes a `value` to the end of the array.
@@ -239,10 +236,10 @@ public:
     }
 
     //! Pushes a range [begin(range), end(range)) to the end of the array.
-    template<ranges::CInputRange R>
-        requires(std::convertible_to<ranges::range_reference_t<R>, T>)
+    template<::ranges::input_range R>
+        requires(std::convertible_to<::ranges::range_reference_t<R>, T>)
     constexpr void push_back(R&& range) {
-        push_back(ranges::begin(range), ranges::end(range));
+        push_back(::ranges::begin(range), ::ranges::end(range));
     }
 
     //! Destroys the last element in the array.
@@ -268,7 +265,7 @@ public:
     constexpr auto erase(const_iterator pos) -> iterator {
         auto p = const_cast<pointer>(pos.operator->());
         ranges::destroy_at_a(p, m_allocator);
-        std::ranges::move(std::ranges::next(pos), ranges::cend(*this), p);
+        std::ranges::move(std::ranges::next(pos), ::ranges::cend(*this), p);
         --m_data.end;
         return p;
     }
@@ -279,7 +276,7 @@ public:
         auto p             = const_cast<pointer>(first.operator->());
         size_type elements = std::ranges::distance(first, last);
         ranges::destroy_n_a(p, elements, m_allocator);
-        std::ranges::move(first + elements, ranges::cend(*this), p);
+        std::ranges::move(first + elements, ::ranges::cend(*this), p);
         m_data.end -= elements;
         return p;
     }
@@ -367,7 +364,7 @@ public:
     using reference         = std::conditional_t<Const, const T&, T&>;
     using pointer           = std::conditional_t<Const, const T*, T*>;
     using iterator_category = std::random_access_iterator_tag;
-    using iterator_concept  = std::contiguous_iterator_tag;
+    using iterator_concept  = ::ranges::contiguous_iterator_tag;
 
     template<bool>
     friend class Iterator;

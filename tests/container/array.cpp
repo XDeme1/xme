@@ -17,10 +17,10 @@ int test_access() {
     {
         std::array<float, 2> a{5, 0.5};
         xme::Array<float> arr{a.begin(), a.end()};
-        auto b     = xme::ranges::cbegin(arr);
+        auto b     = ranges::cbegin(arr);
         bool error = (*(b++) != 5);
         error |= (*(b++) != 0.5f);
-        error |= b != xme::ranges::cend(arr);
+        error |= b != ranges::cend(arr);
         if(error) {
             std::cerr << "xme::Array iterator error\n";
             ++errors;
@@ -29,10 +29,10 @@ int test_access() {
     {
         const xme::Array<float> a{5, 0.5};
         xme::Array<float> arr{a};
-        auto b     = xme::ranges::rbegin(arr);
+        auto b     = ranges::rbegin(arr);
         bool error = (*(b++) != 0.5);
         error |= (*(b++) != 5);
-        error |= b != xme::ranges::rend(arr);
+        error |= b != ranges::rend(arr);
         if(error) {
             std::cerr << "xme::Array reverse_iterator error\n";
             ++errors;

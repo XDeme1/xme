@@ -2,6 +2,7 @@
 #include <benchmark/benchmark.h>
 #include <vector>
 #include <cstdint>
+#include <range/v3/range.hpp>
 
 enum class ELib {
     xme,
@@ -36,7 +37,7 @@ void bench_insert(benchmark::State& state) {
     for(auto&& _ : state) {
         if constexpr(l == ELib::xme) {
             xme::Array<T> arr;
-            arr.insert(xme::ranges::cbegin(arr), T());
+            arr.insert(ranges::cbegin(arr), T());
             benchmark::DoNotOptimize(arr.data());
         }
         else {
