@@ -1,4 +1,5 @@
 add_unittest(CoreTest
+    algorithm.cpp
     concepts.cpp
     functional.cpp
     iterators.cpp
