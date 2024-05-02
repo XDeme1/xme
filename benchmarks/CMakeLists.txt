@@ -5,7 +5,7 @@ find_or_fetch(benchmark https://github.com/google/benchmark.git main)
 function(CreateBench NAME)
     add_executable(bench_${NAME} ${NAME}.cpp)
     target_compile_features(bench_${NAME} PRIVATE cxx_std_20)
-    target_compile_options(bench_${NAME} PRIVATE -march=native -DXME_ENABLE_SIMD_AVX2)
+    target_compile_options(bench_${NAME} PRIVATE -march=native -DXME_SIMD_ENABLE_AVX2)
     target_link_libraries(bench_${NAME} PRIVATE benchmark::benchmark xme)
 endfunction()
 

@@ -38,19 +38,26 @@ TEST_F(AlgorithmTest, find) {
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 9,
     };
 
-    EXPECT_EQ(std::find(lorem.begin(), lorem.end(), '5'), xme::find(lorem, '5'));
-    EXPECT_EQ(std::find(lorem.begin(), lorem.end(), '\\'), xme::find(lorem, '\\'));
-    EXPECT_EQ(std::find(lorem.begin(), lorem.end(), '0'), xme::find(lorem, '0'));
+    EXPECT_EQ(ranges::find(lorem, '5'), xme::find(lorem, '5'));
+    EXPECT_EQ(ranges::find(lorem, '\\'), xme::find(lorem, '\\'));
+    EXPECT_EQ(ranges::find(lorem, '0'), xme::find(lorem, '0'));
 
-    EXPECT_EQ(std::find(v16.begin(), v16.end(), 4), xme::find(v16, 4));
-    EXPECT_EQ(std::find(v16.begin(), v16.end(), 7), xme::find(v16, 7));
-    EXPECT_EQ(std::find(v16.begin(), v16.end(), 9), xme::find(v16, 9));
+    EXPECT_EQ(ranges::find(v16, 4), xme::find(v16, 4));
+    EXPECT_EQ(ranges::find(v16, 7), xme::find(v16, 7));
+    EXPECT_EQ(ranges::find(v16, 9), xme::find(v16, 9));
+    EXPECT_EQ(ranges::find(v16, 10), xme::find(v16, 10));
 
-    EXPECT_EQ(std::find(v32.begin(), v32.end(), 4), xme::find(v32, 4));
-    EXPECT_EQ(std::find(v32.begin(), v32.end(), 7), xme::find(v32, 7));
-    EXPECT_EQ(std::find(v32.begin(), v32.end(), 9), xme::find(v32, 9));
+    EXPECT_EQ(ranges::find(v32, 4), xme::find(v32, 4));
+    EXPECT_EQ(ranges::find(v32, 7), xme::find(v32, 7));
+    EXPECT_EQ(ranges::find(v32, 9), xme::find(v32, 9));
+    EXPECT_EQ(ranges::find(v32, 10), xme::find(v32, 10));
 
-    EXPECT_EQ(std::find(v64.begin(), v64.end(), 4), xme::find(v64, 4));
-    EXPECT_EQ(std::find(v64.begin(), v64.end(), 7), xme::find(v64, 7));
-    EXPECT_EQ(std::find(v64.begin(), v64.end(), 9), xme::find(v64, 9));
+    EXPECT_EQ(ranges::find(v64, 4), xme::find(v64, 4));
+    EXPECT_EQ(ranges::find(v64, 7), xme::find(v64, 7));
+    EXPECT_EQ(ranges::find(v64, 9), xme::find(v64, 9));
+    EXPECT_EQ(ranges::find(v64, 10), xme::find(v64, 10));
+}
+
+TEST_F(AlgorithmTest, fill) {
+    std::vector<std::int64_t> v16(2);
 }
