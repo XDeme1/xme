@@ -1,26 +1,29 @@
+#include "xme/core/algorithm/reverse.hpp"
 #include <gtest/gtest.h>
+#include <immintrin.h>
 #include <xme/core/algorithm/find.hpp>
+
+const std::string lorem =
+  "Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus cupiditate ullam autem "
+  "voluptate a sint dignissimos harum maiores sapiente incidunt? Atque, totam nisi voluptate "
+  "eum "
+  "officiis rerum sit eaque hic."
+  "Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus cupiditate ullam autem "
+  "voluptate a sint dignissimos harum maiores sapiente incidunt? Atque, totam nisi voluptate "
+  "eum "
+  "officiis rerum sit eaque hic."
+  "Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus cupiditate ullam autem "
+  "voluptate a sint dignissimos harum maiores sapiente incidunt? Atque, totam nisi voluptate "
+  "eum "
+  "officiis rerum sit eaque hic."
+  "Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus cupiditate ullam autem "
+  "voluptate a sint dignissimos harum maiores sapiente incidunt? Atque, totam nisi voluptate "
+  "eum "
+  "officiis rerum5 sit eaque hic.0";
 
 struct AlgorithmTest : ::testing::Test {};
 
 TEST_F(AlgorithmTest, find) {
-    const std::string lorem =
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus cupiditate ullam autem "
-      "voluptate a sint dignissimos harum maiores sapiente incidunt? Atque, totam nisi voluptate "
-      "eum "
-      "officiis rerum sit eaque hic."
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus cupiditate ullam autem "
-      "voluptate a sint dignissimos harum maiores sapiente incidunt? Atque, totam nisi voluptate "
-      "eum "
-      "officiis rerum sit eaque hic."
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus cupiditate ullam autem "
-      "voluptate a sint dignissimos harum maiores sapiente incidunt? Atque, totam nisi voluptate "
-      "eum "
-      "officiis rerum sit eaque hic."
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus cupiditate ullam autem "
-      "voluptate a sint dignissimos harum maiores sapiente incidunt? Atque, totam nisi voluptate "
-      "eum "
-      "officiis rerum5 sit eaque hic.0";
 
     const std::vector<std::int16_t> v16{
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -58,6 +61,13 @@ TEST_F(AlgorithmTest, find) {
     EXPECT_EQ(ranges::find(v64, 10), xme::find(v64, 10));
 }
 
-TEST_F(AlgorithmTest, fill) {
-    std::vector<std::int64_t> v16(2);
+TEST_F(AlgorithmTest, reverse) {
+#define T                                                                                         \
+    1, 5, 3, 2, 8, 5, 3, 8, 0, 2, 5, 31, 6, 3, 1, 6, 3, 8, 3, 35, 12, 32, 8, 5, 0, 2, 6, 6, 3, 6, \
+      1, 89, 49, 95, 2, 43, 57
+    std::vector<std::int8_t> v32{T, T, T, T};
+    std::vector<std::int8_t> v322{T, T, T, T};
+    xme::reverse(v32);
+    ranges::reverse(v322);
+    EXPECT_EQ(v32, v322);
 }

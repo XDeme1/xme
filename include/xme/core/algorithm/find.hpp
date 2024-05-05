@@ -1,5 +1,6 @@
 #pragma once
 #include <bit>
+#include <execution>
 #include <x86intrin.h>
 #include <xme/setup.hpp>
 #include <xme/hal/simd_detection.hpp>
@@ -67,15 +68,17 @@ XME_INLINE auto find_simd(const void* data, const void* const value) {
 }
 }  // namespace detail
 
-template<::ranges::input_iterator I, ::ranges::sentinel_for<I> S>
+template<typename ExecutionPolicy = std::execution::unsequenced_policy, ::ranges::input_iterator I,
+         ::ranges::sentinel_for<I> S>
 XME_INLINE constexpr auto find(I i, S s, const ::ranges::iter_value_t<I>& value) {
 #if XME_SIMD_USE_AVX2 || XME_SIMD_USE_SSE2
     using T = ::ranges::iter_value_t<I>;
 
-    constexpr auto readable_bytes = (XME_SIMD_USE_AVX2 ? 32 : 16) / sizeof(T);
-    if constexpr(::ranges::contiguous_iterator<I>) {
+    if constexpr(::ranges::contiguous_iterator<I>
+                 && std::derived_from<ExecutionPolicy, std::execution::unsequenced_policy>) {
         static_assert(sizeof(T) == 1 || sizeof(T) == 2 || sizeof(T) == 4 || sizeof(T) == 8);
-        auto compare = i;
+        constexpr auto readable_bytes = (XME_SIMD_USE_AVX2 ? 32 : 16) / sizeof(T);
+        auto compare                  = i;
         while(compare + readable_bytes <= s) {
             const auto index = detail::find_simd<sizeof(T)>(std::to_address(compare), &value);
             if(index != readable_bytes)
@@ -94,8 +97,8 @@ XME_INLINE constexpr auto find(I i, S s, const ::ranges::iter_value_t<I>& value)
     return ::ranges::find(i, s, value);
 #endif
 }
-template<::ranges::input_range R>
+template<typename ExecutionPolicy = std::execution::unsequenced_policy, ::ranges::input_range R>
 XME_INLINE constexpr auto find(R&& range, const ::ranges::range_value_t<R>& value) noexcept {
-    return xme::find(::ranges::begin(range), ::ranges::end(range), value);
+    return xme::find<ExecutionPolicy>(::ranges::begin(range), ::ranges::end(range), value);
 }
 }  // namespace xme
